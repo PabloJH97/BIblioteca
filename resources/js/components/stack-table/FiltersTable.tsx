@@ -26,8 +26,13 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { CalendarIcon, FilterIcon, XIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import dayjs from "dayjs";
+import "dayjs/locale/es"; // Importar localización española
+import localizedFormat from "dayjs/plugin/localizedFormat"; // Para soporte de formatos como "PPP"
+
+// Configurar dayjs
+dayjs.extend(localizedFormat);
+dayjs.locale("es"); // Establecer español como idioma predeterminado
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -208,7 +213,7 @@ export function FiltersTable({
       acc[filter.id] = undefined;
       return acc;
     }, {} as Record<string, any>);
-    
+
     setFilterValues(emptyValues);
     form.reset(emptyValues);
   };
@@ -314,8 +319,8 @@ export function FiltersTable({
                     {clearFiltersText || t("ui.common.filters.clear")}
                   </Button>
                 )}
-                <Button 
-                  size="sm" 
+                <Button
+                  size="sm"
                   onClick={() => setOpen(false)}
                 >
                   {t("ui.common.buttons.close")}
@@ -359,8 +364,8 @@ function renderFilterInput(
           }}
         >
           <SelectTrigger>
-            <SelectValue 
-              placeholder={filter.placeholder} 
+            <SelectValue
+              placeholder={filter.placeholder}
             />
           </SelectTrigger>
           <SelectContent>
@@ -388,7 +393,7 @@ function renderFilterInput(
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
               {field.value ? (
-                format(field.value, "PPP", { locale: es })
+                dayjs(field.value).format("LL")
               ) : (
                 <span>{filter.placeholder || "Seleccionar fecha"}</span>
               )}
@@ -398,7 +403,7 @@ function renderFilterInput(
             <Calendar
               mode="single"
               selected={field.value}
-              onSelect={(date) => {
+              onSelect={(date: Date | undefined) => {
                 field.onChange(date);
                 onChange(date);
               }}

@@ -128,9 +128,9 @@ return [
             'email' => 'Email del usuario',
         ],
         'placeholders' => [
-            'name' => 'Nombre del usuario',
-            'email' => 'Email del usuario',
-            'password' => 'Contraseña del usuario',
+            'name' => 'Nombre completo del usuario',
+            'email' => 'correo@ejemplo.com',
+            'password' => 'Contraseña segura',
             'search' => 'Buscar usuarios...',
         ],
         'buttons' => [
@@ -161,5 +161,39 @@ return [
             'previous' => 'Anterior',
             'next' => 'Siguiente',
         ],
+        'role' => [
+            'main' => 'Rol Principal',
+            'select' => 'Selecciona un rol',
+            'admin' => 'Administrador',
+            'client' => 'Cliente',
+        ],
+        'permissions' => [
+            'title' => 'Permisos específicos',
+            'users' => [
+                'title' => 'Usuarios',
+                'view' => 'Ver usuarios',
+                'create' => 'Crear usuarios',
+                'edit' => 'Editar usuarios',
+                'delete' => 'Eliminar usuarios'
+            ],
+            'products' => [
+                'title' => 'Productos',
+                'view' => 'Ver productos',
+                'create' => 'Crear productos',
+                'edit' => 'Editar productos',
+                'delete' => 'Eliminar productos'
+            ],
+            'reports' => [
+                'title' => 'Reportes',
+                'view' => 'Ver reportes',
+                'export' => 'Exportar reportes',
+                'print' => 'Imprimir reportes'
+            ],
+            'confif' => [
+                'title' => 'Configuración',
+                'access' => 'Acceso a configuración',
+                'modify' => 'Modificar configuración'
+            ]
+        ]
     ],
 ];
