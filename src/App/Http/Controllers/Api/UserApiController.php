@@ -26,6 +26,7 @@ class UserApiController extends Controller
 
     public function store(Request $request, UserStoreAction $action)
     {
+
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -72,6 +73,7 @@ class UserApiController extends Controller
 
     public function destroy(User $user, UserDestroyAction $action)
     {
+
         $action($user);
 
         return response()->json([

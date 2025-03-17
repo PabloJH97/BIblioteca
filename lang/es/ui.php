@@ -189,7 +189,7 @@ return [
                 'export' => 'Exportar reportes',
                 'print' => 'Imprimir reportes'
             ],
-            'confif' => [
+            'config' => [
                 'title' => 'Configuración',
                 'access' => 'Acceso a configuración',
                 'modify' => 'Modificar configuración'
