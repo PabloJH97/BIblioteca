@@ -16,6 +16,8 @@ class UserStoreAction
             'password' => Hash::make($data['password']),
         ]);
 
+
+
         return UserResource::fromModel($user);
     }
 }
