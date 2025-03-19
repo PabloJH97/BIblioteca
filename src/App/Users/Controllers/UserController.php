@@ -3,7 +3,7 @@
 namespace App\Users\Controllers;
 
 use App\Core\Controllers\Controller;
-
+use Domain\Roles\Models\Role;
 use Domain\Users\Actions\UserDestroyAction;
 use Domain\Users\Actions\UserIndexAction;
 use Domain\Users\Actions\UserStoreAction;
@@ -24,12 +24,21 @@ class UserController extends Controller
 
     public function create()
     {
-        return Inertia::render('users/Create');
+        $role=Role::all();
+
+        $arrayPermissions=[];
+        foreach($role as $rol){
+            foreach($rol->permissions as $perm){
+                array_push($arrayPermissions, [$rol->name, $perm->name]);
+            }
+        }
+        return Inertia::render('users/Create', ['arrayPermissions'=>$arrayPermissions]);
     }
 
     public function store(Request $request, UserStoreAction $action)
     {
-        dd($request->name);
+        dd($request);
+
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],

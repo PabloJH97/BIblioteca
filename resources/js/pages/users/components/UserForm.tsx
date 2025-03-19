@@ -9,19 +9,29 @@ import type { AnyFieldApi } from '@tanstack/react-form';
 import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { FileText, Lock, Mail, PackageOpen, Save, Settings, Shield, User, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useMemo, memo } from 'react';
+import { usePage } from '@inertiajs/react'
 import { Option, Select } from 'react-day-picker';
 import { toast } from 'sonner';
+import { values } from 'lodash';
 
 interface UserFormProps {
     initialData?: {
         id: string;
         name: string;
         email: string;
+
     };
     page?: string;
     perPage?: string;
+    arrayPermissions?:string[];
 }
+let arrayPermisos:string[];
+    arrayPermisos=[];
+
+let selectedRole:string;
+    selectedRole="";
+
 
 // Field error display component
 function FieldInfo({ field }: { field: AnyFieldApi }) {
@@ -35,29 +45,56 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
     );
 }
 
-export function UserForm({ initialData, page, perPage }: UserFormProps) {
+export function UserForm({ initialData, page, perPage, arrayPermissions}: UserFormProps) {
     const { t } = useTranslations();
     const queryClient = useQueryClient();
-    let arrayPermisos:string[];
-    arrayPermisos=[];
+    const [arrayPermisosState, setArrayPermisosState]=useState(arrayPermisos);
+    const { data } = usePage().props;
+
 
     const [formState, setFormState] = useState(false);
+    const [visibilityData, setVisibilityData]=useState("block");
+    const [visibilityPerms, setVisibilityPerms]=useState("hidden");
+    const [selectedRoleState, setSelectedRoleState]=useState(selectedRole);
 
 
     function changeStateInfo() {
-        setFormState(false);
+        setFormState(formState=> false);
+        setVisibilityData(dataState=>"block");
+        setVisibilityPerms(permsState=>"hidden");
+
     }
     function changeStateRoles() {
-        setFormState(true);
+        setFormState(formState=> true);
+        setVisibilityData(dataState=>"hidden");
+        setVisibilityPerms(permsState=>"block");
     }
 
     function putInPermissionArray(valor: string) {
 
         if (!arrayPermisos.includes(valor)) {
             arrayPermisos=[...arrayPermisos, valor];
+            setArrayPermisosState(arrayPermisos);
+            form.setFieldValue("permissions", arrayPermisosState);
         } else {
             arrayPermisos=(arrayPermisos.filter((a) => a !== valor));
+            setArrayPermisosState(arrayPermisos);
+            form.setFieldValue("permissions", arrayPermisosState);
         }
+    }
+
+    function selectRole(valor:string){
+        selectedRole=valor;
+        setSelectedRoleState(selectedRole);
+        arrayPermisos=[];
+        setArrayPermisosState(arrayPermisos);
+        arrayPermissions?.forEach(array=>{
+            if(array[0].includes(valor)){
+                arrayPermisos=[...arrayPermisos, array[1]];
+                setArrayPermisosState(arrayPermisos);
+            }
+        })
+
     }
 
     const handleChange = () => {
@@ -71,8 +108,8 @@ export function UserForm({ initialData, page, perPage }: UserFormProps) {
             email: initialData?.email ?? '',
             password: '',
             role: '',
-            permissions: '',
-            'users.view': '',
+            permissions: [""],
+            'users.view': "",
             'users.create': '',
             'users.edit': '',
             'users.delete': '',
@@ -127,7 +164,7 @@ export function UserForm({ initialData, page, perPage }: UserFormProps) {
 
     function UserFormData(){
         return (
-            <CardContent className="h-full bg-white">
+            <CardContent className={'h-full bg-white'+" "+visibilityData}>
                 <div>
                     <form.Field
                         name="name"
@@ -253,9 +290,10 @@ export function UserForm({ initialData, page, perPage }: UserFormProps) {
         );
     }
 
+
     function UserFormPerms(){
         return (
-            <CardContent className="bg-white font-bold">
+            <CardContent className={'h-full bg-white'+" "+visibilityPerms}>
                 <div>
                     <form.Field name="role">
                         {(field) => (
@@ -265,11 +303,12 @@ export function UserForm({ initialData, page, perPage }: UserFormProps) {
                                     <p>{t('ui.users.role.main')}</p>
                                 </div>
 
-                                <Select className="h-10 w-full rounded-md border-2">
-                                    <Option>{'Selecciona un rol'}</Option>
-                                    <Option>{t('ui.users.role.admin')}</Option>
-                                    <Option>{t('ui.users.role.client')}</Option>
+                                <Select className="h-10 w-full rounded-md border-2" value={selectedRoleState} onChange={e=>selectRole(e.target.value)}>
+                                    <Option value={"empty"}>{'Selecciona un rol'}</Option>
+                                    <Option value={"admin"}>{t('ui.users.role.admin')}</Option>
+                                    <Option value={"client"}>{t('ui.users.role.client')}</Option>
                                 </Select>
+                                <FieldInfo field={field} />
                             </>
                         )}
                     </form.Field>
@@ -305,13 +344,13 @@ export function UserForm({ initialData, page, perPage }: UserFormProps) {
                                                             name={field.name}
                                                             className="border-blue-600"
                                                             value={field.state.value}
-                                                            onChange={(e) => field.handleChange(e.target.value)}
+                                                            checked={arrayPermisosState.includes(field.name)}
                                                             onCheckedChange={e=>putInPermissionArray(field.name)}
                                                             ></Checkbox>
                                                             <Label>{t('ui.users.permissions.users.view')}</Label>
 
                                                         </div>
-                                                        <FieldInfo field={field} />
+
                                                     </>
                                                 )}
                                             </form.Field>
@@ -324,6 +363,7 @@ export function UserForm({ initialData, page, perPage }: UserFormProps) {
                                                                 name={field.name}
                                                                 className="border-blue-600"
                                                                 value={field.state.value}
+                                                                checked={arrayPermisos.includes(field.name)}
                                                                 onCheckedChange={e=>putInPermissionArray(field.name)}
                                                             ></Checkbox>
                                                             <Label>{t('ui.users.permissions.users.create')}</Label>
@@ -340,6 +380,7 @@ export function UserForm({ initialData, page, perPage }: UserFormProps) {
                                                                 name={field.name}
                                                                 className="border-blue-600"
                                                                 value={field.state.value}
+                                                                checked={arrayPermisos.includes(field.name)}
                                                                 onCheckedChange={e=>putInPermissionArray(field.name)}
                                                             ></Checkbox>
                                                             <Label>{t('ui.users.permissions.users.edit')}</Label>
@@ -357,6 +398,7 @@ export function UserForm({ initialData, page, perPage }: UserFormProps) {
                                                                 name={field.name}
                                                                 className="border-blue-600"
                                                                 value={field.state.value}
+                                                                checked={arrayPermisos.includes(field.name)}
                                                                 onCheckedChange={e=>putInPermissionArray(field.name)}
                                                             ></Checkbox>
                                                             <Label>{t('ui.users.permissions.users.delete')}</Label>
@@ -381,6 +423,7 @@ export function UserForm({ initialData, page, perPage }: UserFormProps) {
                                                                 name={field.name}
                                                                 className="border-blue-600"
                                                                 value={field.state.value}
+                                                                checked={arrayPermisos.includes(field.name)}
                                                                 onCheckedChange={e=>putInPermissionArray(field.name)}
                                                             ></Checkbox>
                                                             <Label>{t('ui.users.permissions.products.view')}</Label>
@@ -397,6 +440,7 @@ export function UserForm({ initialData, page, perPage }: UserFormProps) {
                                                                 name={field.name}
                                                                 className="border-blue-600"
                                                                 value={field.state.value}
+                                                                checked={arrayPermisos.includes(field.name)}
                                                                 onCheckedChange={e=>putInPermissionArray(field.name)}
                                                             ></Checkbox>
                                                             <Label>{t('ui.users.permissions.products.create')}</Label>
@@ -413,6 +457,7 @@ export function UserForm({ initialData, page, perPage }: UserFormProps) {
                                                                 name={field.name}
                                                                 className="border-blue-600"
                                                                 value={field.state.value}
+                                                                checked={arrayPermisos.includes(field.name)}
                                                                 onCheckedChange={e=>putInPermissionArray(field.name)}
                                                             ></Checkbox>
                                                             <Label>{t('ui.users.permissions.products.edit')}</Label>
@@ -430,6 +475,7 @@ export function UserForm({ initialData, page, perPage }: UserFormProps) {
                                                                 name={field.name}
                                                                 className="border-blue-600"
                                                                 value={field.state.value}
+                                                                checked={arrayPermisos.includes(field.name)}
                                                                 onCheckedChange={e=>putInPermissionArray(field.name)}
                                                             ></Checkbox>
                                                             <Label>{t('ui.users.permissions.products.delete')}</Label>
@@ -454,6 +500,7 @@ export function UserForm({ initialData, page, perPage }: UserFormProps) {
                                                                 name={field.name}
                                                                 className="border-blue-600"
                                                                 value={field.state.value}
+                                                                checked={arrayPermisos.includes(field.name)}
                                                                 onCheckedChange={e=>putInPermissionArray(field.name)}
                                                             ></Checkbox>
                                                             <Label>{t('ui.users.permissions.reports.view')}</Label>
@@ -470,6 +517,7 @@ export function UserForm({ initialData, page, perPage }: UserFormProps) {
                                                                 name={field.name}
                                                                 className="border-blue-600"
                                                                 value={field.state.value}
+                                                                checked={arrayPermisos.includes(field.name)}
                                                                 onCheckedChange={e=>putInPermissionArray(field.name)}
                                                             ></Checkbox>
                                                             <Label>{t('ui.users.permissions.reports.export')}</Label>
@@ -486,6 +534,7 @@ export function UserForm({ initialData, page, perPage }: UserFormProps) {
                                                                 name={field.name}
                                                                 className="border-blue-600"
                                                                 value={field.state.value}
+                                                                checked={arrayPermisos.includes(field.name)}
                                                                 onCheckedChange={e=>putInPermissionArray(field.name)}
                                                             ></Checkbox>
                                                             <Label>{t('ui.users.permissions.reports.print')}</Label>
@@ -510,6 +559,7 @@ export function UserForm({ initialData, page, perPage }: UserFormProps) {
                                                                 name={field.name}
                                                                 className="border-blue-600"
                                                                 value={field.state.value}
+                                                                checked={arrayPermisos.includes(field.name)}
                                                                 onCheckedChange={e=>putInPermissionArray(field.name)}
                                                             ></Checkbox>
                                                             <Label>{t('ui.users.permissions.config.access')}</Label>
@@ -526,6 +576,7 @@ export function UserForm({ initialData, page, perPage }: UserFormProps) {
                                                                 name={field.name}
                                                                 className="border-blue-600"
                                                                 value={field.state.value}
+                                                                checked={arrayPermisos.includes(field.name)}
                                                                 onCheckedChange={e=>putInPermissionArray(field.name)}
                                                             ></Checkbox>
                                                             <Label>{t('ui.users.permissions.config.modify')}</Label>
@@ -538,10 +589,10 @@ export function UserForm({ initialData, page, perPage }: UserFormProps) {
                                         onCheckedChange={handleChange}
                                         ></Checkbox>
                                     </Card>
-
-
                                 </>
+
                             )}
+
                         </form.Field>
                     </div>
                 </div>
@@ -551,23 +602,16 @@ export function UserForm({ initialData, page, perPage }: UserFormProps) {
 
 
 
-
-    function UserFormContent() {
-        if (!formState) {
-
-        } else {
-
-        }
-    }
-
     function ButtonInfo() {
         if (!formState) {
+
             return (
                 <Button type="button" className="mx-1 my-1 w-full bg-white text-black" onClick={changeStateInfo}>
                     {'Información básica'}
                 </Button>
             );
         } else {
+
             return (
                 <Button type="button" className="mx-1 my-1 w-full bg-gray-100 font-bold text-gray-400" onClick={changeStateInfo}>
                     {'Información básica'}
@@ -578,12 +622,14 @@ export function UserForm({ initialData, page, perPage }: UserFormProps) {
 
     function ButtonRoles() {
         if (formState) {
+
             return (
                 <Button type="button" className="mx-1 my-1 w-full bg-white font-bold text-black" onClick={changeStateRoles}>
                     {'Roles y permisos'}
                 </Button>
             );
         } else {
+
             return (
                 <Button type="button" className="mx-1 my-1 w-full bg-gray-100 font-bold text-gray-400" onClick={changeStateRoles}>
                     {'Roles y permisos'}

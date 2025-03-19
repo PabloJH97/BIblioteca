@@ -26,7 +26,6 @@ class UserApiController extends Controller
 
     public function store(Request $request, UserStoreAction $action)
     {
-        dd($request);
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -38,6 +37,10 @@ class UserApiController extends Controller
         }
 
         $user = $action($validator->validated());
+
+        $user=User::where('email', $request->email)->get()[0];
+
+        $user->givePermissionTo($request->permissions);
 
         return response()->json([
             'message' => __('messages.users.created'),
