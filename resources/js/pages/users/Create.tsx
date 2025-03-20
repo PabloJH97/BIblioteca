@@ -4,7 +4,6 @@ import { PageProps } from "@/types";
 import { useTranslations } from "@/hooks/use-translations";
 
 interface CreateUserProps extends PageProps {
-    roles?: string[];
     arrayPermissions?: string[];
 
   }
@@ -16,7 +15,7 @@ export default function CreateUser({arrayPermissions}:CreateUserProps) {
     <UserLayout title={t("ui.users.create")}>
       <div className="p-6">
         <div className="max-w-xl">
-          <UserForm arrayPermissions={arrayPermissions} />
+          <UserForm arrayPermissions={arrayPermissions} pageTitle={t("ui.users.create")} />
         </div>
       </div>
     </UserLayout>

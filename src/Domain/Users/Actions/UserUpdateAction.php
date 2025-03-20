@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserUpdateAction
 {
-    public function __invoke(User $user, array $data): UserResource
+    public function __invoke(User $user, array $data, array $permissions): UserResource
     {
         $updateData = [
             'name' => $data['name'],
@@ -18,7 +18,8 @@ class UserUpdateAction
         if (!empty($data['password'])) {
             $updateData['password'] = Hash::make($data['password']);
         }
-
+        $user->permissions()->detach();
+        $user->givePermissionTo($permissions);
         $user->update($updateData);
 
         return UserResource::fromModel($user->fresh());

@@ -37,8 +37,6 @@ class UserController extends Controller
 
     public function store(Request $request, UserStoreAction $action)
     {
-        dd($request);
-
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -49,12 +47,7 @@ class UserController extends Controller
             return back()->withErrors($validator);
         }
 
-        $action($validator->validated());
-
-        $user=User::where('email', $request->email)->get()[0];
-
-        $user->givePermissionTo($request->permissions);
-
+        $action($validator->validated(), $request->permissions);
 
         return redirect()->route('users.index')
             ->with('success', __('messages.users.created'));
@@ -62,10 +55,19 @@ class UserController extends Controller
 
     public function edit(Request $request, User $user)
     {
+        $role=Role::all();
+
+        $arrayPermissions=[];
+        foreach($role as $rol){
+            foreach($rol->permissions as $perm){
+                array_push($arrayPermissions, [$rol->name, $perm->name]);
+            }
+        }
         return Inertia::render('users/Edit', [
             'user' => $user,
             'page' => $request->query('page'),
             'perPage' => $request->query('perPage'),
+            'arrayPermissions'=>$arrayPermissions,
         ]);
     }
 
@@ -87,7 +89,7 @@ class UserController extends Controller
             return back()->withErrors($validator);
         }
 
-        $action($user, $validator->validated());
+        $action($user, $validator->validated(), $request->permissions);
 
         $redirectUrl = route('users.index');
 

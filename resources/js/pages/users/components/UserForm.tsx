@@ -9,11 +9,9 @@ import type { AnyFieldApi } from '@tanstack/react-form';
 import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { FileText, Lock, Mail, PackageOpen, Save, Settings, Shield, User, X } from 'lucide-react';
-import { useState, useMemo, memo } from 'react';
-import { usePage } from '@inertiajs/react'
+import { useState } from 'react';
 import { Option, Select } from 'react-day-picker';
 import { toast } from 'sonner';
-import { values } from 'lodash';
 
 interface UserFormProps {
     initialData?: {
@@ -25,13 +23,13 @@ interface UserFormProps {
     page?: string;
     perPage?: string;
     arrayPermissions?:string[];
+    pageTitle?:string;
 }
 let arrayPermisos:string[];
     arrayPermisos=[];
 
 let selectedRole:string;
     selectedRole="";
-
 
 // Field error display component
 function FieldInfo({ field }: { field: AnyFieldApi }) {
@@ -45,29 +43,20 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
     );
 }
 
-export function UserForm({ initialData, page, perPage, arrayPermissions}: UserFormProps) {
+export function UserForm({ initialData, page, perPage, arrayPermissions, pageTitle}: UserFormProps) {
     const { t } = useTranslations();
     const queryClient = useQueryClient();
     const [arrayPermisosState, setArrayPermisosState]=useState(arrayPermisos);
-    const { data } = usePage().props;
-
-
     const [formState, setFormState] = useState(false);
-    const [visibilityData, setVisibilityData]=useState("block");
-    const [visibilityPerms, setVisibilityPerms]=useState("hidden");
     const [selectedRoleState, setSelectedRoleState]=useState(selectedRole);
+
 
 
     function changeStateInfo() {
         setFormState(formState=> false);
-        setVisibilityData(dataState=>"block");
-        setVisibilityPerms(permsState=>"hidden");
-
     }
     function changeStateRoles() {
         setFormState(formState=> true);
-        setVisibilityData(dataState=>"hidden");
-        setVisibilityPerms(permsState=>"block");
     }
 
     function putInPermissionArray(valor: string) {
@@ -75,11 +64,11 @@ export function UserForm({ initialData, page, perPage, arrayPermissions}: UserFo
         if (!arrayPermisos.includes(valor)) {
             arrayPermisos=[...arrayPermisos, valor];
             setArrayPermisosState(arrayPermisos);
-            form.setFieldValue("permissions", arrayPermisosState);
+
         } else {
             arrayPermisos=(arrayPermisos.filter((a) => a !== valor));
             setArrayPermisosState(arrayPermisos);
-            form.setFieldValue("permissions", arrayPermisosState);
+
         }
     }
 
@@ -94,12 +83,15 @@ export function UserForm({ initialData, page, perPage, arrayPermissions}: UserFo
                 setArrayPermisosState(arrayPermisos);
             }
         })
-
     }
 
     const handleChange = () => {
-        console.log(arrayPermisos);
+        console.log(arrayPermisosState);
     };
+
+    function timeout(delay: number) {
+        return new Promise( res => setTimeout(res, delay) );
+    }
 
     // TanStack Form setup
     const form = useForm({
@@ -159,12 +151,15 @@ export function UserForm({ initialData, page, perPage, arrayPermissions}: UserFo
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         e.stopPropagation();
+        form.setFieldValue('permissions', arrayPermisosState);
+        arrayPermisos=[];
+        setArrayPermisosState(arrayPermisos);
         form.handleSubmit();
     };
 
     function UserFormData(){
         return (
-            <CardContent className={'h-full bg-white'+" "+visibilityData}>
+            <CardContent className={'h-full bg-white'}>
                 <div>
                     <form.Field
                         name="name"
@@ -293,7 +288,7 @@ export function UserForm({ initialData, page, perPage, arrayPermissions}: UserFo
 
     function UserFormPerms(){
         return (
-            <CardContent className={'h-full bg-white'+" "+visibilityPerms}>
+            <CardContent className={'h-full bg-white'}>
                 <div>
                     <form.Field name="role">
                         {(field) => (
@@ -589,6 +584,7 @@ export function UserForm({ initialData, page, perPage, arrayPermissions}: UserFo
                                         onCheckedChange={handleChange}
                                         ></Checkbox>
                                     </Card>
+
                                 </>
 
                             )}
@@ -646,7 +642,7 @@ export function UserForm({ initialData, page, perPage, arrayPermissions}: UserFo
                     <CardHeader>
                         <div className="flex flex-row">
                             <User color="#155dfc"></User>
-                            <h1 className="font-bold">{'Crear nuevo usuario'}</h1>
+                            <h1 className="font-bold">{pageTitle}</h1>
                         </div>
                         <div>
                             <p className="font-sans text-sm font-bold text-gray-400">
