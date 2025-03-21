@@ -11,9 +11,10 @@ interface EditUserProps extends PageProps {
   };
   page?: string;
   perPage?: string;
+  arrayPermissions?: string[];
 }
 
-export default function EditUser({ user, page, perPage }: EditUserProps) {
+export default function EditUser({ user, page, perPage, arrayPermissions }: EditUserProps) {
   const { t } = useTranslations();
 
   return (
@@ -24,6 +25,8 @@ export default function EditUser({ user, page, perPage }: EditUserProps) {
             initialData={user}
             page={page}
             perPage={perPage}
+            arrayPermissions={arrayPermissions}
+            pageTitle={t("ui.users.edit")}
           />
         </div>
       </div>
