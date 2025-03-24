@@ -18,8 +18,6 @@ class UserStoreAction
 
         $user->givePermissionTo($permissions);
 
-
-
         return UserResource::fromModel($user);
     }
 }

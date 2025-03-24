@@ -18,18 +18,17 @@ interface UserFormProps {
         id: string;
         name: string;
         email: string;
-
     };
     page?: string;
     perPage?: string;
-    arrayPermissions?:string[];
-    pageTitle?:string;
+    arrayPermissions?: string[];
+    pageTitle?: string;
 }
-let arrayPermisos:string[];
-    arrayPermisos=[];
+let arrayPermisos: string[];
+arrayPermisos = [];
 
-let selectedRole:string;
-    selectedRole="";
+let selectedRole: string;
+selectedRole = '';
 
 // Field error display component
 function FieldInfo({ field }: { field: AnyFieldApi }) {
@@ -43,54 +42,41 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
     );
 }
 
-export function UserForm({ initialData, page, perPage, arrayPermissions, pageTitle}: UserFormProps) {
+export function UserForm({ initialData, page, perPage, arrayPermissions, pageTitle }: UserFormProps) {
     const { t } = useTranslations();
     const queryClient = useQueryClient();
-    const [arrayPermisosState, setArrayPermisosState]=useState(arrayPermisos);
+    const [arrayPermisosState, setArrayPermisosState] = useState(arrayPermisos);
     const [formState, setFormState] = useState(false);
-    const [selectedRoleState, setSelectedRoleState]=useState(selectedRole);
-
-
+    const [selectedRoleState, setSelectedRoleState] = useState(selectedRole);
 
     function changeStateInfo() {
-        setFormState(formState=> false);
+        setFormState((formState) => false);
     }
     function changeStateRoles() {
-        setFormState(formState=> true);
+        setFormState((formState) => true);
     }
 
     function putInPermissionArray(valor: string) {
-
         if (!arrayPermisos.includes(valor)) {
-            arrayPermisos=[...arrayPermisos, valor];
+            arrayPermisos = [...arrayPermisos, valor];
             setArrayPermisosState(arrayPermisos);
-
         } else {
-            arrayPermisos=(arrayPermisos.filter((a) => a !== valor));
+            arrayPermisos = arrayPermisos.filter((a) => a !== valor);
             setArrayPermisosState(arrayPermisos);
-
         }
     }
 
-    function selectRole(valor:string){
-        selectedRole=valor;
+    function selectRole(valor: string) {
+        selectedRole = valor;
         setSelectedRoleState(selectedRole);
-        arrayPermisos=[];
+        arrayPermisos = [];
         setArrayPermisosState(arrayPermisos);
-        arrayPermissions?.forEach(array=>{
-            if(array[0].includes(valor)){
-                arrayPermisos=[...arrayPermisos, array[1]];
+        arrayPermissions?.forEach((array) => {
+            if (array[0].includes(valor)) {
+                arrayPermisos = [...arrayPermisos, array[1]];
                 setArrayPermisosState(arrayPermisos);
             }
-        })
-    }
-
-    const handleChange = () => {
-        console.log(arrayPermisosState);
-    };
-
-    function timeout(delay: number) {
-        return new Promise( res => setTimeout(res, delay) );
+        });
     }
 
     // TanStack Form setup
@@ -100,20 +86,7 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
             email: initialData?.email ?? '',
             password: '',
             role: '',
-            permissions: [""],
-            'users.view': "",
-            'users.create': '',
-            'users.edit': '',
-            'users.delete': '',
-            'products.view': '',
-            'products.create': '',
-            'products.edit': '',
-            'products.delete': '',
-            'reports.view': '',
-            'reports.export': '',
-            'reports.print': '',
-            'config.access': '',
-            'config.modify': '',
+            permissions: [''],
         },
         onSubmit: async ({ value }) => {
             const options = {
@@ -152,12 +125,12 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
         e.preventDefault();
         e.stopPropagation();
         form.setFieldValue('permissions', arrayPermisosState);
-        arrayPermisos=[];
+        arrayPermisos = [];
         setArrayPermisosState(arrayPermisos);
         form.handleSubmit();
     };
 
-    function UserFormData(){
+    function UserFormData() {
         return (
             <CardContent className={'h-full bg-white'}>
                 <div>
@@ -285,8 +258,7 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
         );
     }
 
-
-    function UserFormPerms(){
+    function UserFormPerms() {
         return (
             <CardContent className={'h-full bg-white'}>
                 <div>
@@ -298,10 +270,14 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
                                     <p>{t('ui.users.role.main')}</p>
                                 </div>
 
-                                <Select className="h-10 w-full rounded-md border-2" value={selectedRoleState} onChange={e=>selectRole(e.target.value)}>
-                                    <Option value={"empty"}>{'Selecciona un rol'}</Option>
-                                    <Option value={"admin"}>{t('ui.users.role.admin')}</Option>
-                                    <Option value={"client"}>{t('ui.users.role.client')}</Option>
+                                <Select
+                                    className="h-10 w-full rounded-md border-2"
+                                    value={selectedRoleState}
+                                    onChange={(e) => selectRole(e.target.value)}
+                                >
+                                    <Option value={'empty'}>{'Selecciona un rol'}</Option>
+                                    <Option value={'admin'}>{t('ui.users.role.admin')}</Option>
+                                    <Option value={'client'}>{t('ui.users.role.client')}</Option>
                                 </Select>
                                 <FieldInfo field={field} />
                             </>
@@ -323,84 +299,60 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
                         <form.Field name="permissions">
                             {(field) => (
                                 <>
-
                                     <Card className="w-1/2 bg-gray-50">
                                         <CardContent>
                                             <div className="flew flew-row">
                                                 <User className="w-5" color="#155dfc"></User>
                                                 <p className="w-1/2">{t('ui.users.permissions.users.title')}</p>
                                             </div>
-                                            <form.Field name="users.view">
-                                                {(field) => (
-                                                    <>
-                                                        <div className="items-center">
-                                                            <Checkbox
-                                                            id={field.name}
-                                                            name={field.name}
-                                                            className="border-blue-600"
-                                                            value={field.state.value}
-                                                            checked={arrayPermisosState.includes(field.name)}
-                                                            onCheckedChange={e=>putInPermissionArray(field.name)}
-                                                            ></Checkbox>
-                                                            <Label>{t('ui.users.permissions.users.view')}</Label>
 
-                                                        </div>
+                                            <div className="items-center">
+                                                <Checkbox
+                                                    id={'users.view'}
+                                                    name={'users.view'}
+                                                    className="border-blue-600"
+                                                    value={'users.view'}
+                                                    checked={arrayPermisosState.includes('users.view')}
+                                                    onCheckedChange={(e) => putInPermissionArray('users.view')}
+                                                ></Checkbox>
+                                                <Label>{t('ui.users.permissions.users.view')}</Label>
+                                            </div>
 
-                                                    </>
-                                                )}
-                                            </form.Field>
-                                            <form.Field name="users.create">
-                                                {(field) => (
-                                                    <>
-                                                        <div className="items-center">
-                                                            <Checkbox
-                                                                id={field.name}
-                                                                name={field.name}
-                                                                className="border-blue-600"
-                                                                value={field.state.value}
-                                                                checked={arrayPermisos.includes(field.name)}
-                                                                onCheckedChange={e=>putInPermissionArray(field.name)}
-                                                            ></Checkbox>
-                                                            <Label>{t('ui.users.permissions.users.create')}</Label>
-                                                        </div>
-                                                    </>
-                                                )}
-                                            </form.Field>
-                                            <form.Field name="users.edit">
-                                                {(field) => (
-                                                    <>
-                                                        <div className="items-center">
-                                                            <Checkbox
-                                                                id={field.name}
-                                                                name={field.name}
-                                                                className="border-blue-600"
-                                                                value={field.state.value}
-                                                                checked={arrayPermisos.includes(field.name)}
-                                                                onCheckedChange={e=>putInPermissionArray(field.name)}
-                                                            ></Checkbox>
-                                                            <Label>{t('ui.users.permissions.users.edit')}</Label>
-                                                        </div>
-                                                    </>
-                                                )}
-                                            </form.Field>
+                                            <div className="items-center">
+                                                <Checkbox
+                                                    id={'users.create'}
+                                                    name={'users.create'}
+                                                    className="border-blue-600"
+                                                    value={'users.create'}
+                                                    checked={arrayPermisos.includes('users.create')}
+                                                    onCheckedChange={(e) => putInPermissionArray('users.create')}
+                                                ></Checkbox>
+                                                <Label>{t('ui.users.permissions.users.create')}</Label>
+                                            </div>
 
-                                            <form.Field name="users.delete">
-                                                {(field) => (
-                                                    <>
-                                                        <div className="items-center">
-                                                            <Checkbox
-                                                                id={field.name}
-                                                                name={field.name}
-                                                                className="border-blue-600"
-                                                                value={field.state.value}
-                                                                checked={arrayPermisos.includes(field.name)}
-                                                                onCheckedChange={e=>putInPermissionArray(field.name)}
-                                                            ></Checkbox>
-                                                            <Label>{t('ui.users.permissions.users.delete')}</Label>
-                                                        </div>
-                                                    </>
-                                                )}
-                                            </form.Field>
+                                            <div className="items-center">
+                                                <Checkbox
+                                                    id={'users.edit'}
+                                                    name={'users.edit'}
+                                                    className="border-blue-600"
+                                                    value={'users.edit'}
+                                                    checked={arrayPermisos.includes('users.edit')}
+                                                    onCheckedChange={(e) => putInPermissionArray('users.edit')}
+                                                ></Checkbox>
+                                                <Label>{t('ui.users.permissions.users.edit')}</Label>
+                                            </div>
+
+                                            <div className="items-center">
+                                                <Checkbox
+                                                    id={'users.delete'}
+                                                    name={'users.delete'}
+                                                    className="border-blue-600"
+                                                    value={'users.delete'}
+                                                    checked={arrayPermisos.includes('users.delete')}
+                                                    onCheckedChange={(e) => putInPermissionArray('users.delete')}
+                                                ></Checkbox>
+                                                <Label>{t('ui.users.permissions.users.delete')}</Label>
+                                            </div>
                                         </CardContent>
                                     </Card>
                                     <Card className="w-1/2 bg-gray-50">
@@ -409,75 +361,54 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
                                                 <PackageOpen className="w-5" color="#155dfc"></PackageOpen>
                                                 <p className="w-1/2">{t('ui.users.permissions.products.title')}</p>
                                             </div>
-                                            <form.Field name="products.view">
-                                                {(field) => (
-                                                    <>
-                                                        <div>
-                                                            <Checkbox
-                                                                id={field.name}
-                                                                name={field.name}
-                                                                className="border-blue-600"
-                                                                value={field.state.value}
-                                                                checked={arrayPermisos.includes(field.name)}
-                                                                onCheckedChange={e=>putInPermissionArray(field.name)}
-                                                            ></Checkbox>
-                                                            <Label>{t('ui.users.permissions.products.view')}</Label>
-                                                        </div>
-                                                    </>
-                                                )}
-                                            </form.Field>
-                                            <form.Field name="products.create">
-                                                {(field) => (
-                                                    <>
-                                                        <div>
-                                                            <Checkbox
-                                                                id={field.name}
-                                                                name={field.name}
-                                                                className="border-blue-600"
-                                                                value={field.state.value}
-                                                                checked={arrayPermisos.includes(field.name)}
-                                                                onCheckedChange={e=>putInPermissionArray(field.name)}
-                                                            ></Checkbox>
-                                                            <Label>{t('ui.users.permissions.products.create')}</Label>
-                                                        </div>
-                                                    </>
-                                                )}
-                                            </form.Field>
-                                            <form.Field name="products.edit">
-                                                {(field) => (
-                                                    <>
-                                                        <div>
-                                                            <Checkbox
-                                                                id={field.name}
-                                                                name={field.name}
-                                                                className="border-blue-600"
-                                                                value={field.state.value}
-                                                                checked={arrayPermisos.includes(field.name)}
-                                                                onCheckedChange={e=>putInPermissionArray(field.name)}
-                                                            ></Checkbox>
-                                                            <Label>{t('ui.users.permissions.products.edit')}</Label>
-                                                        </div>
-                                                    </>
-                                                )}
-                                            </form.Field>
 
-                                            <form.Field name="products.delete">
-                                                {(field) => (
-                                                    <>
-                                                        <div>
-                                                            <Checkbox
-                                                                id={field.name}
-                                                                name={field.name}
-                                                                className="border-blue-600"
-                                                                value={field.state.value}
-                                                                checked={arrayPermisos.includes(field.name)}
-                                                                onCheckedChange={e=>putInPermissionArray(field.name)}
-                                                            ></Checkbox>
-                                                            <Label>{t('ui.users.permissions.products.delete')}</Label>
-                                                        </div>
-                                                    </>
-                                                )}
-                                            </form.Field>
+                                            <div>
+                                                <Checkbox
+                                                    id={'products.view'}
+                                                    name={'products.view'}
+                                                    className="border-blue-600"
+                                                    value={'products.view'}
+                                                    checked={arrayPermisos.includes('products.view')}
+                                                    onCheckedChange={(e) => putInPermissionArray('products.view')}
+                                                ></Checkbox>
+                                                <Label>{t('ui.users.permissions.products.view')}</Label>
+                                            </div>
+
+                                            <div>
+                                                <Checkbox
+                                                    id={'products.create'}
+                                                    name={'products.create'}
+                                                    className="border-blue-600"
+                                                    value={'products.create'}
+                                                    checked={arrayPermisos.includes('products.create')}
+                                                    onCheckedChange={(e) => putInPermissionArray('products.create')}
+                                                ></Checkbox>
+                                                <Label>{t('ui.users.permissions.products.create')}</Label>
+                                            </div>
+
+                                            <div>
+                                                <Checkbox
+                                                    id={'products.edit'}
+                                                    name={'products.edit'}
+                                                    className="border-blue-600"
+                                                    value={'products.edit'}
+                                                    checked={arrayPermisos.includes('products.edit')}
+                                                    onCheckedChange={(e) => putInPermissionArray('products.edit')}
+                                                ></Checkbox>
+                                                <Label>{t('ui.users.permissions.products.edit')}</Label>
+                                            </div>
+
+                                            <div>
+                                                <Checkbox
+                                                    id={'products.delete'}
+                                                    name={'products.delete'}
+                                                    className="border-blue-600"
+                                                    value={'products.delete'}
+                                                    checked={arrayPermisos.includes('products.delete')}
+                                                    onCheckedChange={(e) => putInPermissionArray('products.delete')}
+                                                ></Checkbox>
+                                                <Label>{t('ui.users.permissions.products.delete')}</Label>
+                                            </div>
                                         </CardContent>
                                     </Card>
                                     <Card className="w-1/2 bg-gray-50">
@@ -486,57 +417,42 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
                                                 <FileText className="w-5" color="#155dfc"></FileText>
                                                 <p className="w-1/2">{t('ui.users.permissions.reports.title')}</p>
                                             </div>
-                                            <form.Field name="reports.view">
-                                                {(field) => (
-                                                    <>
-                                                        <div>
-                                                            <Checkbox
-                                                                id={field.name}
-                                                                name={field.name}
-                                                                className="border-blue-600"
-                                                                value={field.state.value}
-                                                                checked={arrayPermisos.includes(field.name)}
-                                                                onCheckedChange={e=>putInPermissionArray(field.name)}
-                                                            ></Checkbox>
-                                                            <Label>{t('ui.users.permissions.reports.view')}</Label>
-                                                        </div>
-                                                    </>
-                                                )}
-                                            </form.Field>
-                                            <form.Field name="reports.export">
-                                                {(field) => (
-                                                    <>
-                                                        <div>
-                                                            <Checkbox
-                                                                id={field.name}
-                                                                name={field.name}
-                                                                className="border-blue-600"
-                                                                value={field.state.value}
-                                                                checked={arrayPermisos.includes(field.name)}
-                                                                onCheckedChange={e=>putInPermissionArray(field.name)}
-                                                            ></Checkbox>
-                                                            <Label>{t('ui.users.permissions.reports.export')}</Label>
-                                                        </div>
-                                                    </>
-                                                )}
-                                            </form.Field>
-                                            <form.Field name="reports.print">
-                                                {(field) => (
-                                                    <>
-                                                        <div>
-                                                            <Checkbox
-                                                                id={field.name}
-                                                                name={field.name}
-                                                                className="border-blue-600"
-                                                                value={field.state.value}
-                                                                checked={arrayPermisos.includes(field.name)}
-                                                                onCheckedChange={e=>putInPermissionArray(field.name)}
-                                                            ></Checkbox>
-                                                            <Label>{t('ui.users.permissions.reports.print')}</Label>
-                                                        </div>
-                                                    </>
-                                                )}
-                                            </form.Field>
+
+                                            <div>
+                                                <Checkbox
+                                                    id={'reports.view'}
+                                                    name={'reports.view'}
+                                                    className="border-blue-600"
+                                                    value={'reports.view'}
+                                                    checked={arrayPermisos.includes('reports.view')}
+                                                    onCheckedChange={(e) => putInPermissionArray('reports.view')}
+                                                ></Checkbox>
+                                                <Label>{t('ui.users.permissions.reports.view')}</Label>
+                                            </div>
+
+                                            <div>
+                                                <Checkbox
+                                                    id={'reports.export'}
+                                                    name={'reports.export'}
+                                                    className="border-blue-600"
+                                                    value={'reports.export'}
+                                                    checked={arrayPermisos.includes('reports.export')}
+                                                    onCheckedChange={(e) => putInPermissionArray('reports.export')}
+                                                ></Checkbox>
+                                                <Label>{t('ui.users.permissions.reports.export')}</Label>
+                                            </div>
+
+                                            <div>
+                                                <Checkbox
+                                                    id={'reports.print'}
+                                                    name={'reports.print'}
+                                                    className="border-blue-600"
+                                                    value={'reports.print'}
+                                                    checked={arrayPermisos.includes('reports.print')}
+                                                    onCheckedChange={(e) => putInPermissionArray('reports.print')}
+                                                ></Checkbox>
+                                                <Label>{t('ui.users.permissions.reports.print')}</Label>
+                                            </div>
                                         </CardContent>
                                     </Card>
                                     <Card className="w-1/2 bg-gray-50">
@@ -545,50 +461,34 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
                                                 <Settings className="w-5" color="#155dfc"></Settings>
                                                 <p className="w-1/2">{t('ui.users.permissions.config.title')}</p>
                                             </div>
-                                            <form.Field name="config.access">
-                                                {(field) => (
-                                                    <>
-                                                        <div>
-                                                            <Checkbox
-                                                                id={field.name}
-                                                                name={field.name}
-                                                                className="border-blue-600"
-                                                                value={field.state.value}
-                                                                checked={arrayPermisos.includes(field.name)}
-                                                                onCheckedChange={e=>putInPermissionArray(field.name)}
-                                                            ></Checkbox>
-                                                            <Label>{t('ui.users.permissions.config.access')}</Label>
-                                                        </div>
-                                                    </>
-                                                )}
-                                            </form.Field>
-                                            <form.Field name="config.modify">
-                                                {(field) => (
-                                                    <>
-                                                        <div>
-                                                            <Checkbox
-                                                                id={field.name}
-                                                                name={field.name}
-                                                                className="border-blue-600"
-                                                                value={field.state.value}
-                                                                checked={arrayPermisos.includes(field.name)}
-                                                                onCheckedChange={e=>putInPermissionArray(field.name)}
-                                                            ></Checkbox>
-                                                            <Label>{t('ui.users.permissions.config.modify')}</Label>
-                                                        </div>
-                                                    </>
-                                                )}
-                                            </form.Field>
+
+                                            <div>
+                                                <Checkbox
+                                                    id={'config.access'}
+                                                    name={'config.access'}
+                                                    className="border-blue-600"
+                                                    value={'config.access'}
+                                                    checked={arrayPermisos.includes('config.access')}
+                                                    onCheckedChange={(e) => putInPermissionArray('config.access')}
+                                                ></Checkbox>
+                                                <Label>{t('ui.users.permissions.config.access')}</Label>
+                                            </div>
+
+                                            <div>
+                                                <Checkbox
+                                                    id={'config.modify'}
+                                                    name={'config.modify'}
+                                                    className="border-blue-600"
+                                                    value={'config.modify'}
+                                                    checked={arrayPermisos.includes('config.modify')}
+                                                    onCheckedChange={(e) => putInPermissionArray('config.modify')}
+                                                ></Checkbox>
+                                                <Label>{t('ui.users.permissions.config.modify')}</Label>
+                                            </div>
                                         </CardContent>
-                                        <Checkbox
-                                        onCheckedChange={handleChange}
-                                        ></Checkbox>
                                     </Card>
-
                                 </>
-
                             )}
-
                         </form.Field>
                     </div>
                 </div>
@@ -596,18 +496,14 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
         );
     }
 
-
-
     function ButtonInfo() {
         if (!formState) {
-
             return (
                 <Button type="button" className="mx-1 my-1 w-full bg-white text-black" onClick={changeStateInfo}>
                     {'Información básica'}
                 </Button>
             );
         } else {
-
             return (
                 <Button type="button" className="mx-1 my-1 w-full bg-gray-100 font-bold text-gray-400" onClick={changeStateInfo}>
                     {'Información básica'}
@@ -618,14 +514,12 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
 
     function ButtonRoles() {
         if (formState) {
-
             return (
                 <Button type="button" className="mx-1 my-1 w-full bg-white font-bold text-black" onClick={changeStateRoles}>
                     {'Roles y permisos'}
                 </Button>
             );
         } else {
-
             return (
                 <Button type="button" className="mx-1 my-1 w-full bg-gray-100 font-bold text-gray-400" onClick={changeStateRoles}>
                     {'Roles y permisos'}
@@ -656,14 +550,7 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
                             <ButtonRoles></ButtonRoles>
                         </div>
                     </CardTitle>
-                    <div>
-                        {!formState?(
-                        <UserFormData></UserFormData>
-                        ):(
-                        <UserFormPerms></UserFormPerms>
-                        )}
-                    </div>
-
+                    <div>{!formState ? <UserFormData></UserFormData> : <UserFormPerms></UserFormPerms>}</div>
 
                     {/* Form buttons */}
                     <CardFooter className="justify-center">
