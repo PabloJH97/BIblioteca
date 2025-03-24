@@ -8,7 +8,7 @@ import { router } from '@inertiajs/react';
 import type { AnyFieldApi } from '@tanstack/react-form';
 import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
-import { FileText, Lock, Mail, PackageOpen, Save, Settings, Shield, User, X, Eye } from 'lucide-react';
+import { FileText, Lock, Mail, PackageOpen, Save, Settings, Shield, User, X, Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import { Option, Select } from 'react-day-picker';
 import { toast } from 'sonner';
@@ -45,6 +45,7 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
 export function UserForm({ initialData, page, perPage, arrayPermissions, pageTitle }: UserFormProps) {
     const { t } = useTranslations();
     const queryClient = useQueryClient();
+    const [eyeState, setEyeState]=useState(false);
     const [passwordState, setPasswordState]=useState('password');
     const [arrayPermisosState, setArrayPermisosState] = useState(arrayPermisos);
     const [formState, setFormState] = useState(false);
@@ -83,8 +84,10 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
     function togglePassword(){
         if(passwordState=="password"){
             setPasswordState("text");
+            setEyeState(true);
         }else{
             setPasswordState("password");
+            setEyeState(false);
         }
     }
 
@@ -259,7 +262,7 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
                                         required={false}
                                         className='border-2 rounded-r-none border-r-0'
                                     />
-                                    <Button type='button' className='bg-white border-2 rounded-l-none border-l-0' onClick={e=>togglePassword()}><Eye color='black'></Eye></Button>
+                                    <Button type='button' className='bg-white border-2 rounded-l-none border-l-0' onClick={e=>togglePassword()}>{eyeState ? <Eye color='black'></Eye> : <EyeOff color='black'></EyeOff>}</Button>
                                 </div>
 
 
