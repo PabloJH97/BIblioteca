@@ -144,7 +144,7 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
 
     function UserFormData() {
         return (
-            <CardContent className={'h-full bg-white'}>
+            <CardContent className={'h-full bg-background'}>
                 <div>
                     <form.Field
                         name="name"
@@ -262,7 +262,7 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
                                         required={false}
                                         className='border-2 rounded-r-none border-r-0'
                                     />
-                                    <Button type='button' className='bg-white border-2 rounded-l-none border-l-0' onClick={e=>togglePassword()}>{eyeState ? <Eye color='black'></Eye> : <EyeOff color='black'></EyeOff>}</Button>
+                                    <Button type='button' className='bg-background border-2 rounded-l-none border-l-0' onClick={e=>togglePassword()}>{eyeState ? <Eye color='black'></Eye> : <EyeOff color='black'></EyeOff>}</Button>
                                 </div>
 
 
@@ -277,7 +277,7 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
 
     function UserFormPerms() {
         return (
-            <CardContent className={'h-full bg-white'}>
+            <CardContent className={'h-full bg-background'}>
                 <div>
                     <form.Field name="role">
                         {(field) => (
@@ -292,7 +292,7 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
                                     value={selectedRoleState}
                                     onChange={(e) => selectRole(e.target.value)}
                                 >
-                                    <Option value={'empty'}>{'Selecciona un rol'}</Option>
+                                    <Option value={'empty'}>{t('ui.users.role.select')}</Option>
                                     <Option value={'admin'}>{t('ui.users.role.admin')}</Option>
                                     <Option value={'client'}>{t('ui.users.role.client')}</Option>
                                 </Select>
@@ -316,7 +316,7 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
                         <form.Field name="permissions">
                             {(field) => (
                                 <>
-                                    <Card className="w-1/2 bg-gray-50">
+                                    <Card className="w-1/2 bg-background">
                                         <CardContent>
                                             <div className="flew flew-row">
                                                 <User className="w-5" color="#155dfc"></User>
@@ -372,7 +372,7 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
                                             </div>
                                         </CardContent>
                                     </Card>
-                                    <Card className="w-1/2 bg-gray-50">
+                                    <Card className="w-1/2 bg-background">
                                         <CardContent>
                                             <div className="flew flew-row">
                                                 <PackageOpen className="w-5" color="#155dfc"></PackageOpen>
@@ -428,7 +428,7 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
                                             </div>
                                         </CardContent>
                                     </Card>
-                                    <Card className="w-1/2 bg-gray-50">
+                                    <Card className="w-1/2 bg-background">
                                         <CardContent>
                                             <div className="flew flew-row">
                                                 <FileText className="w-5" color="#155dfc"></FileText>
@@ -472,7 +472,7 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
                                             </div>
                                         </CardContent>
                                     </Card>
-                                    <Card className="w-1/2 bg-gray-50">
+                                    <Card className="w-1/2 bg-background">
                                         <CardContent>
                                             <div className="flew flew-row">
                                                 <Settings className="w-5" color="#155dfc"></Settings>
@@ -516,13 +516,13 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
     function ButtonInfo() {
         if (!formState) {
             return (
-                <Button type="button" className="mx-1 my-1 w-full bg-white text-black" onClick={changeStateInfo}>
+                <Button type="button" className="mx-1 my-1 w-full bg-background text-black" onClick={changeStateInfo}>
                     {'Información básica'}
                 </Button>
             );
         } else {
             return (
-                <Button type="button" className="mx-1 my-1 w-full bg-gray-100 font-bold text-gray-400" onClick={changeStateInfo}>
+                <Button type="button" className="mx-1 my-1 w-full bg-background font-bold text-gray-400" onClick={changeStateInfo}>
                     {'Información básica'}
                 </Button>
             );
@@ -532,13 +532,13 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
     function ButtonRoles() {
         if (formState) {
             return (
-                <Button type="button" className="mx-1 my-1 w-full bg-white font-bold text-black" onClick={changeStateRoles}>
+                <Button type="button" className="mx-1 my-1 w-full bg-background font-bold text-black" onClick={changeStateRoles}>
                     {'Roles y permisos'}
                 </Button>
             );
         } else {
             return (
-                <Button type="button" className="mx-1 my-1 w-full bg-gray-100 font-bold text-gray-400" onClick={changeStateRoles}>
+                <Button type="button" className="mx-1 my-1 w-full bg-background font-bold text-gray-400" onClick={changeStateRoles}>
                     {'Roles y permisos'}
                 </Button>
             );
@@ -549,7 +549,7 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
         return (
             <form onSubmit={handleSubmit} className="space-y-4" noValidate>
                 {/* Name field */}
-                <Card className="bg-gray-50">
+                <Card className="bg-background">
                     <CardHeader>
                         <div className="flex flex-row">
                             <User color="#155dfc"></User>
@@ -561,8 +561,8 @@ export function UserForm({ initialData, page, perPage, arrayPermissions, pageTit
                             </p>
                         </div>
                     </CardHeader>
-                    <CardTitle className="border-t-1 border-b-1 bg-white">
-                        <div className="mx-5 mt-3 flex flex-row justify-center rounded-md border-1 bg-gray-100">
+                    <CardTitle className="border-t-1 border-b-1 bg-background">
+                        <div className="mx-5 mt-3 flex flex-row justify-center rounded-md border-1 bg-background">
                             <ButtonInfo></ButtonInfo>
                             <ButtonRoles></ButtonRoles>
                         </div>

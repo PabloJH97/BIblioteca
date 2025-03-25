@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('bookshelves', function (Blueprint $table) {
-            $table->uuid('id')->primary()->unique();
+            $table->uuid('id')->unique();
             $table->integer('number');
+            $table->integer('capacity');
+            $table->foreignUuid('zone_id')->constrained(table:'zones', indexName:'bookshelf_id_zone')->cascadeOnDelete();
+            $table->string('zone')->references('name')->on('zones');
+            $table->primary(['id', 'number', 'zone']);
             $table->timestamps();
         });
     }

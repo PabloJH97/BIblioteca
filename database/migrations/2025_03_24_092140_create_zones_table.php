@@ -12,11 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('zones', function (Blueprint $table) {
-            $table->uuid('id')->primary()->unique();
+            $table->uuid('id')->unique();
             $table->string('name');
             $table->foreignUuid('floor_id')->constrained(table:'floors', indexName:'zone_id_floor')->cascadeOnDelete();
             $table->string('floor')->references('name')->on('floors');
             $table->timestamps();
+            $table->primary(['id', 'name', 'floor']);
         });
     }
 

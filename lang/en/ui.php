@@ -160,5 +160,39 @@ return [
             'previous' => 'Previous',
             'next' => 'Next',
         ],
+        'role' => [
+            'main' => 'Main role',
+            'select' => 'Select a role',
+            'admin' => 'Admin',
+            'client' => 'Client',
+        ],
+        'permissions' => [
+            'title' => 'Specific permissions',
+            'users' => [
+                'title' => 'Users',
+                'view' => 'View users',
+                'create' => 'Create users',
+                'edit' => 'Edit users',
+                'delete' => 'Delete users'
+            ],
+            'products' => [
+                'title' => 'Products',
+                'view' => 'View products',
+                'create' => 'Create products',
+                'edit' => 'Edit products',
+                'delete' => 'Delete products'
+            ],
+            'reports' => [
+                'title' => 'Reports',
+                'view' => 'View reports',
+                'export' => 'Export reports',
+                'print' => 'Print reports'
+            ],
+            'config' => [
+                'title' => 'Configuration',
+                'access' => 'Access configuration',
+                'modify' => 'Modify configuration'
+            ]
+        ]
     ],
 ];
