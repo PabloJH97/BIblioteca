@@ -1,15 +1,13 @@
 <?php
 
-namespace Domain\Floors\Models;
+namespace Domain\Genres\Models;
 
-use Database\Factories\FloorFactory;
-use Domain\Zones\Models\Zone;
+use Database\Factories\GenreFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Floor extends Model
+class Genre extends Model
 {
     use HasFactory, HasUuids;
     /**
@@ -17,7 +15,7 @@ class Floor extends Model
      */
     protected static function newFactory()
     {
-        return FloorFactory::new();
+        return GenreFactory::new();
     }
 
     /**
@@ -30,9 +28,4 @@ class Floor extends Model
         'name'
 
     ];
-
-    public function zones(): HasMany
-    {
-        return $this->hasMany(Zone::class, 'user_id');
-    }
 }

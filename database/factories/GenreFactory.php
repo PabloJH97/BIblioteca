@@ -2,20 +2,20 @@
 
 namespace Database\Factories;
 
-use Domain\Floors\Models\Floor;
+use Domain\Genres\Models\Genre;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Model>
  */
-class FloorFactory extends Factory
+class GenreFactory extends Factory
 {
     /**
      * The model the factory corresponds to.
      *
      * @var string
      */
-    protected $model = Floor::class;
+    protected $model = Genre::class;
     /**
      * Define the model's default state.
      *
@@ -24,8 +24,7 @@ class FloorFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->unique()->randomElement($array=array('Primer piso', 'Segundo piso', 'Tercer piso')),
-
+            'name'=>fake()->unique()->randomElement($array=array('Literatura clásica', 'Medieval', 'Fantasía', 'Ciencia', 'Matemáticas', 'Ciencia ficción', 'Arte', 'Técnico', 'Cuento', 'Poema')),
         ];
     }
 }

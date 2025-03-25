@@ -3,9 +3,11 @@
 namespace Domain\Books\Models;
 
 use Database\Factories\BookFactory;
+use Domain\Bookshelves\Models\Bookshelf;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Book extends Model
 {
@@ -34,4 +36,9 @@ class Book extends Model
         'bookshelf_id',
         'bookshelf'
     ];
+
+    public function zones(): BelongsTo
+    {
+        return $this->belongsTo(Bookshelf::class, 'bookshelf_id');
+    }
 }

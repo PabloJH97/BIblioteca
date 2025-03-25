@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use Domain\Books\Models\Book;
 use Domain\Bookshelves\Models\Bookshelf;
+use Domain\Genres\Models\Genre;
 use Domain\Zones\Models\Zone;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -27,12 +28,15 @@ class BookFactory extends Factory
     {
         $zone=Zone::all()->random();
         $bookshelf=Bookshelf::all()->random();
+        $genres=Genre::all()->pluck('name')->toArray();
+
+
         return [
             'title'=>'',
             'author'=>'',
             'pages'=>fake()->numberBetween($min=10, $max=250),
             'editorial'=>'',
-            'genre'=>$zone->name,
+            'genre'=>implode(', ', fake()->randomElements($array=$genres, $count=fake()->numberBetween(1, 2))),
             'bookshelf_id'=>$bookshelf->id,
             'bookshelf'=>$bookshelf->number,
         ];

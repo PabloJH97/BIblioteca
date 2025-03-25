@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Zones\Controllers;
 
 use Illuminate\Http\Request;
+use App\Core\Controllers\Controller;
+use Inertia\Inertia;
 
 class ZoneController extends Controller
 {
@@ -11,7 +13,7 @@ class ZoneController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('zones/Index');
     }
 
     /**

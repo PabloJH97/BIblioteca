@@ -4,6 +4,7 @@ namespace App\Floors\Controllers;
 
 use Illuminate\Http\Request;
 use App\Core\Controllers\Controller;
+use Inertia\Inertia;
 
 class FloorController extends Controller
 {
@@ -12,7 +13,7 @@ class FloorController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('floors/Index');
     }
 
     /**

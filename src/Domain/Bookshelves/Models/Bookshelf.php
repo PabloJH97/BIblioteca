@@ -3,9 +3,13 @@
 namespace Domain\Bookshelves\Models;
 
 use Database\Factories\BookshelfFactory;
+use Domain\Books\Models\Book;
+use Domain\Zones\Models\Zone;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Bookshelf extends Model
 {
@@ -31,4 +35,14 @@ class Bookshelf extends Model
         'zone_id',
         'zone'
     ];
+
+    public function books(): HasMany
+    {
+        return $this->hasMany(Book::class, 'bookshelf_id');
+    }
+
+    public function zones(): BelongsTo
+    {
+        return $this->belongsTo(Zone::class, 'zone_id');
+    }
 }

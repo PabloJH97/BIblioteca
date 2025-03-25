@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Bookshelves\Controllers;
 
 use Illuminate\Http\Request;
+use App\Core\Controllers\Controller;
+use Inertia\Inertia;
 
 class BookshelfController extends Controller
 {
@@ -11,7 +13,7 @@ class BookshelfController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('bookshelves/Index');
     }
 
     /**

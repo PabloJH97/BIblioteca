@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Domain\Genres\Models\Genre;
 use Domain\Floors\Models\Floor;
 use Domain\Zones\Models\Zone;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -26,8 +27,9 @@ class ZoneFactory extends Factory
 
     {
         $floor=Floor::all()->random();
+        $genre=Genre::all()->random();
         return [
-            'name'=>fake()->randomElement($array=array('Literatura clásica', 'Medieval', 'Fantasía', 'Ciencia', 'Matemáticas', 'Ciencia ficción', 'Arte', 'Técnico', 'Cuento', 'Poema'), $count=1),
+            'name'=>$genre->name,
             'floor_id'=>$floor->id,
             'floor'=>$floor->name,
         ];
