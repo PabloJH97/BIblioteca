@@ -4,6 +4,7 @@ namespace App\Books\Controllers;
 
 use Illuminate\Http\Request;
 use App\Core\Controllers\Controller;
+use Domain\Books\Models\Book;
 use Domain\Genres\Models\Genre;
 use Inertia\Inertia;
 
@@ -14,6 +15,8 @@ class BookController extends Controller
      */
     public function index()
     {
+        $genres=Book::where('pages', 229)->get()[0]->genres;
+        dd($genres);
         return Inertia::render('books/Index');
     }
 

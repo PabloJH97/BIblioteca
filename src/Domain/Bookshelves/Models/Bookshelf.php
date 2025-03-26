@@ -38,11 +38,11 @@ class Bookshelf extends Model
 
     public function books(): HasMany
     {
-        return $this->hasMany(Book::class, 'bookshelf_id');
+        return $this->hasMany(Book::class);
     }
 
     public function zones(): BelongsTo
     {
-        return $this->belongsTo(Zone::class, 'zone_id');
+        return $this->belongsTo(Zone::class);
     }
 }

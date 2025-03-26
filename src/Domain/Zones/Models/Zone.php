@@ -5,11 +5,13 @@ namespace Domain\Zones\Models;
 use Database\Factories\ZoneFactory;
 use Domain\Bookshelves\Models\Bookshelf;
 use Domain\Floors\Models\Floor;
+use Domain\Genres\Models\Genre;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Zone extends Model
 {
@@ -30,18 +32,24 @@ class Zone extends Model
      */
     protected $fillable = [
         'id',
+        'genre_id',
         'name',
         'floor_id',
         'floor',
     ];
 
+    public function genre(): HasOne
+    {
+        return $this->hasOne(Genre::class);
+    }
+
     public function bookshelves(): HasMany
     {
-        return $this->hasMany(Bookshelf::class, 'user_id');
+        return $this->hasMany(Bookshelf::class);
     }
 
     public function floor(): BelongsTo
     {
-        return $this->belongsTo(Floor::class, 'floor_id');
+        return $this->belongsTo(Floor::class);
     }
 }

@@ -7,8 +7,13 @@ return [
         'items' => [
             'dashboard' => 'Panel',
             'users' => 'Usuarios',
+            'floors' => 'Pisos',
+            'zones' => 'Zonas',
+            'bookshelves' => 'Estanterías',
+            'books' => 'Libros',
             'repository' => 'Repositorio',
             'documentation' => 'Documentación',
+
         ],
     ],
     'user_menu' => [
@@ -195,5 +200,45 @@ return [
                 'modify' => 'Modificar configuración'
             ]
         ]
+    ],
+    'floors'=>[
+        'title'=>'Pisos',
+        'create' => 'Crear Piso',
+        'edit' => 'Editar Piso',
+        'fields' => [
+            'name' => 'Piso',
+            'actions' => 'Acciones',
+        ],
+        'placeholders' => [
+            'name' => 'Nombre del piso',
+        ],
+        'buttons' => [
+            'new' => 'Nuevo Piso',
+            'edit' => 'Editar',
+            'save' => 'Guardar',
+            'update' => 'Actualizar',
+            'cancel' => 'Cancelar',
+            'delete' => 'Eliminar',
+            'deleting' => 'Eliminando...',
+            'saving' => 'Guardando...',
+            'retry' => 'Reintentar',
+        ],
+        'delete' => [
+            'title' => '¿Estás seguro?',
+            'description' => 'Esta acción no se puede deshacer. Se eliminará permanentemente el piso del sistema.',
+        ],
+        'delete_dialog' => [
+            'title' => '¿Estás seguro?',
+            'description' => 'Esta acción no se puede deshacer. Se eliminará permanentemente el piso del sistema.',
+            'success' => 'Eliminado correctamente ;)',
+        ],
+        'deleted_error' => 'Error al eliminar el piso',
+        'no_results' => 'No hay resultados.',
+        'error_loading' => 'Error al cargar los pisos. Por favor, inténtalo de nuevo.',
+        'showing_results' => 'Mostrando :from a :to de :total resultados',
+        'pagination' => [
+            'previous' => 'Anterior',
+            'next' => 'Siguiente',
+        ],
     ],
 ];

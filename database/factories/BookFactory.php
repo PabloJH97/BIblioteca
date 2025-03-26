@@ -29,14 +29,14 @@ class BookFactory extends Factory
         $zone=Zone::all()->random();
         $bookshelf=Bookshelf::all()->random();
         $genres=Genre::all()->pluck('name')->toArray();
-
+        $genresArray=fake()->randomElements($array=$genres, $count=fake()->numberBetween(1, 2));
 
         return [
             'title'=>'',
             'author'=>'',
             'pages'=>fake()->numberBetween($min=10, $max=250),
             'editorial'=>'',
-            'genre'=>implode(', ', fake()->randomElements($array=$genres, $count=fake()->numberBetween(1, 2))),
+            'genre'=>implode(', ', $genresArray),
             'bookshelf_id'=>$bookshelf->id,
             'bookshelf'=>$bookshelf->number,
         ];

@@ -33,6 +33,6 @@ class Floor extends Model
 
     public function zones(): HasMany
     {
-        return $this->hasMany(Zone::class, 'user_id');
+        return $this->hasMany(Zone::class);
     }
 }
