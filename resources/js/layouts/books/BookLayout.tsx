@@ -14,11 +14,11 @@ interface PageProps {
   [key: string]: unknown;
 }
 
-interface FloorLayoutProps extends PropsWithChildren {
+interface BookLayoutProps extends PropsWithChildren {
   title: string;
 }
 
-export function FloorLayout({ title, children }: FloorLayoutProps) {
+export function BookLayout({ title, children }: BookLayoutProps) {
   const { flash } = usePage<PageProps>().props;
 
   useEffect(() => {
@@ -36,12 +36,12 @@ export function FloorLayout({ title, children }: FloorLayoutProps) {
       href: "/dashboard",
     },
     {
-      title: "Pisos",
-      href: "/floors",
+      title: "Libros",
+      href: "/books",
     },
   ];
 
-  if (title !== "Pisos") {
+  if (title !== "Libros") {
     breadcrumbs.push({
       title,
       href: "#",

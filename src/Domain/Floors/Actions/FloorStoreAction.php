@@ -10,10 +10,10 @@ class FloorStoreAction
 {
     public function __invoke(array $data): FloorResource
     {
-        $user = Floor::create([
+        $floor = Floor::create([
             'name' => $data['name'],
         ]);
 
-        return FloorResource::fromModel($user);
+        return FloorResource::fromModel($floor);
     }
 }

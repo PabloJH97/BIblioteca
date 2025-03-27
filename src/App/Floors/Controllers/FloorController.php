@@ -4,8 +4,10 @@ namespace App\Floors\Controllers;
 
 use Illuminate\Http\Request;
 use App\Core\Controllers\Controller;
+use Domain\Floors\Actions\FloorDestroyAction;
 use Domain\Floors\Models\Floor;
 use Domain\Floors\Actions\FloorStoreAction;
+use Domain\Floors\Actions\FloorUpdateAction;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
@@ -66,16 +68,39 @@ class FloorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Floor $floor, FloorUpdateAction $action)
     {
-        //
-    }
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255'],
+        ]);
 
+        if ($validator->fails()) {
+            return back()->withErrors($validator);
+        }
+
+        $action($floor, $validator->validated());
+
+        $redirectUrl = route('floors.index');
+
+        // Añadir parámetros de página a la redirección si existen
+        if ($request->has('page')) {
+            $redirectUrl .= "?page=" . $request->query('page');
+            if ($request->has('perPage')) {
+                $redirectUrl .= "&per_page=" . $request->query('perPage');
+            }
+        }
+
+        return redirect($redirectUrl)
+            ->with('success', __('messages.floors.updated'));
+    }
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Floor $floor, FloorDestroyAction $action)
     {
-        //
+        $action($floor);
+
+        return redirect()->route('floors.index')
+            ->with('success', __('messages.floors.deleted'));
     }
 }

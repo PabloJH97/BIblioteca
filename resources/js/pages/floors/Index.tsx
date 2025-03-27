@@ -15,14 +15,10 @@ import { FiltersTable, FilterConfig } from "@/components/stack-table/FiltersTabl
 import { toast } from "sonner";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { FloorLayout } from "@/layouts/floors/FloorLayout";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { FloorForm } from "./components/FloorForm";
+import { Floor, useDeleteFloor, useFloors } from "@/hooks/floors/useFloors";
 
-interface IndexFloorProps{
-    data: any[];
-}
 
-export default function FloorsIndex({data}:IndexFloorProps ){
+export default function FloorsIndex() {
   const { t } = useTranslations();
   const { url } = usePage();
 
@@ -39,15 +35,14 @@ export default function FloorsIndex({data}:IndexFloorProps ){
   const combinedSearch = [
     filters.search,
     filters.name ? `name:${filters.name}` : null,
-    filters.email ? `email:${filters.email}` : null
   ].filter(Boolean).join(' ');
 
-  const { data: users, isLoading, isError, refetch } = useUsers({
+  const { data: floors, isLoading, isError, refetch } = useFloors({
     search: combinedSearch,
     page: currentPage,
     perPage: perPage,
   });
-  const deleteUserMutation = useDeleteUser();
+  const deleteFloorMutation = useDeleteFloor();
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -58,49 +53,44 @@ export default function FloorsIndex({data}:IndexFloorProps ){
     setCurrentPage(1); // Reset to first page when changing items per page
   };
 
-  const handleDeleteUser = async (id: string) => {
+  const handleDeleteFloor = async (id: string) => {
     try {
-      await deleteUserMutation.mutateAsync(id);
+      await deleteFloorMutation.mutateAsync(id);
       refetch();
     } catch (error) {
-      toast.error(t("ui.users.deleted_error") || "Error deleting user");
-      console.error("Error deleting user:", error);
+      toast.error(t("ui.floors.deleted_error") || "Error deleting floor");
+      console.error("Error deleting floor:", error);
     }
   };
 
   const columns = useMemo(() => ([
-    createTextColumn<User>({
+    createTextColumn<Floor>({
       id: "name",
-      header: t("ui.users.columns.name") || "Name",
+      header: t("ui.floors.columns.name") || "Name",
       accessorKey: "name",
     }),
-    createTextColumn<User>({
-      id: "email",
-      header: t("ui.users.columns.email") || "Email",
-      accessorKey: "email",
-    }),
-    createDateColumn<User>({
+    createDateColumn<Floor>({
       id: "created_at",
-      header: t("ui.users.columns.created_at") || "Created At",
+      header: t("ui.floors.columns.created_at") || "Created At",
       accessorKey: "created_at",
     }),
-    createActionsColumn<User>({
+    createActionsColumn<Floor>({
       id: "actions",
-      header: t("ui.users.columns.actions") || "Actions",
-      renderActions: (user) => (
+      header: t("ui.floors.columns.actions") || "Actions",
+      renderActions: (floor) => (
         <>
-          <Link href={`/users/${user.id}/edit?page=${currentPage}&perPage=${perPage}`}>
-            <Button variant="outline" size="icon" title={t("ui.users.buttons.edit") || "Edit user"}>
+          <Link href={`/floors/${floor.id}/edit?page=${currentPage}&perPage=${perPage}`}>
+            <Button variant="outline" size="icon" title={t("ui.floors.buttons.edit") || "Edit floor"}>
               <PencilIcon className="h-4 w-4" />
             </Button>
           </Link>
           <DeleteDialog
-            id={user.id}
-            onDelete={handleDeleteUser}
-            title={t("ui.users.delete.title") || "Delete user"}
-            description={t("ui.users.delete.description") || "Are you sure you want to delete this user? This action cannot be undone."}
+            id={floor.id}
+            onDelete={handleDeleteFloor}
+            title={t("ui.floors.delete.title") || "Delete floor"}
+            description={t("ui.floors.delete.description") || "Are you sure you want to delete this floor? This action cannot be undone."}
             trigger={
-              <Button variant="outline" size="icon" className="text-destructive hover:text-destructive" title={t("ui.users.buttons.delete") || "Delete user"}>
+              <Button variant="outline" size="icon" className="text-destructive hover:text-destructive" title={t("ui.floors.buttons.delete") || "Delete floor"}>
                 <TrashIcon className="h-4 w-4" />
               </Button>
             }
@@ -108,43 +98,84 @@ export default function FloorsIndex({data}:IndexFloorProps ){
         </>
       ),
     }),
-  ] as ColumnDef<User>[]), [t, handleDeleteUser]);
-
-
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-};
-
-  function CreateFloorDialogue(){
-    return(
-        <Dialog>
-            <DialogTitle className="text-3xl font-bold">
-                {t('ui.floors.title')}
-            </DialogTitle>
-            <DialogTrigger className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive">
-                <PlusIcon className="mr-2 h-4 w-4" />
-                {t('ui.floors.buttons.new')}
-            </DialogTrigger>
-            <DialogContent>
-                <FloorForm></FloorForm>
-            </DialogContent>
-        </Dialog>
-    )
-
-  }
+  ] as ColumnDef<Floor>[]), [t, handleDeleteFloor]);
 
   return (
-    <FloorLayout title={t('ui.floors.title')} data={data}>
-        <div className="p-6">
+      <FloorLayout title={t('ui.floors.title')}>
+          <div className="p-6">
               <div className="space-y-6">
-                    <div className="flex items-center justify-between">
-                      <CreateFloorDialogue></CreateFloorDialogue>
+                  <div className="flex items-center justify-between">
+                      <h1 className="text-3xl font-bold">{t('ui.floors.title')}</h1>
+                      <Link href="/floors/create">
+                          <Button>
+                              <PlusIcon className="mr-2 h-4 w-4" />
+                              {t('ui.floors.buttons.new')}
+                          </Button>
+                      </Link>
                   </div>
-            </div>
-        </div>
-    </FloorLayout>
+                  <div></div>
+
+                  <div className="space-y-4">
+                      <FiltersTable
+                          filters={
+                              [
+                                  {
+                                      id: 'search',
+                                      label: t('ui.floors.filters.search') || 'Buscar',
+                                      type: 'text',
+                                      placeholder: t('ui.floors.placeholders.search') || 'Buscar...',
+                                  },
+                                  {
+                                      id: 'name',
+                                      label: t('ui.floors.filters.name') || 'Nombre',
+                                      type: 'text',
+                                      placeholder: t('ui.floors.placeholders.name') || 'Nombre...',
+                                  },
+
+                              ] as FilterConfig[]
+                          }
+                          onFilterChange={setFilters}
+                          initialValues={filters}
+                      />
+                  </div>
+
+                  <div className="w-full overflow-hidden">
+                      {isLoading ? (
+                          <TableSkeleton columns={4} rows={10} />
+                      ) : isError ? (
+                          <div className="p-4 text-center">
+                              <div className="mb-4 text-red-500">{t('ui.floors.error_loading')}</div>
+                              <Button onClick={() => refetch()} variant="outline">
+                                  {t('ui.floors.buttons.retry')}
+                              </Button>
+                          </div>
+                      ) : (
+                          <div>
+                              <Table
+                                  data={
+                                      floors ?? {
+                                          data: [],
+                                          meta: {
+                                              current_page: 1,
+                                              from: 0,
+                                              last_page: 1,
+                                              per_page: perPage,
+                                              to: 0,
+                                              total: 0,
+                                          },
+                                      }
+                                  }
+                                  columns={columns}
+                                  onPageChange={handlePageChange}
+                                  onPerPageChange={handlePerPageChange}
+                                  perPageOptions={[10, 25, 50, 100]}
+                                  noResultsMessage={t('ui.floors.no_results') || 'No floors found'}
+                              />
+                          </div>
+                      )}
+                  </div>
+              </div>
+          </div>
+      </FloorLayout>
   );
 }

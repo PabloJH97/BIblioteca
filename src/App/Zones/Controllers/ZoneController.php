@@ -4,6 +4,11 @@ namespace App\Zones\Controllers;
 
 use Illuminate\Http\Request;
 use App\Core\Controllers\Controller;
+use Domain\Zones\Actions\ZoneDestroyAction;
+use Domain\Zones\Actions\ZoneStoreAction;
+use Domain\Zones\Actions\ZoneUpdateAction;
+use Domain\Zones\Models\Zone;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class ZoneController extends Controller
@@ -27,9 +32,24 @@ class ZoneController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, ZoneStoreAction $action)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'genre_id' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+            'floor_id' => ['required', 'string', 'max:255'],
+            'floor' => ['required', 'string', 'max:255'],
+
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator);
+        }
+
+        $action($validator->validated());
+
+        return redirect()->route('zones.index')
+            ->with('success', __('messages.zones.created'));
     }
 
     /**
@@ -51,16 +71,43 @@ class ZoneController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Zone $zone, ZoneUpdateAction $action)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'genre_id' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+            'floor_id' => ['required', 'string', 'max:255'],
+            'floor' => ['required', 'string', 'max:255'],
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator);
+        }
+
+        $action($zone, $validator->validated());
+
+        $redirectUrl = route('zones.index');
+
+        // Añadir parámetros de página a la redirección si existen
+        if ($request->has('page')) {
+            $redirectUrl .= "?page=" . $request->query('page');
+            if ($request->has('perPage')) {
+                $redirectUrl .= "&per_page=" . $request->query('perPage');
+            }
+        }
+
+        return redirect($redirectUrl)
+            ->with('success', __('messages.zones.updated'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Zone $zone, ZoneDestroyAction $action)
     {
-        //
+        $action($zone);
+
+        return redirect()->route('zones.index')
+            ->with('success', __('messages.zones.deleted'));
     }
 }

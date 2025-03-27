@@ -18,10 +18,9 @@ class BookGenreSeeder extends Seeder
         foreach($books as $book){
             $genres=explode(', ',$book->genre);
             foreach($genres as $genre){
-                $genreToSync=Genre::where('name', $genre)->get()[0];
+                $genreToSync=Genre::where('name', $genre)->first();
                 $book->genres()->sync($genreToSync);
             }
-
         }
     }
 }
