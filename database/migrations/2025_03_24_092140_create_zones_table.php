@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignUuid('floor_id')->constrained(table:'floors', indexName:'zone_id_floor')->cascadeOnDelete();
             $table->string('floor')->references('name')->on('floors');
             $table->timestamps();
-            $table->primary(['id', 'name', 'floor']);
+            $table->primary(['name', 'floor']);
         });
     }
 

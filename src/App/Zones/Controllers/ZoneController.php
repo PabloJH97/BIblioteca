@@ -4,6 +4,8 @@ namespace App\Zones\Controllers;
 
 use Illuminate\Http\Request;
 use App\Core\Controllers\Controller;
+use Domain\Floors\Models\Floor;
+use Domain\Genres\Models\Genre;
 use Domain\Zones\Actions\ZoneDestroyAction;
 use Domain\Zones\Actions\ZoneStoreAction;
 use Domain\Zones\Actions\ZoneUpdateAction;
@@ -26,7 +28,10 @@ class ZoneController extends Controller
      */
     public function create()
     {
-        //
+        $genres=Genre::all();
+        $floors=Floor::all();
+
+        return Inertia::render('zones/Create', ['genreArray'=> $genres, 'floorArray' => $floors]);
     }
 
     /**
@@ -63,9 +68,17 @@ class ZoneController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, Zone $zone)
     {
-        //
+        $genres=Genre::all();
+        $floors=Floor::all();
+        return Inertia::render('zones/Edit', [
+            'zone' => $zone,
+            'page' => $request->query('page'),
+            'perPage' => $request->query('perPage'),
+            'genreArray'=> $genres,
+            'floorArray' => $floors
+        ]);
     }
 
     /**

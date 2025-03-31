@@ -27,7 +27,7 @@ class FloorController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('floors/Create');
     }
 
     /**
@@ -60,9 +60,13 @@ class FloorController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, Floor $floor)
     {
-        //
+        return Inertia::render('floors/Edit', [
+            'floor' => $floor,
+            'page' => $request->query('page'),
+            'perPage' => $request->query('perPage'),
+        ]);
     }
 
     /**

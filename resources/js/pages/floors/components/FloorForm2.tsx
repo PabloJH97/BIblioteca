@@ -8,12 +8,12 @@ import { router } from '@inertiajs/react';
 import type { AnyFieldApi } from '@tanstack/react-form';
 import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
-import { FileText, Lock, Mail, PackageOpen, Save, Settings, Shield, SquareMenu, X, Eye, EyeOff } from 'lucide-react';
+import { FileText, Lock, Mail, PackageOpen, Save, Settings, Shield, User, X, Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import { Option, Select } from 'react-day-picker';
 import { toast } from 'sonner';
 
-interface FloorFormProps {
+interface UserFormProps {
     initialData?: {
         id: string;
         name: string;
@@ -36,7 +36,7 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
     );
 }
 
-export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormProps) {
+export function FloorForm2({ initialData, page, perPage, pageTitle }: UserFormProps) {
     const { t } = useTranslations();
     const queryClient = useQueryClient();
 
@@ -63,7 +63,7 @@ export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormPr
                 },
                 onError: (errors: Record<string, string>) => {
                     if (Object.keys(errors).length === 0) {
-                        toast.error(initialData ? t('messages.floors.error.update') : t('messages.floors.error.create'));
+                        toast.error(initialData ? t('messages.users.error.update') : t('messages.users.error.create'));
                     }
                 },
             };
@@ -104,7 +104,7 @@ export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormPr
                         {(field) => (
                             <>
                                 <div className="flex flex-row items-center">
-                                    <SquareMenu className="w-5"></SquareMenu>
+
                                     <Label htmlFor={field.name}>{t('ui.floors.fields.name')}</Label>
                                 </div>
 
@@ -129,18 +129,13 @@ export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormPr
         );
     }
 
-
-
     function FloorFormView() {
         return (
             <form onSubmit={handleSubmit} className="space-y-4" noValidate>
                 {/* Name field */}
                 <Card className="bg-background">
                     <CardHeader>
-                        <div className="flex flex-row">
-                            <SquareMenu color="#155dfc"></SquareMenu>
-                            <h1 className="font-bold">{pageTitle}</h1>
-                        </div>
+
                         <div>
                             <p className="font-sans text-sm font-bold text-gray-400">
                                 {'Ingresa la información para crear un nuevo piso en el sistema'}
@@ -148,7 +143,7 @@ export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormPr
                         </div>
                     </CardHeader>
 
-                    <div><FloorFormData></FloorFormData></div>
+                    <FloorFormData></FloorFormData>
 
                     {/* Form buttons */}
                     <CardFooter className="justify-center">

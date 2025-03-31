@@ -26,7 +26,7 @@ class BookshelfController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('bookshelves/Create');
     }
 
     /**
@@ -63,9 +63,13 @@ class BookshelfController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, Bookshelf $bookshelf)
     {
-        //
+        return Inertia::render('bookshelves/Edit', [
+            'bookshelf' => $bookshelf,
+            'page' => $request->query('page'),
+            'perPage' => $request->query('perPage'),
+        ]);
     }
 
     /**
@@ -74,11 +78,12 @@ class BookshelfController extends Controller
     public function update(Request $request, Bookshelf $bookshelf, BookshelfUpdateAction $action)
     {
         $validator = Validator::make($request->all(), [
-            'number' => ['required', 'int', 'max:255'],
-            'capacity' => ['required', 'int', 'max:255'],
+            'number' => ['required', 'numeric'],
+            'capacity' => ['required', 'numeric'],
             'zone_id' => ['required', 'string', 'max:255'],
             'zone' => ['required', 'string', 'max:255'],
         ]);
+        dd($validator);
 
         if ($validator->fails()) {
             return back()->withErrors($validator);

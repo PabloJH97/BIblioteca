@@ -27,7 +27,7 @@ class BookController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('books/Create');
     }
 
     /**
@@ -67,9 +67,13 @@ class BookController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, Book $book)
     {
-        //
+        return Inertia::render('books/Edit', [
+            'book' => $book,
+            'page' => $request->query('page'),
+            'perPage' => $request->query('perPage'),
+        ]);
     }
 
     /**

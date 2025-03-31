@@ -8,19 +8,25 @@ import { router } from '@inertiajs/react';
 import type { AnyFieldApi } from '@tanstack/react-form';
 import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
-import { FileText, Lock, Mail, PackageOpen, Save, Settings, Shield, SquareMenu, X, Eye, EyeOff } from 'lucide-react';
+import { FileText, Lock, Mail, PackageOpen, Save, Settings, Shield, Circle, X, Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import { Option, Select } from 'react-day-picker';
 import { toast } from 'sonner';
 
-interface FloorFormProps {
+interface ZoneFormProps {
     initialData?: {
         id: string;
+        genre_id:string;
         name: string;
+        floor_id:string;
+        floor: string;
+
     };
     page?: string;
     perPage?: string;
     pageTitle?: string;
+    genreArray: any[];
+    floorArray: any[];
 }
 
 
@@ -36,22 +42,41 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
     );
 }
 
-export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormProps) {
+export function ZoneForm({ initialData, page, perPage, pageTitle, genreArray, floorArray }: ZoneFormProps) {
     const { t } = useTranslations();
     const queryClient = useQueryClient();
+    function changeGenreId(value: string){
+        genreArray.map(genre=>{
+            if(genre.name==value){
+                form.setFieldValue('genre_id', genre.id)
+            }
+        })
+    }
+
+    function changeFloorId(value: string){
+        floorArray.map(genre=>{
+            if(genre.name==value){
+                form.setFieldValue('floor_id', genre.id)
+            }
+        })
+    }
 
     // TanStack Form setup
     const form = useForm({
         defaultValues: {
+            genre_id: '',
             name: initialData?.name ?? '',
+            floor_id: '',
+            floor: initialData?.floor ?? '',
+
         },
         onSubmit: async ({ value }) => {
             const options = {
                 onSuccess: () => {
-                    queryClient.invalidateQueries({ queryKey: ['floors'] });
+                    queryClient.invalidateQueries({ queryKey: ['zones'] });
 
                     // Construct URL with page parameters
-                    let url = '/floors';
+                    let url = '/zones';
                     if (page) {
                         url += `?page=${page}`;
                         if (perPage) {
@@ -63,16 +88,16 @@ export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormPr
                 },
                 onError: (errors: Record<string, string>) => {
                     if (Object.keys(errors).length === 0) {
-                        toast.error(initialData ? t('messages.floors.error.update') : t('messages.floors.error.create'));
+                        toast.error(initialData ? t('messages.zones.error.update') : t('messages.zones.error.create'));
                     }
                 },
             };
 
             // Submit with Inertia
             if (initialData) {
-                router.put(`/floors/${initialData.id}`, value, options);
+                router.put(`/zones/${initialData.id}`, value, options);
             } else {
-                router.post('/floors', value, options);
+                router.post('/zones', value, options);
             }
         },
     });
@@ -84,41 +109,50 @@ export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormPr
         form.handleSubmit();
     };
 
-    function FloorFormData() {
+    function ZoneFormData() {
+        const genreList = genreArray.map(genre=>
+            <Option value={genre.name}>{genre.name}</Option>
+        )
+        const floorList = floorArray.map(floor=>
+            <Option value={floor.name}>{floor.name}</Option>
+        )
         return (
             <CardContent className={'h-full bg-background'}>
                 <div>
                     <form.Field
                         name="name"
-                        validators={{
-                            onChangeAsync: async ({ value }) => {
-                                await new Promise((resolve) => setTimeout(resolve, 500));
-                                return !value
-                                    ? t('ui.validation.required', { attribute: t('ui.floors.fields.name').toLowerCase() })
-                                    : value.length < 2
-                                      ? t('ui.validation.min.string', { attribute: t('ui.floors.fields.name').toLowerCase(), min: '2' })
-                                      : undefined;
-                            },
-                        }}
+
                     >
                         {(field) => (
                             <>
                                 <div className="flex flex-row items-center">
-                                    <SquareMenu className="w-5"></SquareMenu>
-                                    <Label htmlFor={field.name}>{t('ui.floors.fields.name')}</Label>
+                                    <Circle className="w-5"></Circle>
+                                    <Label htmlFor={field.name}>{t('ui.zones.fields.name')}</Label>
                                 </div>
 
-                                <Input
-                                    id={field.name}
-                                    name={field.name}
-                                    value={field.state.value}
-                                    onChange={(e) => field.handleChange(e.target.value)}
-                                    onBlur={field.handleBlur}
-                                    placeholder={t('ui.floors.placeholders.name')}
-                                    disabled={form.state.isSubmitting}
-                                    required={false}
-                                    autoComplete="off"
-                                />
+                                <Select onChange={(e)=> {field.handleChange(e.target.value), changeGenreId(e.target.value)}}>
+                                    <Option value={''}>{'Seleccione un género'}</Option>
+                                    {genreList}
+                                </Select>
+                                <FieldInfo field={field} />
+                            </>
+                        )}
+                    </form.Field>
+                    <form.Field
+                        name="floor"
+
+                    >
+                        {(field) => (
+                            <>
+                                <div className="flex flex-row items-center">
+                                    <Circle className="w-5"></Circle>
+                                    <Label htmlFor={field.name}>{t('ui.zones.fields.name')}</Label>
+                                </div>
+
+                                <Select onChange={(e)=> {field.handleChange(e.target.value), changeFloorId(e.target.value)}}>
+                                    <Option value={''}>{'Seleccione un piso'}</Option>
+                                    {floorList}
+                                </Select>
                                 <FieldInfo field={field} />
                             </>
                         )}
@@ -131,24 +165,25 @@ export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormPr
 
 
 
-    function FloorFormView() {
+    function ZoneFormView() {
+
         return (
             <form onSubmit={handleSubmit} className="space-y-4" noValidate>
                 {/* Name field */}
                 <Card className="bg-background">
                     <CardHeader>
                         <div className="flex flex-row">
-                            <SquareMenu color="#155dfc"></SquareMenu>
+                            <Circle color="#155dfc"></Circle>
                             <h1 className="font-bold">{pageTitle}</h1>
                         </div>
                         <div>
                             <p className="font-sans text-sm font-bold text-gray-400">
-                                {'Ingresa la información para crear un nuevo piso en el sistema'}
+                                {'Ingresa la información para crear una nueva zona en el sistema'}
                             </p>
                         </div>
                     </CardHeader>
 
-                    <div><FloorFormData></FloorFormData></div>
+                    <div><ZoneFormData></ZoneFormData></div>
 
                     {/* Form buttons */}
                     <CardFooter className="justify-center">
@@ -157,7 +192,7 @@ export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormPr
                                 type="button"
                                 variant="outline"
                                 onClick={() => {
-                                    let url = '/floors';
+                                    let url = '/zones';
                                     if (page) {
                                         url += `?page=${page}`;
                                         if (perPage) {
@@ -169,7 +204,7 @@ export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormPr
                                 disabled={form.state.isSubmitting}
                             >
                                 <X></X>
-                                {t('ui.floors.buttons.cancel')}
+                                {t('ui.zones.buttons.cancel')}
                             </Button>
 
                             <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
@@ -177,10 +212,10 @@ export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormPr
                                     <Button type="submit" disabled={!canSubmit} className="bg-blue-400">
                                         <Save></Save>
                                         {isSubmitting
-                                            ? t('ui.floors.buttons.saving')
+                                            ? t('ui.zones.buttons.saving')
                                             : initialData
-                                              ? t('ui.floors.buttons.update')
-                                              : t('ui.floors.buttons.save')}
+                                              ? t('ui.zones.buttons.update')
+                                              : t('ui.zones.buttons.save')}
                                     </Button>
                                 )}
                             </form.Subscribe>
@@ -191,5 +226,5 @@ export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormPr
         );
     }
 
-    return <FloorFormView></FloorFormView>;
+    return <ZoneFormView></ZoneFormView>;
 }

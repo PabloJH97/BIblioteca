@@ -8,15 +8,15 @@ import { router } from '@inertiajs/react';
 import type { AnyFieldApi } from '@tanstack/react-form';
 import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
-import { FileText, Lock, Mail, PackageOpen, Save, Settings, Shield, SquareMenu, X, Eye, EyeOff } from 'lucide-react';
+import { FileText, Lock, Mail, PackageOpen, Save, Settings, Shield, Circle, X, Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import { Option, Select } from 'react-day-picker';
 import { toast } from 'sonner';
 
-interface FloorFormProps {
+interface BookshelfFormProps {
     initialData?: {
         id: string;
-        name: string;
+        number: number;
     };
     page?: string;
     perPage?: string;
@@ -36,22 +36,22 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
     );
 }
 
-export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormProps) {
+export function BookshelfForm({ initialData, page, perPage, pageTitle }: BookshelfFormProps) {
     const { t } = useTranslations();
     const queryClient = useQueryClient();
 
     // TanStack Form setup
     const form = useForm({
         defaultValues: {
-            name: initialData?.name ?? '',
+            number: initialData?.number,
         },
         onSubmit: async ({ value }) => {
             const options = {
                 onSuccess: () => {
-                    queryClient.invalidateQueries({ queryKey: ['floors'] });
+                    queryClient.invalidateQueries({ queryKey: ['bookshelves'] });
 
                     // Construct URL with page parameters
-                    let url = '/floors';
+                    let url = '/bookshelves';
                     if (page) {
                         url += `?page=${page}`;
                         if (perPage) {
@@ -63,16 +63,16 @@ export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormPr
                 },
                 onError: (errors: Record<string, string>) => {
                     if (Object.keys(errors).length === 0) {
-                        toast.error(initialData ? t('messages.floors.error.update') : t('messages.floors.error.create'));
+                        toast.error(initialData ? t('messages.bookshelves.error.update') : t('messages.bookshelves.error.create'));
                     }
                 },
             };
 
             // Submit with Inertia
             if (initialData) {
-                router.put(`/floors/${initialData.id}`, value, options);
+                router.put(`/bookshelves/${initialData.id}`, value, options);
             } else {
-                router.post('/floors', value, options);
+                router.post('/bookshelves', value, options);
             }
         },
     });
@@ -84,19 +84,19 @@ export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormPr
         form.handleSubmit();
     };
 
-    function FloorFormData() {
+    function BookshelfFormData() {
         return (
             <CardContent className={'h-full bg-background'}>
                 <div>
                     <form.Field
-                        name="name"
+                        name="number"
                         validators={{
                             onChangeAsync: async ({ value }) => {
                                 await new Promise((resolve) => setTimeout(resolve, 500));
                                 return !value
-                                    ? t('ui.validation.required', { attribute: t('ui.floors.fields.name').toLowerCase() })
-                                    : value.length < 2
-                                      ? t('ui.validation.min.string', { attribute: t('ui.floors.fields.name').toLowerCase(), min: '2' })
+                                    ? t('ui.validation.required', { attribute: t('ui.bookshelves.fields.name').toLowerCase() })
+                                    : value < 2
+                                      ? t('ui.validation.min.string', { attribute: t('ui.bookshelves.fields.name').toLowerCase(), min: '2' })
                                       : undefined;
                             },
                         }}
@@ -104,17 +104,18 @@ export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormPr
                         {(field) => (
                             <>
                                 <div className="flex flex-row items-center">
-                                    <SquareMenu className="w-5"></SquareMenu>
-                                    <Label htmlFor={field.name}>{t('ui.floors.fields.name')}</Label>
+                                    <Circle className="w-5"></Circle>
+                                    <Label htmlFor={field.name}>{t('ui.bookshelves.fields.name')}</Label>
                                 </div>
 
                                 <Input
                                     id={field.name}
+                                    type='number'
                                     name={field.name}
                                     value={field.state.value}
-                                    onChange={(e) => field.handleChange(e.target.value)}
+                                    onChange={(e) => field.handleChange(parseInt(e.target.value))}
                                     onBlur={field.handleBlur}
-                                    placeholder={t('ui.floors.placeholders.name')}
+                                    placeholder={t('ui.bookshelves.placeholders.name')}
                                     disabled={form.state.isSubmitting}
                                     required={false}
                                     autoComplete="off"
@@ -131,24 +132,24 @@ export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormPr
 
 
 
-    function FloorFormView() {
+    function BookshelfFormView() {
         return (
             <form onSubmit={handleSubmit} className="space-y-4" noValidate>
                 {/* Name field */}
                 <Card className="bg-background">
                     <CardHeader>
                         <div className="flex flex-row">
-                            <SquareMenu color="#155dfc"></SquareMenu>
+                            <Circle color="#155dfc"></Circle>
                             <h1 className="font-bold">{pageTitle}</h1>
                         </div>
                         <div>
                             <p className="font-sans text-sm font-bold text-gray-400">
-                                {'Ingresa la información para crear un nuevo piso en el sistema'}
+                                {'Ingresa la información para crear una nueva estantería en el sistema'}
                             </p>
                         </div>
                     </CardHeader>
 
-                    <div><FloorFormData></FloorFormData></div>
+                    <div><BookshelfFormData></BookshelfFormData></div>
 
                     {/* Form buttons */}
                     <CardFooter className="justify-center">
@@ -157,7 +158,7 @@ export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormPr
                                 type="button"
                                 variant="outline"
                                 onClick={() => {
-                                    let url = '/floors';
+                                    let url = '/bookshelves';
                                     if (page) {
                                         url += `?page=${page}`;
                                         if (perPage) {
@@ -169,7 +170,7 @@ export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormPr
                                 disabled={form.state.isSubmitting}
                             >
                                 <X></X>
-                                {t('ui.floors.buttons.cancel')}
+                                {t('ui.bookshelves.buttons.cancel')}
                             </Button>
 
                             <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
@@ -177,10 +178,10 @@ export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormPr
                                     <Button type="submit" disabled={!canSubmit} className="bg-blue-400">
                                         <Save></Save>
                                         {isSubmitting
-                                            ? t('ui.floors.buttons.saving')
+                                            ? t('ui.bookshelves.buttons.saving')
                                             : initialData
-                                              ? t('ui.floors.buttons.update')
-                                              : t('ui.floors.buttons.save')}
+                                              ? t('ui.bookshelves.buttons.update')
+                                              : t('ui.bookshelves.buttons.save')}
                                     </Button>
                                 )}
                             </form.Subscribe>
@@ -191,5 +192,5 @@ export function FloorForm({ initialData, page, perPage, pageTitle }: FloorFormPr
         );
     }
 
-    return <FloorFormView></FloorFormView>;
+    return <BookshelfFormView></BookshelfFormView>;
 }
