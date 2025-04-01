@@ -17,10 +17,15 @@ interface BookshelfFormProps {
     initialData?: {
         id: string;
         number: number;
+        capacity: number;
+        zone_id: string;
     };
     page?: string;
     perPage?: string;
     pageTitle?: string;
+    arrayZones: any[];
+    arrayFloors: any[];
+    selectedFloor?:string;
 }
 
 
@@ -36,14 +41,29 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
     );
 }
 
-export function BookshelfForm({ initialData, page, perPage, pageTitle }: BookshelfFormProps) {
+export function BookshelfForm({ initialData, page, perPage, pageTitle, arrayZones, arrayFloors, selectedFloor }: BookshelfFormProps) {
     const { t } = useTranslations();
     const queryClient = useQueryClient();
+    const [zoneState, setZoneState]=useState(initialData?.zone_id ?? '');
+    const [floorState, setFloorState]=useState(selectedFloor);
+    const [disabledState, setDisabledState]=useState(floorState==undefined);
+    function selectFloor(value:string){
+        if(value!=''){
+            setFloorState(value)
+            setDisabledState(false);
+        }else{
+            setFloorState(value)
+            setDisabledState(true);
+        }
+    }
+
 
     // TanStack Form setup
     const form = useForm({
         defaultValues: {
             number: initialData?.number,
+            capacity: initialData?.capacity,
+            zone_id: initialData?.zone_id,
         },
         onSubmit: async ({ value }) => {
             const options = {
@@ -85,6 +105,14 @@ export function BookshelfForm({ initialData, page, perPage, pageTitle }: Bookshe
     };
 
     function BookshelfFormData() {
+        const floorList= arrayFloors.map(floor=>
+            <Option value={floor.id}>{floor.name}</Option>
+        )
+        const zoneList = arrayZones.filter(zone=>
+            zone.floor_id===floorState).map(zone=>
+                <Option value={zone.id}>{zone.genre.name}</Option>
+            )
+
         return (
             <CardContent className={'h-full bg-background'}>
                 <div>
@@ -94,9 +122,9 @@ export function BookshelfForm({ initialData, page, perPage, pageTitle }: Bookshe
                             onChangeAsync: async ({ value }) => {
                                 await new Promise((resolve) => setTimeout(resolve, 500));
                                 return !value
-                                    ? t('ui.validation.required', { attribute: t('ui.bookshelves.fields.name').toLowerCase() })
+                                    ? t('ui.validation.required', { attribute: t('ui.bookshelves.fields.number').toLowerCase() })
                                     : value < 2
-                                      ? t('ui.validation.min.string', { attribute: t('ui.bookshelves.fields.name').toLowerCase(), min: '2' })
+                                      ? t('ui.validation.min.string', { attribute: t('ui.bookshelves.fields.number').toLowerCase(), min: '2' })
                                       : undefined;
                             },
                         }}
@@ -105,7 +133,7 @@ export function BookshelfForm({ initialData, page, perPage, pageTitle }: Bookshe
                             <>
                                 <div className="flex flex-row items-center">
                                     <Circle className="w-5"></Circle>
-                                    <Label htmlFor={field.name}>{t('ui.bookshelves.fields.name')}</Label>
+                                    <Label htmlFor={field.name}>{t('ui.bookshelves.fields.number')}</Label>
                                 </div>
 
                                 <Input
@@ -115,11 +143,80 @@ export function BookshelfForm({ initialData, page, perPage, pageTitle }: Bookshe
                                     value={field.state.value}
                                     onChange={(e) => field.handleChange(parseInt(e.target.value))}
                                     onBlur={field.handleBlur}
-                                    placeholder={t('ui.bookshelves.placeholders.name')}
+                                    placeholder={t('ui.bookshelves.placeholders.number')}
                                     disabled={form.state.isSubmitting}
                                     required={false}
                                     autoComplete="off"
                                 />
+                                <FieldInfo field={field} />
+                            </>
+                        )}
+                    </form.Field>
+                </div>
+                <div>
+                    <form.Field
+                        name="capacity"
+                        validators={{
+                            onChangeAsync: async ({ value }) => {
+                                await new Promise((resolve) => setTimeout(resolve, 500));
+                                return !value
+                                    ? t('ui.validation.required', { attribute: t('ui.bookshelves.fields.capacity').toLowerCase() })
+                                    : value < 2
+                                      ? t('ui.validation.min.string', { attribute: t('ui.bookshelves.fields.capacity').toLowerCase(), min: '2' })
+                                      : undefined;
+                            },
+                        }}
+                    >
+                        {(field) => (
+                            <>
+                                <div className="flex flex-row items-center">
+                                    <Circle className="w-5"></Circle>
+                                    <Label htmlFor={field.name}>{t('ui.bookshelves.fields.capacity')}</Label>
+                                </div>
+
+                                <Input
+                                    id={field.name}
+                                    type='number'
+                                    name={field.name}
+                                    value={field.state.value}
+                                    onChange={(e) => field.handleChange(parseInt(e.target.value))}
+                                    onBlur={field.handleBlur}
+                                    placeholder={t('ui.bookshelves.placeholders.capacity')}
+                                    disabled={form.state.isSubmitting}
+                                    required={false}
+                                    autoComplete="off"
+                                />
+                                <FieldInfo field={field} />
+                            </>
+                        )}
+                    </form.Field>
+                </div>
+                <div className="flex flex-row items-center">
+                    <Circle className="w-5"></Circle>
+                    <Label>{t('ui.bookshelves.fields.floor')}</Label>
+                </div>
+                <div>
+                    <Select value={floorState} onChange={(e)=> {selectFloor(e.target.value)}} className='h-10 w-full rounded-md border-2'>
+                        <Option value={''}>{'Seleccione un piso'}</Option>
+                        {floorList}
+                    </Select>
+                </div>
+                <div>
+                <form.Field
+                        name="zone_id"
+
+                    >
+                        {(field) => (
+                            <>
+                                <div className="flex flex-row items-center">
+                                    <Circle className="w-5"></Circle>
+                                    <Label htmlFor={field.name}>{t('ui.bookshelves.fields.zone')}</Label>
+                                </div>
+
+                                <Select defaultValue={zoneState} onChange={(e)=>{field.handleChange(e.target.value)}} disabled={disabledState} className='h-10 w-full rounded-md border-2'>
+                                    <Option value={''}>{'Seleccione una zona'}</Option>
+                                    {zoneList}
+                                </Select>
                                 <FieldInfo field={field} />
                             </>
                         )}

@@ -17,9 +17,7 @@ interface ZoneFormProps {
     initialData?: {
         id: string;
         genre_id:string;
-        name: string;
         floor_id:string;
-        floor: string;
 
     };
     page?: string;
@@ -45,29 +43,25 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
 export function ZoneForm({ initialData, page, perPage, pageTitle, genreArray, floorArray }: ZoneFormProps) {
     const { t } = useTranslations();
     const queryClient = useQueryClient();
+    const [genreState, setGenreState]=useState(initialData?.genre_id ?? '')
+    const [floorState, setFloorState]=useState(initialData?.floor_id ?? '');
+
+
     function changeGenreId(value: string){
-        genreArray.map(genre=>{
-            if(genre.name==value){
-                form.setFieldValue('genre_id', genre.id)
-            }
-        })
+        setGenreState(value)
+        form.setFieldValue('genre_id', value)
     }
 
     function changeFloorId(value: string){
-        floorArray.map(genre=>{
-            if(genre.name==value){
-                form.setFieldValue('floor_id', genre.id)
-            }
-        })
+        setFloorState(value)
+        form.setFieldValue('floor_id', value)
     }
 
     // TanStack Form setup
     const form = useForm({
         defaultValues: {
-            genre_id: '',
-            name: initialData?.name ?? '',
-            floor_id: '',
-            floor: initialData?.floor ?? '',
+            genre_id: initialData?.genre_id ?? '',
+            floor_id: initialData?.floor_id ?? '',
 
         },
         onSubmit: async ({ value }) => {
@@ -109,18 +103,20 @@ export function ZoneForm({ initialData, page, perPage, pageTitle, genreArray, fl
         form.handleSubmit();
     };
 
+
+
     function ZoneFormData() {
         const genreList = genreArray.map(genre=>
-            <Option value={genre.name}>{genre.name}</Option>
+            <Option value={genre.id}>{genre.name}</Option>
         )
         const floorList = floorArray.map(floor=>
-            <Option value={floor.name}>{floor.name}</Option>
+            <Option value={floor.id}>{floor.name}</Option>
         )
         return (
             <CardContent className={'h-full bg-background'}>
                 <div>
                     <form.Field
-                        name="name"
+                        name="genre_id"
 
                     >
                         {(field) => (
@@ -130,7 +126,7 @@ export function ZoneForm({ initialData, page, perPage, pageTitle, genreArray, fl
                                     <Label htmlFor={field.name}>{t('ui.zones.fields.name')}</Label>
                                 </div>
 
-                                <Select onChange={(e)=> {field.handleChange(e.target.value), changeGenreId(e.target.value)}}>
+                                <Select defaultValue={genreState} onChange={(e)=> {field.handleChange(e.target.value), changeGenreId(e.target.value)}} className='h-10 w-full rounded-md border-2'>
                                     <Option value={''}>{'Seleccione un género'}</Option>
                                     {genreList}
                                 </Select>
@@ -138,8 +134,10 @@ export function ZoneForm({ initialData, page, perPage, pageTitle, genreArray, fl
                             </>
                         )}
                     </form.Field>
+                </div>
+                <div>
                     <form.Field
-                        name="floor"
+                        name="floor_id"
 
                     >
                         {(field) => (
@@ -149,7 +147,7 @@ export function ZoneForm({ initialData, page, perPage, pageTitle, genreArray, fl
                                     <Label htmlFor={field.name}>{t('ui.zones.fields.name')}</Label>
                                 </div>
 
-                                <Select onChange={(e)=> {field.handleChange(e.target.value), changeFloorId(e.target.value)}}>
+                                <Select defaultValue={floorState} onChange={(e)=> {field.handleChange(e.target.value), changeFloorId(e.target.value)}} className='h-10 w-full rounded-md border-2'>
                                     <Option value={''}>{'Seleccione un piso'}</Option>
                                     {floorList}
                                 </Select>

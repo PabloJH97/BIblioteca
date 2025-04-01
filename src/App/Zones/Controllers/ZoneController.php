@@ -41,9 +41,7 @@ class ZoneController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'genre_id' => ['required', 'string', 'max:255'],
-            'name' => ['required', 'string', 'max:255'],
             'floor_id' => ['required', 'string', 'max:255'],
-            'floor' => ['required', 'string', 'max:255'],
 
         ]);
 
@@ -88,9 +86,7 @@ class ZoneController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'genre_id' => ['required', 'string', 'max:255'],
-            'name' => ['required', 'string', 'max:255'],
             'floor_id' => ['required', 'string', 'max:255'],
-            'floor' => ['required', 'string', 'max:255'],
         ]);
 
         if ($validator->fails()) {

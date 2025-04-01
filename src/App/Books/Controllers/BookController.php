@@ -8,6 +8,7 @@ use Domain\Books\Actions\BookDestroyAction;
 use Domain\Books\Actions\BookStoreAction;
 use Domain\Books\Actions\BookUpdateAction;
 use Domain\Books\Models\Book;
+use Domain\Bookshelves\Models\Bookshelf;
 use Domain\Genres\Models\Genre;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
@@ -27,7 +28,9 @@ class BookController extends Controller
      */
     public function create()
     {
-        return Inertia::render('books/Create');
+        $arrayGenres=Genre::all();
+        $arrayBookshelves=Bookshelf::all();
+        return Inertia::render('books/Create', ['arrayGenres'=> $arrayGenres, 'arrayBookshelves'=>$arrayBookshelves]);
     }
 
     /**
@@ -42,7 +45,6 @@ class BookController extends Controller
             'editorial' => ['required', 'string', 'max:255'],
             'genre' => ['required', 'string', 'max:255'],
             'bookshelf_id' => ['required', 'string', 'max:255'],
-            'bookshelf' => ['required', 'string', 'max:255'],
 
         ]);
 
@@ -88,7 +90,6 @@ class BookController extends Controller
             'editorial' => ['required', 'string', 'max:255'],
             'genre' => ['required', 'string', 'max:255'],
             'bookshelf_id' => ['required', 'string', 'max:255'],
-            'bookshelf' => ['required', 'string', 'max:255'],
         ]);
 
         if ($validator->fails()) {

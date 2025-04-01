@@ -35,12 +35,11 @@ class Zone extends Model
         'genre_id',
         'name',
         'floor_id',
-        'floor',
     ];
 
-    public function genre(): HasOne
+    public function genre(): BelongsTo
     {
-        return $this->hasOne(Genre::class);
+        return $this->belongsTo(Genre::class);
     }
 
     public function bookshelves(): HasMany

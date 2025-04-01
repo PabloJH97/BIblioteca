@@ -7,9 +7,7 @@ interface EditZoneProps extends PageProps {
   zone: {
     id: string;
     genre_id: string;
-    name: string;
     floor_id: string;
-    floor: string;
   };
   page?: string;
   perPage?: string;

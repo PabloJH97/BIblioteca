@@ -30,9 +30,7 @@ class ZoneFactory extends Factory
         $genre=Genre::all()->random();
         return [
             'genre_id'=>$genre->id,
-            'name'=>$genre->name,
             'floor_id'=>$floor->id,
-            'floor'=>$floor->name,
         ];
     }
 }

@@ -3,6 +3,8 @@
 namespace Domain\Books\Data\Resources;
 
 use Domain\Books\Models\Book;
+use Domain\Bookshelves\Models\Bookshelf;
+use Domain\Genres\Models\Genre;
 use Spatie\LaravelData\Data;
 
 class BookResource extends Data
@@ -23,6 +25,9 @@ class BookResource extends Data
 
     public static function fromModel(Book $book): self
     {
+        $bookshelf=Bookshelf::where('id', $book->bookshelf_id)->first();
+
+
         return new self(
             id: $book->id,
             title: $book->title,
@@ -31,7 +36,7 @@ class BookResource extends Data
             editorial: $book->editorial,
             genre: $book->genre,
             bookshelf_id: $book->bookshelf_id,
-            bookshelf: $book->bookshelf,
+            bookshelf: $bookshelf->number,
             created_at: $book->created_at->format('Y-m-d H:i:s'),
             updated_at: $book->updated_at->format('Y-m-d H:i:s'),
         );

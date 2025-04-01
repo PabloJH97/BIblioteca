@@ -14,7 +14,6 @@ class BookshelfUpdateAction
             'number' => $data['number'],
             'capacity' => $data['capacity'],
             'zone_id' => $data['zone_id'],
-            'zone' => $data['zone'],
         ];
 
         $bookshelf->update($updateData);

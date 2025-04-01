@@ -14,11 +14,9 @@ return new class extends Migration
         Schema::create('zones', function (Blueprint $table) {
             $table->uuid('id')->unique();
             $table->foreignUuid('genre_id')->constrained(table:'genres', indexName:'zone_id_genre')->cascadeOnDelete();
-            $table->string('name')->references('name')->on('genres');
             $table->foreignUuid('floor_id')->constrained(table:'floors', indexName:'zone_id_floor')->cascadeOnDelete();
-            $table->string('floor')->references('name')->on('floors');
             $table->timestamps();
-            $table->primary(['name', 'floor']);
+            $table->primary(['genre_id', 'floor_id']);
         });
     }
 

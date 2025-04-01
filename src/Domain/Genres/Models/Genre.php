@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Genre extends Model
 {
@@ -33,9 +33,9 @@ class Genre extends Model
         'name'
 
     ];
-    public function zone(): BelongsTo
+    public function zone(): HasMany
     {
-        return $this->belongsTo(Zone::class);
+        return $this->hasMany(Zone::class);
     }
 
     public function books(): BelongsToMany

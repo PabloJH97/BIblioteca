@@ -2,6 +2,8 @@
 
 namespace Domain\Zones\Data\Resources;
 
+use Domain\Floors\Models\Floor;
+use Domain\Genres\Models\Genre;
 use Domain\Zones\Models\Zone;
 use Spatie\LaravelData\Data;
 
@@ -20,12 +22,15 @@ class ZoneResource extends Data
 
     public static function fromModel(Zone $zone): self
     {
+        $floor=Floor::where('id', $zone->floor_id)->first();
+        $genre=Genre::where('id', $zone->genre_id)->first();
+
         return new self(
             id: $zone->id,
             genre_id: $zone->genre_id,
-            name: $zone->name,
+            name: $genre->name,
             floor_id: $zone->floor_id,
-            floor: $zone->floor,
+            floor: $floor->name,
             created_at: $zone->created_at->format('Y-m-d H:i:s'),
             updated_at: $zone->updated_at->format('Y-m-d H:i:s'),
         );

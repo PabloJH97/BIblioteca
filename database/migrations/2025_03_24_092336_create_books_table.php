@@ -17,10 +17,9 @@ return new class extends Migration
             $table->string('author');
             $table->integer('pages');
             $table->string('editorial');
-            $table->string('genre')->references('name')->on('zones');
+            $table->string('genre')->references('name')->on('genres');
             $table->foreignUuid('bookshelf_id')->constrained(table:'bookshelves', indexName:'book_id_bookshelf')->cascadeOnDelete();
-            $table->integer('bookshelf')->references('number')->on('bookshelves');
-            $table->primary(['id', 'bookshelf']);
+            $table->primary(['id', 'bookshelf_id']);
             $table->timestamps();
         });
     }

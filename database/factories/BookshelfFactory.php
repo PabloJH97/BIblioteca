@@ -29,7 +29,6 @@ class BookshelfFactory extends Factory
             'number'=>fake()->numberBetween($min=1, $max=20),
             'capacity'=>fake()->numberBetween($min=20, $max=30),
             'zone_id'=>$zone->id,
-            'zone'=>$zone->name,
         ];
     }
 }

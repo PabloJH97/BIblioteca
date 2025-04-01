@@ -7,13 +7,17 @@ interface EditBookshelfProps extends PageProps {
   bookshelf: {
     id: string;
     number: number;
+    capacity: number;
+    zone_id: string;
   };
   page?: string;
   perPage?: string;
-
+  arrayZones: any[];
+  arrayFloors: any[];
+  selectedFloor?: string;
 }
 
-export default function EditBookshelf({ bookshelf, page, perPage}: EditBookshelfProps) {
+export default function EditBookshelf({ bookshelf, page, perPage, arrayZones, arrayFloors, selectedFloor}: EditBookshelfProps) {
   const { t } = useTranslations();
 
   return (
@@ -22,6 +26,9 @@ export default function EditBookshelf({ bookshelf, page, perPage}: EditBookshelf
         <div className="max-w-xl">
           <BookshelfForm
             initialData={bookshelf}
+            arrayZones={arrayZones}
+            arrayFloors={arrayFloors}
+            selectedFloor={selectedFloor}
             page={page}
             perPage={perPage}
             pageTitle={t("ui.bookshelves.edit")}

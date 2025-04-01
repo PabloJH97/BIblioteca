@@ -5,18 +5,20 @@ import { BookshelfForm } from "./components/BookshelfForm";
 
 
 interface CreateBookshelfProps extends PageProps {
-
+    arrayZones:any[]
+    arrayFloors:any[]
+    selectedFloor:string;
 
   }
 
-export default function CreateBookshelf({}:CreateBookshelfProps) {
+export default function CreateBookshelf({arrayZones, arrayFloors}:CreateBookshelfProps) {
   const { t } = useTranslations();
 
   return (
     <BookshelfLayout title={t("ui.bookshelves.create")}>
       <div className="p-6">
         <div className="max-w-xl">
-          <BookshelfForm pageTitle={t("ui.bookshelves.create")} />
+          <BookshelfForm arrayZones={arrayZones} arrayFloors={arrayFloors} pageTitle={t("ui.bookshelves.create")} />
         </div>
       </div>
     </BookshelfLayout>

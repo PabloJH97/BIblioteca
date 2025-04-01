@@ -8,6 +8,8 @@ use Domain\Bookshelves\Actions\BookshelfDestroyAction;
 use Domain\Bookshelves\Actions\BookshelfStoreAction;
 use Domain\Bookshelves\Actions\BookshelfUpdateAction;
 use Domain\Bookshelves\Models\Bookshelf;
+use Domain\Floors\Models\Floor;
+use Domain\Zones\Models\Zone;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
@@ -26,7 +28,9 @@ class BookshelfController extends Controller
      */
     public function create()
     {
-        return Inertia::render('bookshelves/Create');
+        $zones=Zone::with('genre')->get();
+        $floors=Floor::all();
+        return Inertia::render('bookshelves/Create', ['arrayZones' => $zones, 'arrayFloors' => $floors]);
     }
 
     /**
@@ -35,11 +39,9 @@ class BookshelfController extends Controller
     public function store(Request $request, BookshelfStoreAction $action)
     {
         $validator = Validator::make($request->all(), [
-            'number' => ['required', 'int', 'max:255'],
-            'capacity' => ['required', 'int', 'max:255'],
+            'number' => ['required', 'numeric', 'max:255'],
+            'capacity' => ['required', 'numeric', 'max:255'],
             'zone_id' => ['required', 'string', 'max:255'],
-            'zone' => ['required', 'string', 'max:255'],
-
         ]);
 
         if ($validator->fails()) {
@@ -65,10 +67,16 @@ class BookshelfController extends Controller
      */
     public function edit(Request $request, Bookshelf $bookshelf)
     {
+        $zones=Zone::with('genre')->get();
+        $floors=Floor::all();
+        $selectedFloor=Floor::where('id', Zone::where('id', $bookshelf->zone_id)->first()->floor_id)->first()->id;
         return Inertia::render('bookshelves/Edit', [
             'bookshelf' => $bookshelf,
             'page' => $request->query('page'),
             'perPage' => $request->query('perPage'),
+            'arrayZones' => $zones,
+            'arrayFloors' => $floors,
+            'selectedFloor' => $selectedFloor
         ]);
     }
 
@@ -81,9 +89,8 @@ class BookshelfController extends Controller
             'number' => ['required', 'numeric'],
             'capacity' => ['required', 'numeric'],
             'zone_id' => ['required', 'string', 'max:255'],
-            'zone' => ['required', 'string', 'max:255'],
+
         ]);
-        dd($validator);
 
         if ($validator->fails()) {
             return back()->withErrors($validator);

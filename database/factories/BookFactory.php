@@ -38,7 +38,6 @@ class BookFactory extends Factory
             'editorial'=>'',
             'genre'=>implode(', ', $genresArray),
             'bookshelf_id'=>$bookshelf->id,
-            'bookshelf'=>$bookshelf->number,
         ];
     }
 }

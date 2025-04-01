@@ -311,8 +311,10 @@ return [
         'create' => 'Crear Estantería',
         'edit' => 'Editar Estantería',
         'fields' => [
-            'name' => 'Estantería',
-            'actions' => 'Acciones',
+            'number' => 'Número de estantería',
+            'capacity' => 'Capacidad de la estantería',
+            'floor' => 'Piso donde se encuentra',
+            'zone' => 'Zona donde se encuentra'
         ],
         'columns' => [
             'number' => 'Número de estantería',
