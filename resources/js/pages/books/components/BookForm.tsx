@@ -20,14 +20,16 @@ interface BookFormProps {
         author: string;
         pages: number;
         editorial: string;
-        genre: string[];
+        genre: string;
         bookshelf_id: string;
+        image: File;
     };
     page?: string;
     perPage?: string;
     pageTitle?: string;
     arrayGenres: any[];
     arrayBookshelves: any[];
+    arrayFloors: any[];
 
 }
 let genreArray:string[]=[]
@@ -44,11 +46,15 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
     );
 }
 
-export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, arrayBookshelves }: BookFormProps) {
+export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, arrayBookshelves, arrayFloors }: BookFormProps) {
     const { t } = useTranslations();
     const queryClient = useQueryClient();
-    const [genreArrayState, setGenreArrayState]=useState(genreArray)
-
+    const initialDataGenres=initialData?.genre.split(', ')??['']
+    const [genreArrayState, setGenreArrayState]=useState(initialDataGenres)
+    const [floorState, setFloorState]=useState('');
+    const [zoneState, setZoneState]=useState('');
+    const [disabledZoneState, setDisabledZoneState]=useState(floorState=='');
+    const [disabledBookshelfState, setDisabledBookshelfState]=useState(zoneState=='')
     function manageGenreArray(value:string){
         if (!genreArray.includes(value)) {
             genreArray = [...genreArray, value];
@@ -56,6 +62,24 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
         } else {
             genreArray = genreArray.filter((a) => a !== value);
             setGenreArrayState(genreArray);
+        }
+    }
+    function selectFloor(value:string){
+        if(value!=''){
+            setFloorState(value)
+            setDisabledZoneState(false);
+        }else{
+            setFloorState(value)
+            setDisabledZoneState(true);
+        }
+    }
+    function selectZone(value:string){
+        if(value!=''){
+            setZoneState(value)
+            setDisabledBookshelfState(false);
+        }else{
+            setZoneState(value)
+            setDisabledBookshelfState(true);
         }
     }
 
@@ -66,8 +90,10 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
             title: initialData?.title,
             author: initialData?.author,
             pages: initialData?.pages,
-            genre: initialData?.genre,
+            editorial: initialData?.editorial,
+            genre: [''],
             bookshelf_id: initialData?.bookshelf_id,
+            image: initialData?.image,
         },
         onSubmit: async ({ value }) => {
             const options = {
@@ -105,23 +131,48 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         e.stopPropagation();
+        form.setFieldValue('genre', genreArrayState);
+        genreArray = [];
+        setGenreArrayState(genreArray);
         form.handleSubmit();
     };
 
     function BookFormData() {
         const listGenres=arrayGenres.map(genre=>
-            <Option value={genre.id}>{genre.name}</Option>
-        )
-        const listBookshelves=arrayBookshelves.map(bookshelf=>
-            <Option value={bookshelf.id}>{bookshelf.number}</Option>
+            <Option value={genre.name}>{genre.name}</Option>
         )
         const listGenreArray=genreArrayState.map(genre=>
             arrayGenres.filter(genreToFind=>
-                genreToFind.id==genre
+                genreToFind.name==genre
             ).map(genre=>
-                <Button type='button' value={genre.id} onClick={(e)=>{manageGenreArray(e.currentTarget.value)}}>{genre.name}</Button>
+                <div className='flex flex-row items-center '>
+                    <p>{genre.name}</p>
+                    <Button type='button' value={genre.name} onClick={(e)=>{manageGenreArray(e.currentTarget.value)}} className='bg-foreground h-2 w-2'><X></X></Button>
+
+                </div>
             )
         )
+        const listFloors=arrayFloors.map(floor=>
+            <Option value={floor.id}>{floor.name}</Option>
+        )
+        const listZones=arrayFloors.filter(floor=>
+            floor.id===floorState).map(floor=>
+                floor.zones.map(zone=>
+                    <Option value={zone.id}>{zone.genre.name}</Option>
+                )
+            )
+        const listBookshelves=arrayFloors.filter(floor=>
+            floor.id===floorState).map(floor=>
+                floor.zones.filter(zone=>
+                    zone.id===zoneState).map(zone=>
+                        zone.bookshelves.map(bookshelf=>
+                            <Option value={bookshelf.id}>{t('ui.bookshelves.title') +' '+ bookshelf.number}</Option>
+                        )
+                    )
+                )
+
+
+
 
 
 
@@ -145,7 +196,7 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                             <>
                                 <div className="flex flex-row items-center">
                                     <Circle className="w-5"></Circle>
-                                    <Label htmlFor={field.name}>{t('ui.books.fields.number')}</Label>
+                                    <Label htmlFor={field.name}>{t('ui.books.fields.title')}</Label>
                                 </div>
 
                                 <Input
@@ -183,7 +234,7 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                             <>
                                 <div className="flex flex-row items-center">
                                     <Circle className="w-5"></Circle>
-                                    <Label htmlFor={field.name}>{t('ui.books.fields.number')}</Label>
+                                    <Label htmlFor={field.name}>{t('ui.books.fields.author')}</Label>
                                 </div>
 
                                 <Input
@@ -221,7 +272,7 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                             <>
                                 <div className="flex flex-row items-center">
                                     <Circle className="w-5"></Circle>
-                                    <Label htmlFor={field.name}>{t('ui.books.fields.number')}</Label>
+                                    <Label htmlFor={field.name}>{t('ui.books.fields.pages')}</Label>
                                 </div>
 
                                 <Input
@@ -241,9 +292,47 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                         )}
                     </form.Field>
                 </div>
+                <div>
+                    <form.Field
+                        name="editorial"
+                        validators={{
+                            onChangeAsync: async ({ value }) => {
+                                await new Promise((resolve) => setTimeout(resolve, 500));
+                                return !value
+                                    ? t('ui.validation.required', { attribute: t('ui.users.fields.name').toLowerCase() })
+                                    : value.length < 2
+                                      ? t('ui.validation.min.string', { attribute: t('ui.users.fields.name').toLowerCase(), min: '2' })
+                                      : undefined;
+                            },
+                        }}
+                    >
+                        {(field) => (
+                            <>
+                                <div className="flex flex-row items-center">
+                                    <Circle className="w-5"></Circle>
+                                    <Label htmlFor={field.name}>{t('ui.books.fields.editorial')}</Label>
+                                </div>
+
+                                <Input
+                                    id={field.name}
+                                    type='string'
+                                    name={field.name}
+                                    value={field.state.value}
+                                    onChange={(e) => field.handleChange(e.target.value)}
+                                    onBlur={field.handleBlur}
+                                    placeholder={t('ui.books.placeholders.number')}
+                                    disabled={form.state.isSubmitting}
+                                    required={false}
+                                    autoComplete="off"
+                                />
+                                <FieldInfo field={field} />
+                            </>
+                        )}
+                    </form.Field>
+                </div>
                 <br />
                 <div>
-                    <div>
+                    <div className='flex flex-wrap'>
                         {listGenreArray}
                     </div>
                     <br />
@@ -253,12 +342,24 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                     >
                         {(field) => (
                             <>
-                                <Select multiple={true} onChange={(e)=>{manageGenreArray(e.target.value)}}>
+                                <Select multiple={true} size={5} onChange={(e)=>{manageGenreArray(e.target.value)}} className='w-full rounded-md border-2'>
                                     {listGenres}
                                 </Select>
                             </>
                         )}
                     </form.Field>
+                </div>
+                <div>
+                    <Select value={floorState} onChange={(e)=> {selectFloor(e.target.value)}} className='h-10 w-full rounded-md border-2'>
+                        <Option value={''}>{'Seleccione un piso'}</Option>
+                        {listFloors}
+                    </Select>
+                </div>
+                <div>
+                    <Select disabled={disabledZoneState} value={zoneState} onChange={(e)=> {selectZone(e.target.value)}} className='h-10 w-full rounded-md border-2'>
+                        <Option value={''}>{'Seleccione una zona'}</Option>
+                        {listZones}
+                    </Select>
                 </div>
                 <div>
                     <form.Field
@@ -267,8 +368,8 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                     >
                         {(field) => (
                             <>
-                                <Select>
-                                    <Option>{'a'}</Option>
+                                <Select disabled={disabledBookshelfState} onChange={(e)=> {field.handleChange(e.target.value)}} className='h-10 w-full rounded-md border-2'>
+                                    <Option value={''}>{'Seleccione una estantería'}</Option>
                                     {listBookshelves}
                                 </Select>
                             </>
@@ -276,6 +377,34 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                     </form.Field>
                 </div>
                 <br />
+                <div>
+                    <form.Field
+                        name="image"
+
+                    >
+                        {(field) => (
+                            <>
+                                <div className="flex flex-row items-center">
+                                    <Circle className="w-5"></Circle>
+                                    <Label htmlFor={field.name}>{t('ui.books.fields.editorial')}</Label>
+                                </div>
+
+                                <Input
+                                    id={field.name}
+                                    type='file'
+                                    name={field.name}
+                                    onChange={(e) => field.handleChange(e.target.files[0])}
+                                    onBlur={field.handleBlur}
+                                    placeholder={t('ui.books.placeholders.number')}
+                                    disabled={form.state.isSubmitting}
+                                    required={false}
+                                    autoComplete="off"
+                                />
+                                <FieldInfo field={field} />
+                            </>
+                        )}
+                    </form.Field>
+                </div>
             </CardContent>
         );
     }

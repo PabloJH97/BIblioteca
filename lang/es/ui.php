@@ -366,8 +366,12 @@ return [
         'create' => 'Crear Libro',
         'edit' => 'Editar Libro',
         'fields' => [
-            'name' => 'Libro',
-            'actions' => 'Acciones',
+            'title' => 'Título del libro',
+            'author' => 'Autor del libro',
+            'pages' => 'Páginas del libro',
+            'editorial' => 'Editorial',
+            'genre' => 'Género',
+            'bookshelf' => 'Estantería en la que se encuentra',
         ],
         'columns' => [
             'title' => 'Título',

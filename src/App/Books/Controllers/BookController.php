@@ -9,6 +9,7 @@ use Domain\Books\Actions\BookStoreAction;
 use Domain\Books\Actions\BookUpdateAction;
 use Domain\Books\Models\Book;
 use Domain\Bookshelves\Models\Bookshelf;
+use Domain\Floors\Models\Floor;
 use Domain\Genres\Models\Genre;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
@@ -30,7 +31,8 @@ class BookController extends Controller
     {
         $arrayGenres=Genre::all();
         $arrayBookshelves=Bookshelf::all();
-        return Inertia::render('books/Create', ['arrayGenres'=> $arrayGenres, 'arrayBookshelves'=>$arrayBookshelves]);
+        $arrayFloors=Floor::with(['zones', 'zones.bookshelves', 'zones.genre'])->get();
+        return Inertia::render('books/Create', ['arrayGenres'=> $arrayGenres, 'arrayBookshelves'=>$arrayBookshelves, 'arrayFloors'=> $arrayFloors]);
     }
 
     /**
@@ -38,12 +40,12 @@ class BookController extends Controller
      */
     public function store(Request $request, BookStoreAction $action)
     {
+        dd($request);
         $validator = Validator::make($request->all(), [
             'title' => ['required', 'string', 'max:255'],
             'author' => ['required', 'string', 'max:255'],
-            'pages' => ['required', 'int', 'max:255'],
+            'pages' => ['required', 'numeric', 'max:255'],
             'editorial' => ['required', 'string', 'max:255'],
-            'genre' => ['required', 'string', 'max:255'],
             'bookshelf_id' => ['required', 'string', 'max:255'],
 
         ]);
@@ -52,7 +54,7 @@ class BookController extends Controller
             return back()->withErrors($validator);
         }
 
-        $action($validator->validated());
+        $action($validator->validated(), $request->genre, $request->files);
 
         return redirect()->route('books.index')
             ->with('success', __('messages.books.created'));
@@ -71,10 +73,16 @@ class BookController extends Controller
      */
     public function edit(Request $request, Book $book)
     {
+        $arrayGenres=Genre::all();
+        $arrayBookshelves=Bookshelf::all();
+        $arrayFloors=Floor::with(['zones', 'zones.bookshelves', 'zones.genre'])->get();
         return Inertia::render('books/Edit', [
             'book' => $book,
             'page' => $request->query('page'),
             'perPage' => $request->query('perPage'),
+            'arrayGenres'=> $arrayGenres,
+            'arrayBookshelves'=>$arrayBookshelves,
+            'arrayFloors'=> $arrayFloors
         ]);
     }
 
@@ -83,20 +91,21 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book, BookUpdateAction $action)
     {
+        dd($book, $request);
         $validator = Validator::make($request->all(), [
             'title' => ['required', 'string', 'max:255'],
             'author' => ['required', 'string', 'max:255'],
-            'pages' => ['required', 'int', 'max:255'],
+            'pages' => ['required', 'numeric', 'max:255'],
             'editorial' => ['required', 'string', 'max:255'],
-            'genre' => ['required', 'string', 'max:255'],
             'bookshelf_id' => ['required', 'string', 'max:255'],
+
         ]);
 
         if ($validator->fails()) {
             return back()->withErrors($validator);
         }
 
-        $action($book, $validator->validated());
+        $action($book, $validator->validated(), $request->genre, $request->files);
 
         $redirectUrl = route('books.index');
 

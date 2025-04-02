@@ -27,10 +27,12 @@ class BookApiController extends Controller
     public function store(Request $request, BookStoreAction $action)
     {
         $validator = Validator::make($request->all(), [
-            'number' => ['required', 'int', 'max:255'],
-            'capacity' => ['required', 'int', 'max:255'],
-            'zone_id' => ['required', 'string', 'max:255'],
-            'zone' => ['required', 'string', 'max:255'],
+            'title' => ['required', 'string', 'max:255'],
+            'author' => ['required', 'string', 'max:255'],
+            'pages' => ['required', 'numeric', 'max:255'],
+            'editorial' => ['required', 'string', 'max:255'],
+            'bookshelf_id' => ['required', 'string', 'max:255'],
+
         ]);
 
         if ($validator->fails()) {
@@ -48,10 +50,12 @@ class BookApiController extends Controller
     public function update(Request $request, Book $book, BookUpdateAction $action)
     {
         $validator = Validator::make($request->all(), [
-            'number' => ['required', 'int', 'max:255'],
-            'capacity' => ['required', 'int', 'max:255'],
-            'zone_id' => ['required', 'string', 'max:255'],
-            'zone' => ['required', 'string', 'max:255'],
+            'title' => ['required', 'string', 'max:255'],
+            'author' => ['required', 'string', 'max:255'],
+            'pages' => ['required', 'numeric', 'max:255'],
+            'editorial' => ['required', 'string', 'max:255'],
+            'bookshelf_id' => ['required', 'string', 'max:255'],
+
         ]);
 
         if ($validator->fails()) {
