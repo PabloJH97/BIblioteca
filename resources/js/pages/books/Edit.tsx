@@ -19,9 +19,10 @@ interface EditBookProps extends PageProps {
   arrayGenres: any[];
   arrayBookshelves: any[];
   arrayFloors: any[];
+  media: string;
 }
 
-export default function EditBook({ book, page, perPage, arrayGenres, arrayBookshelves, arrayFloors}: EditBookProps) {
+export default function EditBook({ book, page, perPage, arrayGenres, arrayBookshelves, arrayFloors, media}: EditBookProps) {
   const { t } = useTranslations();
 
   return (
@@ -33,6 +34,7 @@ export default function EditBook({ book, page, perPage, arrayGenres, arrayBooksh
             arrayGenres={arrayGenres}
             arrayBookshelves={arrayBookshelves}
             arrayFloors={arrayFloors}
+            media={media}
             page={page}
             perPage={perPage}
             pageTitle={t("ui.books.edit")}

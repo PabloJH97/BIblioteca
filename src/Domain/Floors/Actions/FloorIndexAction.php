@@ -7,11 +7,13 @@ use Domain\Floors\Models\Floor;
 
 class FloorIndexAction
 {
-    public function __invoke(?string $search = null, int $perPage = 10)
+    public function __invoke(?array $search = null, int $perPage = 10)
     {
+        $name=$search[0];
+
         $floors = Floor::query()
-            ->when($search, function ($query, $search) {
-                $query->where('name', 'like', "%{$search}%");
+            ->when($name!='null', function ($query) use ($name){
+                $query->where('name', 'ILIKE', "%".$name."%");
             })
             ->latest()
             ->paginate($perPage);

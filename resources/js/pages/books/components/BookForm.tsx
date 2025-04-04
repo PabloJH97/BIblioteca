@@ -8,7 +8,7 @@ import { router } from '@inertiajs/react';
 import type { AnyFieldApi } from '@tanstack/react-form';
 import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
-import { FileText, Lock, Mail, PackageOpen, Save, Settings, Shield, Circle, X, Eye, EyeOff } from 'lucide-react';
+import { FileText, Lock, Mail, PackageOpen, Save, Settings, Shield, Circle, X, Eye, EyeOff, Book } from 'lucide-react';
 import { useState } from 'react';
 import { Option, Select } from 'react-day-picker';
 import { toast } from 'sonner';
@@ -22,7 +22,7 @@ interface BookFormProps {
         editorial: string;
         genre: string;
         bookshelf_id: string;
-        image: File;
+
     };
     page?: string;
     perPage?: string;
@@ -30,6 +30,8 @@ interface BookFormProps {
     arrayGenres: any[];
     arrayBookshelves: any[];
     arrayFloors: any[];
+    image: File;
+    media: string;
 
 }
 let genreArray:string[]=[]
@@ -46,7 +48,7 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
     );
 }
 
-export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, arrayBookshelves, arrayFloors }: BookFormProps) {
+export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, arrayBookshelves, image, media, arrayFloors }: BookFormProps) {
     const { t } = useTranslations();
     const queryClient = useQueryClient();
     const initialDataGenres=initialData?.genre.split(', ')??['']
@@ -55,10 +57,12 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
     const [zoneState, setZoneState]=useState('');
     const [disabledZoneState, setDisabledZoneState]=useState(floorState=='');
     const [disabledBookshelfState, setDisabledBookshelfState]=useState(zoneState=='')
+    const [imageState, setImageState]=useState(image??'')
     function manageGenreArray(value:string){
         if (!genreArray.includes(value)) {
             genreArray = [...genreArray, value];
             setGenreArrayState(genreArray);
+            console.log(genreArrayState)
         } else {
             genreArray = genreArray.filter((a) => a !== value);
             setGenreArrayState(genreArray);
@@ -82,20 +86,45 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
             setDisabledBookshelfState(true);
         }
     }
-
+    function selectImage(value:File){
+        setImageState(value);
+    }
+    console.log(image)
 
     // TanStack Form setup
     const form = useForm({
         defaultValues: {
-            title: initialData?.title,
-            author: initialData?.author,
-            pages: initialData?.pages,
-            editorial: initialData?.editorial,
+            title: initialData?.title ?? '',
+            author: initialData?.author ?? '',
+            pages: initialData?.pages ?? 0,
+            editorial: initialData?.editorial ?? '',
             genre: [''],
-            bookshelf_id: initialData?.bookshelf_id,
-            image: initialData?.image,
+            bookshelf_id: initialData?.bookshelf_id ?? '',
+            image: image,
         },
         onSubmit: async ({ value }) => {
+            const formData=new FormData();
+            formData.append('title', value.title);
+            formData.append('author', value.author);
+            formData.append('pages', value.pages);
+            formData.append('editorial', value.editorial);
+            formData.append('bookshelf_id', value.bookshelf_id);
+            formData.append('image', imageState);
+            formData.append('_method', 'PUT');
+            console.log(genreArrayState)
+            let genreString = '';
+            if (genreArrayState.length > 0) {
+                genreString=genreArrayState[0];
+                if (genreArrayState.length>1) {
+                    for (let i=1; i < genreArrayState.length; i++) {
+                        genreString +=  ', ' + genreArrayState[i];
+                    };
+                }
+            } else {
+                genreString = genreArrayState[0];
+            }
+            console.log(genreString)
+            formData.append('genre', genreString);
             const options = {
                 onSuccess: () => {
                     queryClient.invalidateQueries({ queryKey: ['books'] });
@@ -120,7 +149,8 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
 
             // Submit with Inertia
             if (initialData) {
-                router.put(`/books/${initialData.id}`, value, options);
+                console.log(formData)
+                router.post(`/books/${initialData.id}`, formData, options);
             } else {
                 router.post('/books', value, options);
             }
@@ -132,8 +162,6 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
         e.preventDefault();
         e.stopPropagation();
         form.setFieldValue('genre', genreArrayState);
-        genreArray = [];
-        setGenreArrayState(genreArray);
         form.handleSubmit();
     };
 
@@ -157,19 +185,23 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
         )
         const listZones=arrayFloors.filter(floor=>
             floor.id===floorState).map(floor=>
-                floor.zones.map(zone=>
+                floor.zones.filter(zone=>
+                    genreArrayState.includes(zone.genre.name)
+                ).map(zone=>
                     <Option value={zone.id}>{zone.genre.name}</Option>
                 )
             )
         const listBookshelves=arrayFloors.filter(floor=>
             floor.id===floorState).map(floor=>
                 floor.zones.filter(zone=>
-                    zone.id===zoneState).map(zone=>
+                    zone.id===zoneState
+                    ).map(zone=>
                         zone.bookshelves.map(bookshelf=>
                             <Option value={bookshelf.id}>{t('ui.bookshelves.title') +' '+ bookshelf.number}</Option>
                         )
                     )
                 )
+
 
 
 
@@ -195,7 +227,7 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                         {(field) => (
                             <>
                                 <div className="flex flex-row items-center">
-                                    <Circle className="w-5"></Circle>
+
                                     <Label htmlFor={field.name}>{t('ui.books.fields.title')}</Label>
                                 </div>
 
@@ -206,7 +238,7 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                                     value={field.state.value}
                                     onChange={(e) => field.handleChange(e.target.value)}
                                     onBlur={field.handleBlur}
-                                    placeholder={t('ui.books.placeholders.number')}
+                                    placeholder={t('ui.books.placeholders.title')}
                                     disabled={form.state.isSubmitting}
                                     required={false}
                                     autoComplete="off"
@@ -233,7 +265,7 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                         {(field) => (
                             <>
                                 <div className="flex flex-row items-center">
-                                    <Circle className="w-5"></Circle>
+
                                     <Label htmlFor={field.name}>{t('ui.books.fields.author')}</Label>
                                 </div>
 
@@ -244,7 +276,7 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                                     value={field.state.value}
                                     onChange={(e) => field.handleChange(e.target.value)}
                                     onBlur={field.handleBlur}
-                                    placeholder={t('ui.books.placeholders.number')}
+                                    placeholder={t('ui.books.placeholders.author')}
                                     disabled={form.state.isSubmitting}
                                     required={false}
                                     autoComplete="off"
@@ -271,7 +303,7 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                         {(field) => (
                             <>
                                 <div className="flex flex-row items-center">
-                                    <Circle className="w-5"></Circle>
+
                                     <Label htmlFor={field.name}>{t('ui.books.fields.pages')}</Label>
                                 </div>
 
@@ -282,7 +314,7 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                                     value={field.state.value}
                                     onChange={(e) => field.handleChange(parseInt(e.target.value))}
                                     onBlur={field.handleBlur}
-                                    placeholder={t('ui.books.placeholders.number')}
+                                    placeholder={t('ui.books.placeholders.pages')}
                                     disabled={form.state.isSubmitting}
                                     required={false}
                                     autoComplete="off"
@@ -309,7 +341,7 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                         {(field) => (
                             <>
                                 <div className="flex flex-row items-center">
-                                    <Circle className="w-5"></Circle>
+
                                     <Label htmlFor={field.name}>{t('ui.books.fields.editorial')}</Label>
                                 </div>
 
@@ -320,7 +352,7 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                                     value={field.state.value}
                                     onChange={(e) => field.handleChange(e.target.value)}
                                     onBlur={field.handleBlur}
-                                    placeholder={t('ui.books.placeholders.number')}
+                                    placeholder={t('ui.books.placeholders.editorial')}
                                     disabled={form.state.isSubmitting}
                                     required={false}
                                     autoComplete="off"
@@ -332,6 +364,7 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                 </div>
                 <br />
                 <div>
+                    {t('ui.books.fields.genre')}
                     <div className='flex flex-wrap'>
                         {listGenreArray}
                     </div>
@@ -350,6 +383,7 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                     </form.Field>
                 </div>
                 <div>
+                    {t('ui.books.fields.bookshelf')}
                     <Select value={floorState} onChange={(e)=> {selectFloor(e.target.value)}} className='h-10 w-full rounded-md border-2'>
                         <Option value={''}>{'Seleccione un piso'}</Option>
                         {listFloors}
@@ -385,22 +419,30 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                         {(field) => (
                             <>
                                 <div className="flex flex-row items-center">
-                                    <Circle className="w-5"></Circle>
-                                    <Label htmlFor={field.name}>{t('ui.books.fields.editorial')}</Label>
+
+                                    <Label htmlFor={field.name}>{t('ui.books.fields.image')}</Label>
                                 </div>
 
                                 <Input
                                     id={field.name}
                                     type='file'
                                     name={field.name}
-                                    onChange={(e) => field.handleChange(e.target.files[0])}
+                                    onChange={(e) => {field.handleChange(e.target.files[0]), selectImage(e.target.files[0])}}
                                     onBlur={field.handleBlur}
-                                    placeholder={t('ui.books.placeholders.number')}
+                                    placeholder={t('ui.books.placeholders.image')}
                                     disabled={form.state.isSubmitting}
                                     required={false}
                                     autoComplete="off"
+                                    accept='image/*'
                                 />
+                                {imageState &&(
+                                    <img src={URL.createObjectURL(imageState)}></img>
+                                )}
+                                {initialData && imageState=='' &&(
+                                    <img src={media} alt="" />
+                                )}
                                 <FieldInfo field={field} />
+
                             </>
                         )}
                     </form.Field>
@@ -418,12 +460,12 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                 <Card className="bg-background">
                     <CardHeader>
                         <div className="flex flex-row">
-                            <Circle color="#155dfc"></Circle>
+                            <Book color="#155dfc"></Book>
                             <h1 className="font-bold">{pageTitle}</h1>
                         </div>
                         <div>
                             <p className="font-sans text-sm font-bold text-gray-400">
-                                {'Ingresa la información para crear una nueva estantería en el sistema'}
+                                {'Ingresa la información para crear un nuevo libro en el sistema'}
                             </p>
                         </div>
                     </CardHeader>

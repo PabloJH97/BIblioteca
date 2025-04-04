@@ -40,7 +40,6 @@ class BookController extends Controller
      */
     public function store(Request $request, BookStoreAction $action)
     {
-        dd($request);
         $validator = Validator::make($request->all(), [
             'title' => ['required', 'string', 'max:255'],
             'author' => ['required', 'string', 'max:255'],
@@ -73,6 +72,7 @@ class BookController extends Controller
      */
     public function edit(Request $request, Book $book)
     {
+        $media=$book->getFirstMediaUrl('images');
         $arrayGenres=Genre::all();
         $arrayBookshelves=Bookshelf::all();
         $arrayFloors=Floor::with(['zones', 'zones.bookshelves', 'zones.genre'])->get();
@@ -82,7 +82,8 @@ class BookController extends Controller
             'perPage' => $request->query('perPage'),
             'arrayGenres'=> $arrayGenres,
             'arrayBookshelves'=>$arrayBookshelves,
-            'arrayFloors'=> $arrayFloors
+            'arrayFloors'=> $arrayFloors,
+            'media'=>$media
         ]);
     }
 
@@ -91,7 +92,6 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book, BookUpdateAction $action)
     {
-        dd($book, $request);
         $validator = Validator::make($request->all(), [
             'title' => ['required', 'string', 'max:255'],
             'author' => ['required', 'string', 'max:255'],

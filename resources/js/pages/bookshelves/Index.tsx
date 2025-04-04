@@ -33,9 +33,10 @@ export default function bookshelfsIndex() {
   const [filters, setFilters] = useState<Record<string, any>>({});
   // Combine name and email filters into a single search string if they exist
   const combinedSearch = [
-    filters.search,
-    filters.name ? `name:${filters.name}` : null,
-  ].filter(Boolean).join(' ');
+    filters.number ? filters.number : 'null',
+    filters.capacity ? filters.capacity : 'null',
+    filters.zone ? filters.zone : 'null',
+  ];
 
   const { data: bookshelves, isLoading, isError, refetch } = useBookshelves({
     search: combinedSearch,
@@ -130,17 +131,23 @@ export default function bookshelfsIndex() {
                           filters={
                               [
                                   {
-                                      id: 'search',
-                                      label: t('ui.bookshelves.filters.search') || 'Buscar',
-                                      type: 'text',
-                                      placeholder: t('ui.bookshelves.placeholders.search') || 'Buscar...',
-                                  },
-                                  {
                                       id: 'number',
                                       label: t('ui.bookshelves.filters.number') || 'Número',
-                                      type: 'text',
+                                      type: 'number',
                                       placeholder: t('ui.bookshelves.placeholders.number') || 'Número...',
                                   },
+                                  {
+                                    id: 'capacity',
+                                    label: t('ui.bookshelves.filters.capacity') || 'Capacidad',
+                                    type: 'number',
+                                    placeholder: t('ui.bookshelves.placeholders.capacity') || 'Capacidad...',
+                                },
+                                {
+                                    id: 'zone',
+                                    label: t('ui.bookshelves.filters.zone') || 'Zona',
+                                    type: 'text',
+                                    placeholder: t('ui.bookshelves.placeholders.zone') || 'Zona...',
+                                },
                               ] as FilterConfig[]
                           }
                           onFilterChange={setFilters}

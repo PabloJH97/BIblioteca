@@ -33,9 +33,8 @@ export default function FloorsIndex() {
   const [filters, setFilters] = useState<Record<string, any>>({});
   // Combine name and email filters into a single search string if they exist
   const combinedSearch = [
-    filters.search,
-    filters.name ? `name:${filters.name}` : null,
-  ].filter(Boolean).join(' ');
+    filters.name ? filters.name : 'null',
+  ];
 
   const { data: floors, isLoading, isError, refetch } = useFloors({
     search: combinedSearch,
@@ -119,12 +118,6 @@ export default function FloorsIndex() {
                       <FiltersTable
                           filters={
                               [
-                                  {
-                                      id: 'search',
-                                      label: t('ui.floors.filters.search') || 'Buscar',
-                                      type: 'text',
-                                      placeholder: t('ui.floors.placeholders.search') || 'Buscar...',
-                                  },
                                   {
                                       id: 'name',
                                       label: t('ui.floors.filters.name') || 'Nombre',

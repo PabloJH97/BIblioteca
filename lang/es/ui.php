@@ -270,11 +270,13 @@ return [
         ],
         'placeholders' => [
             'name' => 'Nombre de la zona',
+            'floor' => 'Nombre del piso',
             'search' => 'Buscar zonas...',
         ],
         'filters' => [
             'search' => 'Buscar',
             'name' => 'Nombre de la zona',
+            'floor' => 'Nombre del piso',
         ],
         'buttons' => [
             'new' => 'Nueva zona',
@@ -372,6 +374,7 @@ return [
             'editorial' => 'Editorial',
             'genre' => 'Género',
             'bookshelf' => 'Estantería en la que se encuentra',
+            'image' => 'Imagen de portada'
         ],
         'columns' => [
             'title' => 'Título',
@@ -384,7 +387,13 @@ return [
             'actions' => 'Acciones',
         ],
         'placeholders' => [
-            'title' => 'Título',
+            'title' => 'Título del libro',
+            'author' => 'Autor del libro',
+            'pages' => 'Páginas del libro',
+            'editorial' => 'Editorial',
+            'genre' => 'Género',
+            'bookshelf' => 'Estantería en la que se encuentra',
+            'image' => 'Imagen de portada',
             'search' => 'Buscar libros...',
         ],
         'filters' => [

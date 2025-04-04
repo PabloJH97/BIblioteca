@@ -45,7 +45,7 @@ export interface PaginatedResponse<T> {
 }
 
 interface UseBookshelvesParams {
-  search?: string;
+  search?: any[];
   page?: number;
   perPage?: number;
 }

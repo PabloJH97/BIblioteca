@@ -9,9 +9,10 @@ use Symfony\Component\HttpFoundation\FileBag;
 
 class BookUpdateAction
 {
-    public function __invoke(Book $book, array $data, array $genres, FileBag $files): BookResource
+    public function __invoke(Book $book, array $data, string $genres, FileBag $files): BookResource
     {
         $genreArray=[];
+        $genres=explode(', ', $genres);
         foreach($genres as $genre){
             $addingGenre=Genre::where('name', $genre)->first()->name;
             array_push($genreArray, $addingGenre);
@@ -31,6 +32,11 @@ class BookUpdateAction
             $addingGenre=Genre::where('name', $genre)->first();
             $book->genres()->sync($addingGenre);
         };
+        $book->clearMediaCollection('images');
+        foreach($files as $file){
+            $book->addMedia($file)->toMediaCollection('images', 'images');
+        };
+
         $book->update($updateData);
 
 

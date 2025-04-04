@@ -33,9 +33,9 @@ export default function ZonesIndex() {
   const [filters, setFilters] = useState<Record<string, any>>({});
   // Combine name and email filters into a single search string if they exist
   const combinedSearch = [
-    filters.search,
-    filters.name ? `name:${filters.name}` : null,
-  ].filter(Boolean).join(' ');
+    filters.genre_id? filters.genre_id: 'null',
+    filters.floor_id ? filters.floor_id: 'null',
+  ];
 
   const { data: zones, isLoading, isError, refetch } = useZones({
     search: combinedSearch,
@@ -125,17 +125,17 @@ export default function ZonesIndex() {
                           filters={
                               [
                                   {
-                                      id: 'search',
-                                      label: t('ui.zones.filters.search') || 'Buscar',
-                                      type: 'text',
-                                      placeholder: t('ui.zones.placeholders.search') || 'Buscar...',
-                                  },
-                                  {
-                                      id: 'name',
+                                      id: 'genre_id',
                                       label: t('ui.zones.filters.name') || 'Nombre',
                                       type: 'text',
                                       placeholder: t('ui.zones.placeholders.name') || 'Nombre...',
                                   },
+                                  {
+                                    id: 'floor_id',
+                                    label: t('ui.zones.filters.floor') || 'Nombre',
+                                    type: 'text',
+                                    placeholder: t('ui.zones.placeholders.floor') || 'Nombre...',
+                                },
                               ] as FilterConfig[]
                           }
                           onFilterChange={setFilters}
