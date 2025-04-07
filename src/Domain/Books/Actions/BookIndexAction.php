@@ -4,14 +4,43 @@ namespace Domain\Books\Actions;
 
 use Domain\Books\Data\Resources\BookResource;
 use Domain\Books\Models\Book;
+use Domain\Bookshelves\Models\Bookshelf;
 
 class BookIndexAction
 {
-    public function __invoke(?string $search = null, int $perPage = 10)
+    public function __invoke(?array $search = null, int $perPage = 10)
     {
+        $title=$search[0];
+        $author=$search[1];
+        $pages=$search[2];
+        $editorial=$search[3];
+        $genre=$search[4];
+        $bookshelf=$search[5];
+
+        $bookshelves=Bookshelf::query()
+            ->when($bookshelf!='null', function($query) use ($bookshelf){
+                $query->where('number', $bookshelf);
+            })->pluck('id');
+
+
         $books = Book::query()
-            ->when($search, function ($query, $search) {
-                $query->where('name', 'like', "%{$search}%");
+            ->when($title!='null', function ($query) use ($title) {
+                $query->where('title', 'ILIKE', "%".$title."%");
+            })
+            ->when($author!='null', function ($query) use ($author){
+                $query->where('author', 'ILIKE', "%".$author."%");
+            })
+            ->when($pages!='null', function ($query) use ($pages){
+                $query->where('pages', 'ILIKE', "%".$pages."%");
+            })
+            ->when($editorial!='null', function ($query) use ($editorial){
+                $query->where('editorial', 'ILIKE', "%".$editorial."%");
+            })
+            ->when($genre!='null', function ($query) use ($genre){
+                $query->where('genre', 'ILIKE', "%".$genre."%");
+            })
+            ->when($bookshelf!='null', function($query) use ($bookshelves){
+                $query->WhereIn('bookshelf_id',  $bookshelves);
             })
             ->latest()
             ->paginate($perPage);

@@ -111,7 +111,6 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
             formData.append('bookshelf_id', value.bookshelf_id);
             formData.append('image', imageState);
             formData.append('_method', 'PUT');
-            console.log(genreArrayState)
             let genreString = '';
             if (genreArrayState.length > 0) {
                 genreString=genreArrayState[0];

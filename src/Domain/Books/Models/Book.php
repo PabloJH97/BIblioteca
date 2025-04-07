@@ -5,6 +5,7 @@ namespace Domain\Books\Models;
 use Database\Factories\BookFactory;
 use Domain\Bookshelves\Models\Bookshelf;
 use Domain\Genres\Models\Genre;
+use Domain\Users\Models\User;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -49,6 +50,11 @@ class Book extends Model implements HasMedia
     public function genres(): BelongsToMany
     {
         return $this->belongsToMany(Genre::class, 'book_genre', 'book_id', 'genre_id');
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'book_user', 'book_id', 'user_id');
     }
 
 

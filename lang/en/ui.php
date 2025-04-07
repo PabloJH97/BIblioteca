@@ -258,6 +258,7 @@ return [
         'edit' => 'Edit Zone',
         'fields' => [
             'name' => 'Zone',
+            'floor' => "Floor where it's located",
             'actions' => 'Actions',
         ],
         'columns' => [
@@ -268,10 +269,12 @@ return [
         ],
         'placeholders' => [
             'name' => 'Name of the zone',
+            'floor' => "Floor where it's located",
             'search' => 'Search zones...',
         ],
         'filters' => [
             'search' => 'Search',
+            'floor' => "Floor where it's located",
             'name' => 'Name of the zone',
         ],
         'buttons' => [
@@ -310,6 +313,10 @@ return [
         'edit' => 'Edit Bookshelf',
         'fields' => [
             'name' => 'Bookshelf',
+            'number' => 'Bookshelf number',
+            'capacity' => 'Bookshelf capacity',
+            'floor' => "Floor where it's located",
+            'zone' => "Zone where it's located",
             'actions' => 'Actions',
         ],
         'columns' => [
@@ -321,11 +328,17 @@ return [
         ],
         'placeholders' => [
             'number' => 'Bookshelf number',
+            'capacity' => 'Bookshelf capacity',
+            'floor' => "Floor where it's located",
+            'zone' => "Zone where it's located",
             'search' => 'Search bookshelves...',
         ],
         'filters' => [
             'search' => 'Search',
             'number' => 'Bookshelf number',
+            'capacity' => 'Bookshelf capacity',
+            'floor' => "Floor where it's located",
+            'zone' => "Zone where it's located",
         ],
         'buttons' => [
             'new' => 'New Bookshelf',
@@ -363,6 +376,13 @@ return [
         'edit' => 'Edit Book',
         'fields' => [
             'name' => 'Book',
+            'title' => 'Title',
+            'author' => 'Author',
+            'pages' => 'Pages',
+            'editorial' => 'Editorial',
+            'genre' => 'Genre',
+            'image' => 'Cover image',
+            'bookshelf' => 'Bookshelf where it is',
             'actions' => 'Actions',
         ],
         'columns' => [
@@ -377,11 +397,21 @@ return [
         ],
         'placeholders' => [
             'title' => 'Title',
-            'search' => 'Search books...',
+            'author' => 'Author',
+            'pages' => 'Pages',
+            'editorial' => 'Editorial',
+            'genre' => 'Genre',
+            'image' => 'Cover image',
+            'bookshelf' => 'Bookshelf where it is',
         ],
         'filters' => [
             'search' => 'Search',
             'title' => 'Title',
+            'author' => 'Author',
+            'pages' => 'Pages',
+            'editorial' => 'Editorial',
+            'genre' => 'Genre',
+            'bookshelf' => 'Bookshelf where it is',
         ],
         'buttons' => [
             'new' => 'New Book',

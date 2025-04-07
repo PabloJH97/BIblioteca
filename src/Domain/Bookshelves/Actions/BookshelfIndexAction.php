@@ -17,7 +17,7 @@ class BookshelfIndexAction
         $zone='';
 
         if($zone_name!='null'){
-            $zone=Zone::where('genre_id', Genre::where('name', 'ILIKE', "%".$zone_name."%")->first()->id)->first();
+            $zone=Zone::where('genre_id', Genre::where('name', 'ILIKE', "%".$zone_name."%")->first()->id)->pluck('id');
         };
 
         $bookshelves = Bookshelf::query()
@@ -28,7 +28,7 @@ class BookshelfIndexAction
                 $query->where('capacity', 'like', "%".$capacity."%");
             })
             ->when($zone_name!='null', function ($query) use ($zone) {
-                $query->where('zone_id', 'like', "%{$zone->id}%");
+                $query->WhereIn('zone_id', $zone);
             })
             ->latest()
             ->paginate($perPage);

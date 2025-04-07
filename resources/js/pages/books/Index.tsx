@@ -33,9 +33,13 @@ export default function booksIndex() {
   const [filters, setFilters] = useState<Record<string, any>>({});
   // Combine name and email filters into a single search string if they exist
   const combinedSearch = [
-    filters.search,
-    filters.name ? `name:${filters.name}` : null,
-  ].filter(Boolean).join(' ');
+    filters.title ? filters.title : 'null',
+    filters.author ? filters.author : 'null',
+    filters.pages ? filters.pages : 'null',
+    filters.editorial ? filters.editorial : 'null',
+    filters.genre ? filters.genre : 'null',
+    filters.bookshelf ? filters.bookshelf : 'null',
+  ];
 
   const { data: books, isLoading, isError, refetch } = useBooks({
     search: combinedSearch,
@@ -145,17 +149,41 @@ export default function booksIndex() {
                           filters={
                               [
                                   {
-                                      id: 'search',
-                                      label: t('ui.books.filters.search') || 'Buscar',
-                                      type: 'text',
-                                      placeholder: t('ui.books.placeholders.search') || 'Buscar...',
-                                  },
-                                  {
                                       id: 'title',
                                       label: t('ui.books.filters.title') || 'Título',
                                       type: 'text',
                                       placeholder: t('ui.books.placeholders.title') || 'Título...',
                                   },
+                                  {
+                                    id: 'author',
+                                    label: t('ui.books.filters.author') || 'Autor',
+                                    type: 'text',
+                                    placeholder: t('ui.books.placeholders.author') || 'Autor...',
+                                },
+                                  {
+                                    id: 'pages',
+                                    label: t('ui.books.filters.pages') || 'Páginas',
+                                    type: 'number',
+                                    placeholder: t('ui.books.placeholders.pages') || 'Páginas...',
+                                },
+                                {
+                                    id: 'editorial',
+                                    label: t('ui.books.filters.editorial') || 'Editorial',
+                                    type: 'text',
+                                    placeholder: t('ui.books.placeholders.editorial') || 'Editorial...',
+                                },
+                                {
+                                    id: 'genre',
+                                    label: t('ui.books.filters.genre') || 'Género',
+                                    type: 'text',
+                                    placeholder: t('ui.books.placeholders.genre') || 'Género...',
+                                },
+                                {
+                                    id: 'bookshelf',
+                                    label: t('ui.books.filters.bookshelf') || 'Estantería',
+                                    type: 'number',
+                                    placeholder: t('ui.books.placeholders.bookshelf') || 'Estantería...',
+                                },
                               ] as FilterConfig[]
                           }
                           onFilterChange={setFilters}

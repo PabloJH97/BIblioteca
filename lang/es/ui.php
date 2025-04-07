@@ -97,7 +97,7 @@ return [
             'clear' => 'Limpiar',
         ],
         'delete_dialog' => [
-            'success' => 'Usuario eliminado correctamente',
+            'success' => 'Eliminado correctamente',
         ],
         'showing_results' => 'Mostrando :from a :to de :total resultados',
         'pagination' => [
@@ -327,11 +327,16 @@ return [
         ],
         'placeholders' => [
             'number' => 'Número de estantería',
-            'search' => 'Buscar estanterías...',
+            'capacity' => 'Capacidad de la estantería',
+            'floor' => 'Piso donde se encuentra',
+            'zone' => 'Zona donde se encuentra'
         ],
         'filters' => [
             'search' => 'Buscar',
             'number' => 'Número de estantería',
+            'capacity' => 'Capacidad de la estantería',
+            'floor' => 'Piso donde se encuentra',
+            'zone' => 'Zona donde se encuentra'
         ],
         'buttons' => [
             'new' => 'Nueva estantería',
@@ -398,7 +403,12 @@ return [
         ],
         'filters' => [
             'search' => 'Buscar',
-            'title' => 'Título',
+            'title' => 'Título del libro',
+            'author' => 'Autor del libro',
+            'pages' => 'Páginas del libro',
+            'editorial' => 'Editorial',
+            'genre' => 'Género',
+            'bookshelf' => 'Estantería en la que se encuentra',
         ],
         'buttons' => [
             'new' => 'Nuevo libro',
