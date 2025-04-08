@@ -17,6 +17,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('zones', \App\Zones\Controllers\ZoneController::class);
     Route::resource('bookshelves', \App\Bookshelves\Controllers\BookshelfController::class);
     Route::resource('books', \App\Books\Controllers\BookController::class);
+    Route::resource('loans', \App\Loans\Controllers\LoanController::class);
 });
 
 require __DIR__.'/settings.php';

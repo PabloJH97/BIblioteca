@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             BookshelfSeeder::class,
             BookSeeder::class,
             BookGenreSeeder::class,
+            LoanSeeder::class,
         ]);
 
         //migrar pulse database
