@@ -22,6 +22,7 @@ class BookUpdateAction
             'author' => $data['author'],
             'pages' => $data['pages'],
             'editorial' => $data['editorial'],
+            'ISBN' => $data['ISBN'],
             'genre' => implode(', ', $genreArray),
             'bookshelf_id' => $data['bookshelf_id'],
 

@@ -9,6 +9,7 @@ export interface Loan {
   is_overdue: string;
   created_at: string;
   return_date: string;
+  returned_date:string;
 }
 
 // Interface representing the actual API response structure

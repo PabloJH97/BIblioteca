@@ -17,6 +17,7 @@ class LoanController extends Controller
      */
     public function index()
     {
+
         return Inertia::render('loans/Index');
     }
 
@@ -33,9 +34,11 @@ class LoanController extends Controller
      */
     public function store(Request $request, LoanStoreAction $action)
     {
+
         $validator = Validator::make($request->all(), [
-            'book_id' => ['required', 'string', 'max:255'],
-            'user_id' => ['required', 'string', 'max:255'],
+            'ISBN' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'max:255'],
+
 
         ]);
 
@@ -75,8 +78,9 @@ class LoanController extends Controller
     public function update(Request $request, Loan $loan, LoanUpdateAction $action)
     {
         $validator = Validator::make($request->all(), [
-            'book_id' => ['required', 'string', 'max:255'],
-            'user_id' => ['required', 'string', 'max:255'],
+            'ISBN' => ['string', 'max:255'],
+            'email' => ['string', 'max:255'],
+            'returned_date' => ['string'],
         ]);
 
         if ($validator->fails()) {

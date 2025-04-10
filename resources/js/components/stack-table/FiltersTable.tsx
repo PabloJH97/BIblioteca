@@ -369,9 +369,6 @@ function renderFilterInput(
             />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">
-              {filter.placeholder || "Todos"}
-            </SelectItem>
             {(filter as SelectFilterConfig).options.map((option) => (
               <SelectItem key={option.value} value={option.value}>
                 {option.label}
@@ -403,6 +400,7 @@ function renderFilterInput(
             <Calendar
               mode="single"
               selected={field.value}
+              timeZone="Europe/Madrid"
               onSelect={(date: Date | undefined) => {
                 field.onChange(date);
                 onChange(date);

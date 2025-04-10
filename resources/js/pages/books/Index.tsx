@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { TableSkeleton } from "@/components/stack-table/TableSkeleton";
 import { UserLayout } from "@/layouts/users/UserLayout";
 import { User, useDeleteUser, useUsers } from "@/hooks/users/useUsers";
-import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
+import { Barcode, PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useState, useMemo } from "react";
 import { Link, usePage } from "@inertiajs/react";
@@ -12,6 +12,7 @@ import { Table } from "@/components/stack-table/Table";
 import { createTextColumn, createDateColumn, createActionsColumn } from "@/components/stack-table/columnsTable";
 import { DeleteDialog } from "@/components/stack-table/DeleteDialog";
 import { FiltersTable, FilterConfig } from "@/components/stack-table/FiltersTable";
+import { router } from "@inertiajs/react";
 import { toast } from "sonner";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { BookLayout } from "@/layouts/books/BookLayout";
@@ -37,6 +38,7 @@ export default function booksIndex() {
     filters.author ? filters.author : 'null',
     filters.pages ? filters.pages : 'null',
     filters.editorial ? filters.editorial : 'null',
+    filters.ISBN ? filters.ISBN : 'null',
     filters.genre ? filters.genre : 'null',
     filters.bookshelf ? filters.bookshelf : 'null',
   ];
@@ -56,6 +58,10 @@ export default function booksIndex() {
     setPerPage(newPerPage);
     setCurrentPage(1); // Reset to first page when changing items per page
   };
+
+  function handleCreateLoan(ISBN: string){
+    router.get(`loans/create`, {ISBN})
+  }
 
   const handleDeleteBook = async (id: string) => {
     try {
@@ -89,6 +95,11 @@ export default function booksIndex() {
         accessorKey: "editorial",
       }),
       createTextColumn<Book>({
+        id: "ISBN",
+        header: t("ui.books.columns.ISBN") || "ISBN",
+        accessorKey: "ISBN",
+      }),
+      createTextColumn<Book>({
         id: "genre",
         header: t("ui.books.columns.genre") || "Genre",
         accessorKey: "genre",
@@ -108,6 +119,9 @@ export default function booksIndex() {
       header: t("ui.books.columns.actions") || "Actions",
       renderActions: (book) => (
         <>
+          <Button variant="outline" size="icon" title={t("ui.loans.buttons.edit") || "Edit loan"} onClick={()=>handleCreateLoan(book.ISBN)}>
+            <Barcode className="h-4 w-4" />
+          </Button>
           <Link href={`/books/${book.id}/edit?page=${currentPage}&perPage=${perPage}`}>
             <Button variant="outline" size="icon" title={t("ui.books.buttons.edit") || "Edit book"}>
               <PencilIcon className="h-4 w-4" />
@@ -171,6 +185,12 @@ export default function booksIndex() {
                                     label: t('ui.books.filters.editorial') || 'Editorial',
                                     type: 'text',
                                     placeholder: t('ui.books.placeholders.editorial') || 'Editorial...',
+                                },
+                                {
+                                    id: 'ISBN',
+                                    label: t('ui.books.filters.ISBN') || 'ISBN',
+                                    type: 'text',
+                                    placeholder: t('ui.books.placeholders.ISBN') || 'ISBN...',
                                 },
                                 {
                                     id: 'genre',

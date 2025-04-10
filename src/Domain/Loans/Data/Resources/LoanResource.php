@@ -17,19 +17,32 @@ class LoanResource extends Data
         public readonly string $is_overdue,
         public readonly string $created_at,
         public readonly string $return_date,
+        public readonly string $returned_date,
     ) {
     }
 
     public static function fromModel(Loan $loan): self
     {
+        $returned='No devuelto';
+        $overdue='Sin retraso';
+        if($loan->returned_date!=null){
+            $returned=date_create($loan->returned_date)->format('d-m-Y');
+        }
+        if($loan->is_overdue&&$loan->borrowed){
+            $overdue=date_create($loan->return_date->format('Y-d-m'))->diff(date_create(date('Y-m-d')))->format('%a días');
+        }elseif($loan->is_overdue&&!$loan->borrowed){
+            $overdue=date_create($loan->returned_date->format('Y-m-d'))->diff(date_create(date('Y-m-d')))->format('%a días');
+        }
+
         return new self(
             id: $loan->id,
-            book: Book::where('id', $loan->book_id)->first()->title,
-            user: User::where('id', $loan->user_id)->first()->name,
+            book: $loan->book->title,
+            user: $loan->user->name,
             borrowed: $loan->borrowed ? 'En préstamo' : 'Devuelto',
-            is_overdue: $loan->is_overdue ? 'Con retraso' : 'Sin retraso',
-            created_at: $loan->created_at->format('Y-m-d H:i:s'),
-            return_date: $loan->return_date->format('Y-m-d H:i:s'),
+            is_overdue: $overdue,
+            created_at: $loan->created_at->format('m-d-Y H:i:s'),
+            return_date: $loan->return_date->format('m-d-Y'),
+            returned_date: $returned,
 
         );
     }

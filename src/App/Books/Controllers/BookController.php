@@ -45,6 +45,7 @@ class BookController extends Controller
             'author' => ['required', 'string', 'max:255'],
             'pages' => ['required', 'numeric', 'max:255'],
             'editorial' => ['required', 'string', 'max:255'],
+            'ISBN' => ['required', 'string', 'max:255'],
             'bookshelf_id' => ['required', 'string', 'max:255'],
 
         ]);
@@ -97,6 +98,7 @@ class BookController extends Controller
             'author' => ['required', 'string', 'max:255'],
             'pages' => ['required', 'numeric', 'max:255'],
             'editorial' => ['required', 'string', 'max:255'],
+            'ISBN' => ['required', 'string', 'max:255'],
             'bookshelf_id' => ['required', 'string', 'max:255'],
 
         ]);

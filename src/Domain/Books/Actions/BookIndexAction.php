@@ -14,8 +14,9 @@ class BookIndexAction
         $author=$search[1];
         $pages=$search[2];
         $editorial=$search[3];
-        $genre=$search[4];
-        $bookshelf=$search[5];
+        $ISBN=$search[4];
+        $genre=$search[5];
+        $bookshelf=$search[6];
 
         $bookshelves=Bookshelf::query()
             ->when($bookshelf!='null', function($query) use ($bookshelf){
@@ -35,6 +36,9 @@ class BookIndexAction
             })
             ->when($editorial!='null', function ($query) use ($editorial){
                 $query->where('editorial', 'ILIKE', "%".$editorial."%");
+            })
+            ->when($ISBN!='null', function ($query) use ($ISBN){
+                $query->where('ISBN', 'ILIKE',  "%".$ISBN."%");
             })
             ->when($genre!='null', function ($query) use ($genre){
                 $query->where('genre', 'ILIKE', "%".$genre."%");

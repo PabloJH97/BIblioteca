@@ -26,8 +26,8 @@ class LoanApiController extends Controller
     public function store(Request $request, LoanStoreAction $action)
     {
         $validator = Validator::make($request->all(), [
-            'book_id' => ['required', 'string', 'max:255'],
-            'user_id' => ['required', 'string', 'max:255'],
+            'ISBN' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'max:255'],
         ]);
 
         if ($validator->fails()) {
@@ -45,8 +45,8 @@ class LoanApiController extends Controller
     public function update(Request $request, Loan $floor, LoanUpdateAction $action)
     {
         $validator = Validator::make($request->all(), [
-            'book_id' => ['required', 'string', 'max:255'],
-            'user_id' => ['required', 'string', 'max:255'],
+            'ISBN' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'max:255'],
         ]);
 
         if ($validator->fails()) {

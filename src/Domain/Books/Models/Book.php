@@ -14,12 +14,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Book extends Model implements HasMedia
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, SoftDeletes;
     use InteractsWithMedia;
     /**
      * Create a new factory instance for the model.
@@ -40,6 +41,7 @@ class Book extends Model implements HasMedia
         'author',
         'pages',
         'editorial',
+        'ISBN',
         'genre',
         'bookshelf_id',
         'bookshelf'

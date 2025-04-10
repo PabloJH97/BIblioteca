@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { TableSkeleton } from "@/components/stack-table/TableSkeleton";
 import { UserLayout } from "@/layouts/users/UserLayout";
 import { User, useDeleteUser, useUsers } from "@/hooks/users/useUsers";
-import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
+import { Check, PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useState, useMemo } from "react";
 import { Link, usePage } from "@inertiajs/react";
@@ -13,6 +13,7 @@ import { createTextColumn, createDateColumn, createActionsColumn } from "@/compo
 import { DeleteDialog } from "@/components/stack-table/DeleteDialog";
 import { FiltersTable, FilterConfig } from "@/components/stack-table/FiltersTable";
 import { toast } from "sonner";
+import { router } from '@inertiajs/react';
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { LoanLayout } from "@/layouts/loans/LoanLayout";
 import { Loan, useDeleteLoan, useLoans } from "@/hooks/loans/useLoans";
@@ -57,6 +58,15 @@ export default function LoansIndex() {
     setCurrentPage(1); // Reset to first page when changing items per page
   };
 
+  function handleReturnLoan(loan: string[]){
+    const formData=new FormData();
+    formData.append('returned_date', loan[1]);
+    formData.append('_method', 'PUT');
+    router.post(`/loans/${loan[0]}`, formData);
+    refetch();
+
+  }
+
   const handleDeleteLoan = async (id: string) => {
     try {
       await deleteLoanMutation.mutateAsync(id);
@@ -66,6 +76,8 @@ export default function LoansIndex() {
       console.error("Error deleting loan:", error);
     }
   };
+
+
 
   const columns = useMemo(() => ([
     createTextColumn<Loan>({
@@ -98,11 +110,19 @@ export default function LoansIndex() {
         header: t("ui.loans.columns.return_date") || "Return date",
         accessorKey: "return_date",
       }),
+      createTextColumn<Loan>({
+        id: "returned_date",
+        header: t("ui.loans.columns.returned_date") || "Returned date",
+        accessorKey: "returned_date",
+      }),
     createActionsColumn<Loan>({
       id: "actions",
       header: t("ui.loans.columns.actions") || "Actions",
       renderActions: (loan) => (
         <>
+          <Button variant="outline" size="icon" title={t("ui.loans.buttons.return") || "Return loan"} onClick={()=>{handleReturnLoan([loan.id, 'true'])}}>
+            <Check className="h-4 w-4" />
+          </Button>
           <Link href={`/loans/${loan.id}/edit?page=${currentPage}&perPage=${perPage}`}>
             <Button variant="outline" size="icon" title={t("ui.loans.buttons.edit") || "Edit loan"}>
               <PencilIcon className="h-4 w-4" />
@@ -158,16 +178,16 @@ export default function LoansIndex() {
                                 {
                                     id: 'borrowed',
                                     label: t('ui.loans.filters.borrowed') || 'Prestado',
-                                    type: 'text',
-                                    // defaultValue: 'Devuelto',
-                                    // options: [{value:'En préstamo', label:'En préstamo'}, {value:'Devuelto', label: 'Devuelto'}],
+                                    type: 'select',
+                                    options: [{value:'true', label:'En préstamo'}, {value:'false', label: 'Devuelto'}],
                                     placeholder: t('ui.loans.placeholders.borrowed') || 'Prestado...',
                                 },
                                 {
                                     id: 'is_overdue',
-                                    label: t('ui.loans.filters.is_overdue') || 'Va tarde',
-                                    type: 'text',
-                                    placeholder: t('ui.loans.placeholders.is_overdue') || 'Va tarde...',
+                                    label: t('ui.loans.filters.is_overdue') || 'Retraso',
+                                    type: 'select',
+                                    options: [{value:'true', label:'Retraso'}, {value:'false', label: 'A tiempo'}],
+                                    placeholder: t('ui.loans.placeholders.is_overdue') || 'Retraso...',
                                 },
                                 {
                                     id: 'created_at',

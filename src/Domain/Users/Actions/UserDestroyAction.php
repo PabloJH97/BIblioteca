@@ -2,6 +2,7 @@
 
 namespace Domain\Users\Actions;
 
+use App\Notifications\test;
 use Domain\Users\Models\User;
 
 class UserDestroyAction

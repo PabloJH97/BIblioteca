@@ -36,6 +36,7 @@ class BookFactory extends Factory
             'author'=>'',
             'pages'=>fake()->numberBetween($min=10, $max=250),
             'editorial'=>'',
+            'ISBN'=>fake()->isbn13(),
             'genre'=>implode(', ', $genresArray),
             'bookshelf_id'=>$bookshelf->id,
         ];

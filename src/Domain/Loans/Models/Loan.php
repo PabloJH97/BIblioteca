@@ -8,6 +8,7 @@ use Domain\Users\Models\User;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Loan extends Model
@@ -36,17 +37,18 @@ class Loan extends Model
     ];
 
     protected $casts = [
-        'return_date' => 'datetime:dd/mm/YYYY', // Change your format
-        'created_at' => 'datetime:dd/mm/YYYY'
+        'return_date' => 'datetime:m/d/Y', // Change your format
+        'created_at' => 'datetime:m/d/Y',
+        'returned_date' => 'datetime:m/d/Y',
     ];
 
-    public function user(): HasOne
+    public function user(): BelongsTo
     {
-        return $this->hasOne(User::class, 'user_id');
+        return $this->belongsTo(User::class)->withTrashed();
     }
 
-    public function book(): HasOne
+    public function book(): BelongsTo
     {
-        return $this->hasOne(Book::class, 'book_id');
+        return $this->belongsTo(Book::class)->withTrashed();
     }
 }

@@ -7,6 +7,7 @@ export interface Book {
   author: string,
   pages: number,
   editorial: string,
+  ISBN: string,
   genre: string,
   bookshelf_id: string,
   bookshelf: string,

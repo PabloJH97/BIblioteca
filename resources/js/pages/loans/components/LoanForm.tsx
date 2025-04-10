@@ -16,12 +16,13 @@ import { toast } from 'sonner';
 interface LoanFormProps {
     initialData?: {
         id: string;
-        book_id: string;
-        user_id: string;
+        ISBN: string;
+        email: string;
     };
     page?: string;
     perPage?: string;
     pageTitle?: string;
+    bookISBN?: string | null;
 }
 
 
@@ -37,17 +38,22 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
     );
 }
 
-export function LoanForm({ initialData, page, perPage, pageTitle }: LoanFormProps) {
+export function LoanForm({ initialData, page, perPage, pageTitle, bookISBN }: LoanFormProps) {
     const { t } = useTranslations();
     const queryClient = useQueryClient();
 
     // TanStack Form setup
     const form = useForm({
         defaultValues: {
-            book_id: initialData?.book_id ?? '',
-            user_id: initialData?.user_id ?? '',
+            ISBN: initialData?.ISBN ?? bookISBN ?? '',
+            email: initialData?.email ?? '',
         },
         onSubmit: async ({ value }) => {
+            const formData=new FormData();
+            formData.append('ISBN', value.ISBN);
+            formData.append('email', value.email);
+            formData.append('returned_date', 'false');
+            formData.append('_method', 'PUT');
             const options = {
                 onSuccess: () => {
                     queryClient.invalidateQueries({ queryKey: ['loans'] });
@@ -72,7 +78,7 @@ export function LoanForm({ initialData, page, perPage, pageTitle }: LoanFormProp
 
             // Submit with Inertia
             if (initialData) {
-                router.put(`/loans/${initialData.id}`, value, options);
+                router.post(`/loans/${initialData.id}`, formData, options);
             } else {
                 router.post('/loans', value, options);
             }
@@ -91,7 +97,7 @@ export function LoanForm({ initialData, page, perPage, pageTitle }: LoanFormProp
             <CardContent className={'h-full bg-background'}>
                 <div>
                     <form.Field
-                        name="book_id"
+                        name="ISBN"
                         validators={{
                             onChangeAsync: async ({ value }) => {
                                 await new Promise((resolve) => setTimeout(resolve, 500));
@@ -117,7 +123,7 @@ export function LoanForm({ initialData, page, perPage, pageTitle }: LoanFormProp
                                     onChange={(e) => field.handleChange(e.target.value)}
                                     onBlur={field.handleBlur}
                                     placeholder={t('ui.loans.placeholders.book')}
-                                    disabled={form.state.isSubmitting}
+                                    disabled={form.state.isSubmitting || bookISBN!=null }
                                     required={false}
                                     autoComplete="off"
                                 />
@@ -129,7 +135,7 @@ export function LoanForm({ initialData, page, perPage, pageTitle }: LoanFormProp
                 <br />
                 <div>
                     <form.Field
-                        name="user_id"
+                        name="email"
                         validators={{
                             onChangeAsync: async ({ value }) => {
                                 await new Promise((resolve) => setTimeout(resolve, 500));

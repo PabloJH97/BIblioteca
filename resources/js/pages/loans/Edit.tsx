@@ -6,8 +6,8 @@ import { LoanLayout } from "@/layouts/loans/LoanLayout";
 interface EditLoanProps extends PageProps {
   loan: {
     id: string;
-    book_id: string;
-    user_id: string;
+    ISBN: string;
+    email: string;
   };
   page?: string;
   perPage?: string;

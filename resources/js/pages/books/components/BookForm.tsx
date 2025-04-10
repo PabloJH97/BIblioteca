@@ -20,6 +20,7 @@ interface BookFormProps {
         author: string;
         pages: number;
         editorial: string;
+        ISBN: string;
         genre: string;
         bookshelf_id: string;
 
@@ -98,6 +99,7 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
             author: initialData?.author ?? '',
             pages: initialData?.pages ?? 0,
             editorial: initialData?.editorial ?? '',
+            ISBN: initialData?.ISBN ?? '',
             genre: [''],
             bookshelf_id: initialData?.bookshelf_id ?? '',
             image: image,
@@ -108,6 +110,7 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
             formData.append('author', value.author);
             formData.append('pages', value.pages);
             formData.append('editorial', value.editorial);
+            formData.append('ISBN', value.ISBN);
             formData.append('bookshelf_id', value.bookshelf_id);
             formData.append('image', imageState);
             formData.append('_method', 'PUT');
@@ -247,6 +250,7 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                         )}
                     </form.Field>
                 </div>
+                <br />
                 <div>
                     <form.Field
                         name="author"
@@ -285,6 +289,7 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                         )}
                     </form.Field>
                 </div>
+                <br />
                 <div>
                     <form.Field
                         name="pages"
@@ -323,6 +328,7 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                         )}
                     </form.Field>
                 </div>
+                <br />
                 <div>
                     <form.Field
                         name="editorial"
@@ -352,6 +358,45 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                                     onChange={(e) => field.handleChange(e.target.value)}
                                     onBlur={field.handleBlur}
                                     placeholder={t('ui.books.placeholders.editorial')}
+                                    disabled={form.state.isSubmitting}
+                                    required={false}
+                                    autoComplete="off"
+                                />
+                                <FieldInfo field={field} />
+                            </>
+                        )}
+                    </form.Field>
+                </div>
+                <br />
+                <div>
+                    <form.Field
+                        name="ISBN"
+                        validators={{
+                            onChangeAsync: async ({ value }) => {
+                                await new Promise((resolve) => setTimeout(resolve, 500));
+                                return !value
+                                    ? t('ui.validation.required', { attribute: t('ui.users.fields.name').toLowerCase() })
+                                    : value.length < 2
+                                      ? t('ui.validation.min.string', { attribute: t('ui.users.fields.name').toLowerCase(), min: '2' })
+                                      : undefined;
+                            },
+                        }}
+                    >
+                        {(field) => (
+                            <>
+                                <div className="flex flex-row items-center">
+
+                                    <Label htmlFor={field.name}>{t('ui.books.fields.ISBN')}</Label>
+                                </div>
+
+                                <Input
+                                    id={field.name}
+                                    type='string'
+                                    name={field.name}
+                                    value={field.state.value}
+                                    onChange={(e) => field.handleChange(e.target.value)}
+                                    onBlur={field.handleBlur}
+                                    placeholder={t('ui.books.placeholders.ISBN')}
                                     disabled={form.state.isSubmitting}
                                     required={false}
                                     autoComplete="off"

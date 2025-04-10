@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('loans', function (Blueprint $table) {
             $table->uuid('id')->unique()->primary();
-            $table->foreignUuid('book_id')->references('id')->on('books')->cascadeOnDelete();
-            $table->foreignUuid('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreignUuid('book_id')->constrained(table:'books', indexName:'loan_id_book')->cascadeOnDelete();
+            $table->foreignUuid('user_id')->constrained(table:'users', indexName:'loan_id_user')->cascadeOnDelete();
             $table->boolean('borrowed')->default(true);
             $table->boolean('is_overdue')->default(false);
             $table->timestamps();
             $table->date('return_date');
+            $table->date('returned_date')->nullable();
         });
     }
 
