@@ -458,6 +458,7 @@ return [
             'is_overdue' => 'Retraso',
             'created_at' => 'Fecha de creación',
             'actions' => 'Acciones',
+            'returned_date' => 'Fecha en la que se ha devuelto'
         ],
         'placeholders' => [
             'book' => 'Libro',

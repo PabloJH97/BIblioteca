@@ -13,7 +13,7 @@ class LoanUpdateAction
     {
         $returned_date='';
         if($data['returned_date']=='true'){
-            $returned_date=date('m-d-Y');
+            $returned_date=date('Y-m-d');
             $loan->forceFill([
                 'borrowed' => false,
                 'returned_date'=>$returned_date
@@ -27,7 +27,7 @@ class LoanUpdateAction
             $updateData = [
                 'book_id' => $book[$key],
                 'user_id' => $user->id,
-                'return_date' => date('d/m/Y', strtotime('+1 month')),
+                'return_date' => date('Y-m-d', strtotime('+1 month')),
             ];
             $loan->update($updateData);
         }

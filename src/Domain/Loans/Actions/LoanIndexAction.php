@@ -26,17 +26,16 @@ class LoanIndexAction
 
         }
         if($return_date!='null'){
-            $returned_date=date_create(explode('T', $return_date)[0])->format('Y-d-m');
-
+           $returned_date=date_create(explode('T', $return_date)[0])->format('Y-m-d');
         }
 
 
         $book_id=Book::query()->when($book!='null', function ($query) use ($book){
-            $query->where('title', 'ILIKE', "%".$book."%");
+            $query->where('title', 'ILIKE', "%".$book."%")->withTrashed();
         })->pluck('id');
 
         $user_id=User::query()->when($user!='null', function ($query) use ($user){
-            $query->where('name', 'ILIKE', "%".$user."%");
+            $query->where('name', 'ILIKE', "%".$user."%")->withTrashed();
         })->pluck('id');
 
 

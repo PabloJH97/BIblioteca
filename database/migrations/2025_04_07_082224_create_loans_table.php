@@ -20,6 +20,7 @@ return new class extends Migration
             $table->timestamps();
             $table->date('return_date');
             $table->date('returned_date')->nullable();
+            $table->softDeletes();
         });
     }
 

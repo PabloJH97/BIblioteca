@@ -7,6 +7,7 @@ use Domain\Users\Models\UserSetting;
 use Database\Factories\UserFactory;
 use Domain\Books\Models\Book;
 use Domain\Loans\Models\Loan;
+use Domain\Reservations\Models\Reservation;
 use Domain\Users\Observers\UserObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -91,5 +92,10 @@ class User extends Authenticatable
     public function activeLoans(): HasMany
     {
         return $this->hasMany(Loan::class)->where('borrowed', true);
+    }
+
+    public function reservations(): HasMany
+    {
+        return $this->hasMany(Reservation::class);
     }
 }
