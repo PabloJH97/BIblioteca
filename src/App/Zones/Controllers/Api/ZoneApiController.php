@@ -45,7 +45,7 @@ class ZoneApiController extends Controller
         ]);
     }
 
-    public function update(Request $request, Zone $floor, ZoneUpdateAction $action)
+    public function update(Request $request, Zone $zone, ZoneUpdateAction $action)
     {
         $validator = Validator::make($request->all(), [
             'genre_id' => ['required', 'string', 'max:255'],
@@ -58,7 +58,7 @@ class ZoneApiController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $updatedZone = $action($floor, $validator->validated());
+        $updatedZone = $action($zone, $validator->validated());
 
         return response()->json([
             'message' => __('messages.zones.updated'),

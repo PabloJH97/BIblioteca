@@ -17,6 +17,7 @@ class BookResource extends Data
         public readonly string $editorial,
         public readonly string $ISBN,
         public readonly string $genre,
+        public readonly bool $hasActive,
         public readonly string $bookshelf_id,
         public readonly string $bookshelf,
         public readonly string $created_at,
@@ -28,6 +29,7 @@ class BookResource extends Data
     {
         $bookshelf=Bookshelf::where('id', $book->bookshelf_id)->first();
 
+        $ActiveBool = $book->activeLoans()->first() !== null;
 
         return new self(
             id: $book->id,
@@ -37,6 +39,7 @@ class BookResource extends Data
             editorial: $book->editorial,
             ISBN: $book->ISBN,
             genre: $book->genre,
+            hasActive: $ActiveBool,
             bookshelf_id: $book->bookshelf_id,
             bookshelf: $bookshelf->number,
             created_at: $book->created_at->format('Y-m-d H:i:s'),

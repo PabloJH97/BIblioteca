@@ -9,7 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class LoanLateMail extends Notification
+class LoanLateMail extends Notification implements ShouldQueue
 {
     use Queueable;
     public $user, $book;

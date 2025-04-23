@@ -3,6 +3,7 @@
 namespace App\Loans\Controllers;
 
 use App\Core\Controllers\Controller;
+use Domain\Loans\Actions\LoanDestroyAction;
 use Domain\Loans\Actions\LoanStoreAction;
 use Domain\Loans\Actions\LoanUpdateAction;
 use Domain\Loans\Models\Loan;
@@ -106,8 +107,11 @@ class LoanController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Loan $loan, LoanDestroyAction $action)
     {
-        //
+        $action($loan);
+
+        return redirect()->route('loans.index')
+            ->with('success', __('messages.loans.deleted'));
     }
 }

@@ -5,6 +5,8 @@ namespace Domain\Loans\Actions;
 use Domain\Books\Models\Book;
 use Domain\Loans\Data\Resources\LoanResource;
 use Domain\Loans\Models\Loan;
+use Domain\Reservations\Actions\ReservationUpdateAction;
+use Domain\Reservations\Models\Reservation;
 use Domain\Users\Models\User;
 
 class LoanUpdateAction
@@ -18,6 +20,11 @@ class LoanUpdateAction
                 'borrowed' => false,
                 'returned_date'=>$returned_date
             ])->save();
+            if(Book::find($loan->book_id)->reservations->first()!=null){
+                $action=new ReservationUpdateAction;
+                $action->__invoke(Reservation::where('book_id', $loan->book_id)->where('active', true)->orderBy('created_at', 'asc')->first());
+            }
+
         }else{
             $books=Book::where('ISBN', $data['ISBN'])->pluck('id')->all();
             $bookLoans=Loan::WhereIn('book_id', $books)->where('borrowed', true)->pluck('book_id')->all();

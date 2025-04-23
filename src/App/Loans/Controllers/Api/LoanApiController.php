@@ -42,7 +42,7 @@ class LoanApiController extends Controller
         ]);
     }
 
-    public function update(Request $request, Loan $floor, LoanUpdateAction $action)
+    public function update(Request $request, Loan $loan, LoanUpdateAction $action)
     {
         $validator = Validator::make($request->all(), [
             'ISBN' => ['required', 'string', 'max:255'],
@@ -53,7 +53,7 @@ class LoanApiController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $updatedLoan = $action($floor, $validator->validated());
+        $updatedLoan = $action($loan, $validator->validated());
 
         return response()->json([
             'message' => __('messages.loans.updated'),

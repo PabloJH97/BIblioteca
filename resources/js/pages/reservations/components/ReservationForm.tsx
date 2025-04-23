@@ -13,7 +13,7 @@ import { useState } from 'react';
 import { Option, Select } from 'react-day-picker';
 import { toast } from 'sonner';
 
-interface LoanFormProps {
+interface ReservationFormProps {
     initialData?: {
         id: string;
         ISBN: string;
@@ -38,7 +38,7 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
     );
 }
 
-export function LoanForm({ initialData, page, perPage, pageTitle, bookISBN }: LoanFormProps) {
+export function ReservationForm({ initialData, page, perPage, pageTitle, bookISBN }: ReservationFormProps) {
     const { t } = useTranslations();
     const queryClient = useQueryClient();
     // TanStack Form setup
@@ -55,10 +55,10 @@ export function LoanForm({ initialData, page, perPage, pageTitle, bookISBN }: Lo
             formData.append('_method', 'PUT');
             const options = {
                 onSuccess: () => {
-                    queryClient.invalidateQueries({ queryKey: ['loans'] });
+                    queryClient.invalidateQueries({ queryKey: ['reservations'] });
 
                     // Construct URL with page parameters
-                    let url = '/loans';
+                    let url = '/reservations';
                     if (page) {
                         url += `?page=${page}`;
                         if (perPage) {
@@ -70,16 +70,16 @@ export function LoanForm({ initialData, page, perPage, pageTitle, bookISBN }: Lo
                 },
                 onError: (errors: Record<string, string>) => {
                     if (Object.keys(errors).length === 0) {
-                        toast.error(initialData ? t('messages.loans.error.update') : t('messages.loans.error.create'));
+                        toast.error(initialData ? t('messages.reservations.error.update') : t('messages.reservations.error.create'));
                     }
                 },
             };
 
             // Submit with Inertia
             if (initialData) {
-                router.post(`/loans/${initialData.id}`, formData, options);
+                router.post(`/reservations/${initialData.id}`, formData, options);
             } else {
-                router.post('/loans', value, options);
+                router.post('/reservations', value, options);
             }
         },
     });
@@ -91,7 +91,7 @@ export function LoanForm({ initialData, page, perPage, pageTitle, bookISBN }: Lo
         form.handleSubmit();
     };
 
-    function LoanFormData() {
+    function ReservationFormData() {
         return (
             <CardContent className={'h-full bg-background'}>
                 <div>
@@ -101,9 +101,9 @@ export function LoanForm({ initialData, page, perPage, pageTitle, bookISBN }: Lo
                             onChangeAsync: async ({ value }) => {
                                 await new Promise((resolve) => setTimeout(resolve, 500));
                                 return !value
-                                    ? t('ui.validation.required', { attribute: t('ui.loans.fields.book').toLowerCase() })
+                                    ? t('ui.validation.required', { attribute: t('ui.reservations.fields.book').toLowerCase() })
                                     : value.length < 2
-                                      ? t('ui.validation.min.string', { attribute: t('ui.loans.fields.book').toLowerCase(), min: '2' })
+                                      ? t('ui.validation.min.string', { attribute: t('ui.reservations.fields.book').toLowerCase(), min: '2' })
                                       : undefined;
                             },
                         }}
@@ -112,7 +112,7 @@ export function LoanForm({ initialData, page, perPage, pageTitle, bookISBN }: Lo
                             <>
                                 <div className="flex flex-row items-center">
                                     <SquareMenu className="w-5"></SquareMenu>
-                                    <Label htmlFor={field.name}>{t('ui.loans.fields.book')}</Label>
+                                    <Label htmlFor={field.name}>{t('ui.reservations.fields.book')}</Label>
                                 </div>
 
                                 <Input
@@ -121,7 +121,7 @@ export function LoanForm({ initialData, page, perPage, pageTitle, bookISBN }: Lo
                                     value={field.state.value}
                                     onChange={(e) => field.handleChange(e.target.value)}
                                     onBlur={field.handleBlur}
-                                    placeholder={t('ui.loans.placeholders.book')}
+                                    placeholder={t('ui.reservations.placeholders.book')}
                                     disabled={form.state.isSubmitting || bookISBN!=null }
                                     required={false}
                                     autoComplete="off"
@@ -139,9 +139,9 @@ export function LoanForm({ initialData, page, perPage, pageTitle, bookISBN }: Lo
                             onChangeAsync: async ({ value }) => {
                                 await new Promise((resolve) => setTimeout(resolve, 500));
                                 return !value
-                                    ? t('ui.validation.required', { attribute: t('ui.loans.fields.user').toLowerCase() })
+                                    ? t('ui.validation.required', { attribute: t('ui.reservations.fields.user').toLowerCase() })
                                     : value.length < 2
-                                      ? t('ui.validation.min.string', { attribute: t('ui.loans.fields.user').toLowerCase(), min: '2' })
+                                      ? t('ui.validation.min.string', { attribute: t('ui.reservations.fields.user').toLowerCase(), min: '2' })
                                       : undefined;
                             },
                         }}
@@ -150,7 +150,7 @@ export function LoanForm({ initialData, page, perPage, pageTitle, bookISBN }: Lo
                             <>
                                 <div className="flex flex-row items-center">
                                     <SquareMenu className="w-5"></SquareMenu>
-                                    <Label htmlFor={field.name}>{t('ui.loans.fields.user')}</Label>
+                                    <Label htmlFor={field.name}>{t('ui.reservations.fields.user')}</Label>
                                 </div>
 
                                 <Input
@@ -159,7 +159,7 @@ export function LoanForm({ initialData, page, perPage, pageTitle, bookISBN }: Lo
                                     value={field.state.value}
                                     onChange={(e) => field.handleChange(e.target.value)}
                                     onBlur={field.handleBlur}
-                                    placeholder={t('ui.loans.placeholders.user')}
+                                    placeholder={t('ui.reservations.placeholders.user')}
                                     disabled={form.state.isSubmitting}
                                     required={false}
                                     autoComplete="off"
@@ -176,7 +176,7 @@ export function LoanForm({ initialData, page, perPage, pageTitle, bookISBN }: Lo
 
 
 
-    function LoanFormView() {
+    function ReservationFormView() {
         return (
             <form onSubmit={handleSubmit} className="space-y-4" noValidate>
                 {/* Name field */}
@@ -193,7 +193,7 @@ export function LoanForm({ initialData, page, perPage, pageTitle, bookISBN }: Lo
                         </div>
                     </CardHeader>
 
-                    <div><LoanFormData></LoanFormData></div>
+                    <div><ReservationFormData></ReservationFormData></div>
 
                     {/* Form buttons */}
                     <CardFooter className="justify-center">
@@ -202,7 +202,7 @@ export function LoanForm({ initialData, page, perPage, pageTitle, bookISBN }: Lo
                                 type="button"
                                 variant="outline"
                                 onClick={() => {
-                                    let url = '/loans';
+                                    let url = '/reservations';
                                     if (page) {
                                         url += `?page=${page}`;
                                         if (perPage) {
@@ -214,7 +214,7 @@ export function LoanForm({ initialData, page, perPage, pageTitle, bookISBN }: Lo
                                 disabled={form.state.isSubmitting}
                             >
                                 <X></X>
-                                {t('ui.loans.buttons.cancel')}
+                                {t('ui.reservations.buttons.cancel')}
                             </Button>
 
                             <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
@@ -222,10 +222,10 @@ export function LoanForm({ initialData, page, perPage, pageTitle, bookISBN }: Lo
                                     <Button type="submit" disabled={!canSubmit} className="bg-blue-400">
                                         <Save></Save>
                                         {isSubmitting
-                                            ? t('ui.loans.buttons.saving')
+                                            ? t('ui.reservations.buttons.saving')
                                             : initialData
-                                              ? t('ui.loans.buttons.update')
-                                              : t('ui.loans.buttons.save')}
+                                              ? t('ui.reservations.buttons.update')
+                                              : t('ui.reservations.buttons.save')}
                                     </Button>
                                 )}
                             </form.Subscribe>
@@ -236,5 +236,5 @@ export function LoanForm({ initialData, page, perPage, pageTitle, bookISBN }: Lo
         );
     }
 
-    return <LoanFormView></LoanFormView>;
+    return <ReservationFormView></ReservationFormView>;
 }

@@ -13,7 +13,7 @@ export default function CreateLoan({}:CreateLoanProps) {
 
     const paramsString = window.location.search;
     const searchParams = new URLSearchParams(paramsString);
-    const bookISBN = searchParams.get("ISBN");
+    const bookISBN = searchParams.toString().split('=')[1];
   return (
     <LoanLayout title={t("ui.loans.create")}>
       <div className="p-6">

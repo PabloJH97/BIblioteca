@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Ramsey\Uuid\Type\Integer;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -60,12 +61,12 @@ class Book extends Model implements HasMedia
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'book_user', 'book_id', 'user_id');
+        return $this->belongsToMany(User::class, 'book_user', 'book_id', 'user_id')->withTrashed();
     }
 
     public function loans(): HasMany
     {
-        return $this->hasMany(Loan::class);
+        return $this->hasMany(Loan::class)->withTrashed();
     }
 
     public function activeLoans(): HasOne
@@ -75,8 +76,7 @@ class Book extends Model implements HasMedia
 
     public function reservations(): HasMany
     {
-        return $this->hasMany(Reservation::class);
+        return $this->hasMany(Reservation::class)->where('active', true);
     }
-
 
 }

@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { TableSkeleton } from "@/components/stack-table/TableSkeleton";
 import { UserLayout } from "@/layouts/users/UserLayout";
 import { User, useDeleteUser, useUsers } from "@/hooks/users/useUsers";
-import { Barcode, PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
+import { Archive, Barcode, PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useState, useMemo } from "react";
 import { Link, usePage } from "@inertiajs/react";
@@ -63,6 +63,10 @@ export default function booksIndex() {
     router.get(`loans/create`, {ISBN})
   }
 
+  function handleCreateReservation(ISBN: string){
+    router.get(`reservations/create`, {ISBN})
+  }
+
   const handleDeleteBook = async (id: string) => {
     try {
       await deleteBookMutation.mutateAsync(id);
@@ -72,6 +76,21 @@ export default function booksIndex() {
       console.error("Error deleting book:", error);
     }
   };
+
+  function LoanButton(ISBN: string){
+    return(
+        <Button variant="outline" size="icon" title={t("ui.loans.buttons.edit") || "Edit loan"} onClick={()=>handleCreateLoan(ISBN)}>
+            <Barcode className="h-4 w-4" />
+          </Button>
+    )
+  }
+  function ReservationButton(ISBN: string){
+    return(
+        <Button variant="outline" size="icon" title={t("ui.loans.buttons.edit") || "Edit loan"} onClick={()=>handleCreateReservation(ISBN)}>
+            <Archive className="h-4 w-4" />
+          </Button>
+    )
+  }
 
   const columns = useMemo(() => ([
     createTextColumn<Book>({
@@ -119,9 +138,9 @@ export default function booksIndex() {
       header: t("ui.books.columns.actions") || "Actions",
       renderActions: (book) => (
         <>
-          <Button variant="outline" size="icon" title={t("ui.loans.buttons.edit") || "Edit loan"} onClick={()=>handleCreateLoan(book.ISBN)}>
-            <Barcode className="h-4 w-4" />
-          </Button>
+        {console.log(book.hasActive)}
+        {book.hasActive ? <ReservationButton ISBN={book.ISBN}></ReservationButton> : <LoanButton ISBN={book.ISBN}></LoanButton>}
+
           <Link href={`/books/${book.id}/edit?page=${currentPage}&perPage=${perPage}`}>
             <Button variant="outline" size="icon" title={t("ui.books.buttons.edit") || "Edit book"}>
               <PencilIcon className="h-4 w-4" />
