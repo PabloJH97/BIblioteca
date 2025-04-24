@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { FloorLayout } from "@/layouts/floors/FloorLayout";
 import { Floor, useDeleteFloor, useFloors } from "@/hooks/floors/useFloors";
+import { isEmpty } from "lodash";
 
 
 export default function FloorsIndex() {
@@ -42,6 +43,7 @@ export default function FloorsIndex() {
     perPage: perPage,
   });
   const deleteFloorMutation = useDeleteFloor();
+  const [filterState, setFilterState]=useState(false);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -51,6 +53,15 @@ export default function FloorsIndex() {
     setPerPage(newPerPage);
     setCurrentPage(1); // Reset to first page when changing items per page
   };
+  const handleFilterChange = (newFilters: Record<string, any>) => {
+    const filtersChanged = newFilters!==filters;
+
+    if (filtersChanged) {
+        setCurrentPage(1);
+    }
+    isEmpty(filters) ? setFilterState(false) : setFilterState(true)
+    setFilters(newFilters);
+    };
 
   const handleDeleteFloor = async (id: string) => {
     try {
@@ -127,11 +138,11 @@ export default function FloorsIndex() {
 
                               ] as FilterConfig[]
                           }
-                          onFilterChange={setFilters}
+                          onFilterChange={handleFilterChange}
                           initialValues={filters}
                       />
                   </div>
-
+                  {filterState && floors?.meta.total!=undefined && <h2>{t('ui.common.filters.results')+floors?.meta.total}</h2>}
                   <div className="w-full overflow-hidden">
                       {isLoading ? (
                           <TableSkeleton columns={4} rows={10} />

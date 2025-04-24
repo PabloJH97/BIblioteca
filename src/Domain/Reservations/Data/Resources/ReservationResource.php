@@ -23,7 +23,7 @@ class ReservationResource extends Data
             id: $reservation->id,
             book: $reservation->book->title,
             user: $reservation->user->name,
-            active: $reservation->active ? 'Activo' : 'Inactivo',
+            active: $reservation->active ? 'active' : 'inactive',
         );
     }
 }

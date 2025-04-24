@@ -12,6 +12,7 @@ return [
             'bookshelves' => 'Estanterías',
             'books' => 'Libros',
             'loans' => 'Préstamos',
+            'reservations' => 'Reservas',
             'repository' => 'Repositorio',
             'documentation' => 'Documentación',
 
@@ -96,6 +97,7 @@ return [
         'filters'=> [
             'title' => 'Filtros',
             'clear' => 'Limpiar',
+            'results' => 'Número de resultados: '
         ],
         'delete_dialog' => [
             'success' => 'Eliminado correctamente',
@@ -202,6 +204,20 @@ return [
                 'modify' => 'Modificar configuración'
             ]
         ]
+    ],
+    'genres'=>[
+        'names'=>[
+            'classic_literature' => 'Literatura clásica',
+            'sci-fi' => 'Ciencia ficción',
+            'medieval' => 'Medieval',
+            'art' => 'Arte',
+            'science' => 'Ciencia',
+            'maths' => 'Matemáticas',
+            'poem' => 'Poema',
+            'fantasy' => 'Fantasía',
+            'technician' => 'Técnico',
+            'tale' => 'Cuento',
+        ],
     ],
     'floors'=>[
         'title'=>'Pisos',
@@ -378,6 +394,7 @@ return [
             'author' => 'Autor del libro',
             'pages' => 'Páginas del libro',
             'editorial' => 'Editorial',
+            'ISBN' => 'ISBN',
             'genre' => 'Género',
             'bookshelf' => 'Estantería en la que se encuentra',
             'image' => 'Imagen de portada'
@@ -387,6 +404,7 @@ return [
             'author' => 'Autor',
             'pages' => 'Páginas',
             'editorial' => 'Editorial',
+            'ISBN' => 'ISBN',
             'genre' => 'Género',
             'bookshelf' => 'Estantería en la que se encuentra',
             'created_at' => 'Fecha de creación',
@@ -397,6 +415,7 @@ return [
             'author' => 'Autor del libro',
             'pages' => 'Páginas del libro',
             'editorial' => 'Editorial',
+            'ISBN' => 'ISBN',
             'genre' => 'Género',
             'bookshelf' => 'Estantería en la que se encuentra',
             'image' => 'Imagen de portada',
@@ -408,6 +427,7 @@ return [
             'author' => 'Autor del libro',
             'pages' => 'Páginas del libro',
             'editorial' => 'Editorial',
+            'ISBN' => 'ISBN',
             'genre' => 'Género',
             'bookshelf' => 'Estantería en la que se encuentra',
         ],
@@ -453,19 +473,39 @@ return [
         'columns' => [
             'book' => 'Libro',
             'user' => 'Usuario',
-            'borrowed' => 'Prestado',
+            'borrowed' => [
+                'title' => 'Prestado',
+                'borrowed' => 'En préstamo',
+                'returned' => 'Devuelto',
+            ],
             'return_date' => 'Fecha de devolución',
-            'is_overdue' => 'Retraso',
+            'is_overdue' => [
+                'title' => 'Retraso',
+                'overdue' => 'Con retraso',
+                'on_time' => 'Sin retraso',
+                'days' => 'días'
+            ],
             'created_at' => 'Fecha de creación',
             'actions' => 'Acciones',
-            'returned_date' => 'Fecha en la que se ha devuelto'
+            'returned_date' => [
+                'title' => 'Fecha en la que se ha devuelto',
+                'not_returned' => 'No devuelto'
+                ]
         ],
         'placeholders' => [
             'book' => 'Libro',
             'user' => 'Usuario',
-            'borrowed' => 'Prestado',
+            'borrowed' => [
+                'title' => 'Prestado',
+                'borrowed' => 'En préstamo',
+                'returned' => 'Devuelto',
+            ],
             'return_date' => 'Fecha de devolución',
-            'is_overdue' => 'Retraso',
+            'is_overdue' => [
+                'title' => 'Retraso',
+                'overdue' => 'Con retraso',
+                'on_time' => 'Sin retraso',
+            ],
             'created_at' => 'Fecha de creación',
             'search' => 'Buscar préstamos...',
         ],
@@ -473,9 +513,17 @@ return [
             'search' => 'Buscar',
             'book' => 'Libro',
             'user' => 'Usuario',
-            'borrowed' => 'Prestado',
+            'borrowed' => [
+                'title' => 'Prestado',
+                'borrowed' => 'En préstamo',
+                'returned' => 'Devuelto',
+            ],
             'return_date' => 'Fecha de devolución',
-            'is_overdue' => 'Retraso',
+            'is_overdue' => [
+                'title' => 'Retraso',
+                'overdue' => 'Con retraso',
+                'on_time' => 'Sin retraso',
+            ],
             'created_at' => 'Fecha de creación',
         ],
         'buttons' => [
@@ -501,6 +549,78 @@ return [
         'deleted_error' => 'Error al eliminar el préstamo',
         'no_results' => 'No hay resultados.',
         'error_loading' => 'Error al cargar los préstamos. Por favor, inténtalo de nuevo.',
+        'showing_results' => 'Mostrando :from a :to de :total resultados',
+        'pagination' => [
+            'previous' => 'Anterior',
+            'next' => 'Siguiente',
+        ],
+    ],
+    'reservations'=>[
+        'title'=>'Reservas',
+        'create' => 'Crear Reserva',
+        'description' => 'Gestiona las reservas del sistema',
+        'edit' => 'Editar Reserva',
+        'fields' => [
+            'book' => 'Libro',
+            'user' => 'Usuario',
+            'actions' => 'Acciones',
+        ],
+        'columns' => [
+            'book' => 'Libro',
+            'user' => 'Usuario',
+            'active' => [
+                'title' => 'Activo',
+                'active' => 'Activo',
+                'inactive' => 'Inactivo'
+            ],
+            'created_at' => 'Fecha de creación',
+            'actions' => 'Acciones',
+        ],
+        'placeholders' => [
+            'book' => 'Libro',
+            'user' => 'Usuario',
+            'active' => [
+                'title' => 'Activo',
+                'active' => 'Activo',
+                'inactive' => 'Inactivo'
+            ],
+            'created_at' => 'Fecha de creación',
+            'search' => 'Buscar reservas...',
+        ],
+        'filters' => [
+            'search' => 'Buscar',
+            'book' => 'Libro',
+            'user' => 'Usuario',
+            'active' => [
+                'title' => 'Activo',
+                'active' => 'Activo',
+                'inactive' => 'Inactivo'
+            ],
+            'created_at' => 'Fecha de creación',
+        ],
+        'buttons' => [
+            'new' => 'Nueva reserva',
+            'edit' => 'Editar',
+            'save' => 'Guardar',
+            'update' => 'Actualizar',
+            'cancel' => 'Cancelar',
+            'delete' => 'Eliminar',
+            'deleting' => 'Eliminando...',
+            'saving' => 'Guardando...',
+            'retry' => 'Reintentar',
+        ],
+        'delete' => [
+            'title' => '¿Estás seguro?',
+            'description' => 'Esta acción no se puede deshacer. Se eliminará permanentemente la reserva del sistema.',
+        ],
+        'delete_dialog' => [
+            'title' => '¿Estás seguro?',
+            'description' => 'Esta acción no se puede deshacer. Se eliminará permanentemente la reserva del sistema.',
+            'success' => 'Eliminado correctamente ;)',
+        ],
+        'deleted_error' => 'Error al eliminar la reserva',
+        'no_results' => 'No hay resultados.',
+        'error_loading' => 'Error al cargar las reservas. Por favor, inténtalo de nuevo.',
         'showing_results' => 'Mostrando :from a :to de :total resultados',
         'pagination' => [
             'previous' => 'Anterior',

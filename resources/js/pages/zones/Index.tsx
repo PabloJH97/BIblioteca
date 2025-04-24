@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { ZoneLayout } from "@/layouts/zones/ZoneLayout";
 import { Zone, useDeleteZone, useZones } from "@/hooks/zones/useZones";
+import { isEmpty } from "lodash";
 
 
 export default function ZonesIndex() {
@@ -43,6 +44,7 @@ export default function ZonesIndex() {
     perPage: perPage,
   });
   const deleteZoneMutation = useDeleteZone();
+  const [filterState, setFilterState]=useState(false);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -52,6 +54,15 @@ export default function ZonesIndex() {
     setPerPage(newPerPage);
     setCurrentPage(1); // Reset to first page when changing items per page
   };
+  const handleFilterChange = (newFilters: Record<string, any>) => {
+    const filtersChanged = newFilters!==filters;
+
+    if (filtersChanged) {
+        setCurrentPage(1);
+    }
+    isEmpty(filters) ? setFilterState(false) : setFilterState(true)
+    setFilters(newFilters);
+    };
 
   const handleDeleteZone = async (id: string) => {
     try {
@@ -138,11 +149,11 @@ export default function ZonesIndex() {
                                 },
                               ] as FilterConfig[]
                           }
-                          onFilterChange={setFilters}
+                          onFilterChange={handleFilterChange}
                           initialValues={filters}
                       />
                   </div>
-
+                  {filterState && zones?.meta.total!=undefined && <h2>{t('ui.common.filters.results')+zones?.meta.total}</h2>}
                   <div className="w-full overflow-hidden">
                       {isLoading ? (
                           <TableSkeleton columns={4} rows={10} />

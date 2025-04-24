@@ -63,7 +63,6 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
         if (!genreArray.includes(value)) {
             genreArray = [...genreArray, value];
             setGenreArrayState(genreArray);
-            console.log(genreArrayState)
         } else {
             genreArray = genreArray.filter((a) => a !== value);
             setGenreArrayState(genreArray);
@@ -90,7 +89,6 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
     function selectImage(value:File){
         setImageState(value);
     }
-    console.log(image)
 
     // TanStack Form setup
     const form = useForm({
@@ -125,7 +123,6 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
             } else {
                 genreString = genreArrayState[0];
             }
-            console.log(genreString)
             formData.append('genre', genreString);
             const options = {
                 onSuccess: () => {
@@ -151,7 +148,6 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
 
             // Submit with Inertia
             if (initialData) {
-                console.log(formData)
                 router.post(`/books/${initialData.id}`, formData, options);
             } else {
                 router.post('/books', value, options);
@@ -169,14 +165,14 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
 
     function BookFormData() {
         const listGenres=arrayGenres.map(genre=>
-            <Option value={genre.name}>{genre.name}</Option>
+            <Option value={genre.name}>{t(`ui.genres.names.${genre.name}`)}</Option>
         )
         const listGenreArray=genreArrayState.map(genre=>
             arrayGenres.filter(genreToFind=>
                 genreToFind.name==genre
             ).map(genre=>
                 <div className='flex flex-row items-center '>
-                    <p>{genre.name}</p>
+                    <p>{t(`ui.genres.names.${genre.name}`)}</p>
                     <Button type='button' value={genre.name} onClick={(e)=>{manageGenreArray(e.currentTarget.value)}} className='bg-foreground h-2 w-2'><X></X></Button>
 
                 </div>
@@ -190,7 +186,7 @@ export function BookForm({ initialData, page, perPage, pageTitle, arrayGenres, a
                 floor.zones.filter(zone=>
                     genreArrayState.includes(zone.genre.name)
                 ).map(zone=>
-                    <Option value={zone.id}>{zone.genre.name}</Option>
+                    <Option value={zone.id}>{t(`ui.genres.names.${zone.genre.name}`)}</Option>
                 )
             )
         const listBookshelves=arrayFloors.filter(floor=>

@@ -24,7 +24,7 @@ class GenreFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'=>fake()->unique()->randomElement($array=array('Literatura clásica', 'Medieval', 'Fantasía', 'Ciencia', 'Matemáticas', 'Ciencia ficción', 'Arte', 'Técnico', 'Cuento', 'Poema')),
+            'name'=>fake()->unique()->randomElement($array=array('classic_literature', 'medieval', 'fantasy', 'science', 'maths', 'sci-fi', 'art', 'technician', 'tale', 'poem')),
         ];
     }
 }

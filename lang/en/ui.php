@@ -10,6 +10,8 @@ return [
             'zones' => 'Zones',
             'bookshelves' => 'Bookshelves',
             'books' => 'Books',
+            'loans' => 'Loans',
+            'reservations' => 'Reservations',
             'repository' => 'Repository',
             'documentation' => 'Documentation',
         ],
@@ -93,6 +95,7 @@ return [
         'filters'=> [
             'title' => 'Filters',
             'clear' => 'Clear',
+            'results' => 'Number of results: '
         ],
         'delete_dialog' => [
             'success' => 'User deleted successfully',
@@ -199,6 +202,20 @@ return [
                 'modify' => 'Modify configuration'
             ]
         ]
+    ],
+    'genres'=>[
+        'names'=>[
+            'classic_literature' => 'Classic literature',
+            'sci-fi' => 'Science fiction',
+            'medieval' => 'Medieval',
+            'art' => 'Art',
+            'science' => 'Science',
+            'maths' => 'Maths',
+            'poem' => 'Poem',
+            'fantasy' => 'Fantasy',
+            'technician' => 'Technician',
+            'tale' => 'Tale',
+        ],
     ],
     'floors'=>[
         'title'=>'Floors',
@@ -380,6 +397,7 @@ return [
             'author' => 'Author',
             'pages' => 'Pages',
             'editorial' => 'Editorial',
+            'ISBN' => 'ISBN',
             'genre' => 'Genre',
             'image' => 'Cover image',
             'bookshelf' => 'Bookshelf where it is',
@@ -390,6 +408,7 @@ return [
             'author' => 'Author',
             'pages' => 'Pages',
             'editorial' => 'Editorial',
+            'ISBN' => 'ISBN',
             'genre' => 'Genre',
             'bookshelf' => 'Bookshelf where it is',
             'created_at' => 'Created at',
@@ -400,6 +419,7 @@ return [
             'author' => 'Author',
             'pages' => 'Pages',
             'editorial' => 'Editorial',
+            'ISBN' => 'ISBN',
             'genre' => 'Genre',
             'image' => 'Cover image',
             'bookshelf' => 'Bookshelf where it is',
@@ -410,6 +430,7 @@ return [
             'author' => 'Author',
             'pages' => 'Pages',
             'editorial' => 'Editorial',
+            'ISBN' => 'ISBN',
             'genre' => 'Genre',
             'bookshelf' => 'Bookshelf where it is',
         ],
@@ -455,19 +476,40 @@ return [
         'columns' => [
             'book' => 'Book',
             'user' => 'User',
-            'borrowed' => 'Borrowed',
+            'borrowed' => [
+                'title' => 'Borrowed',
+                'borrowed' => 'Borrowed',
+                'returned' => 'Returned',
+            ],
             'return_date' => 'Return date',
-            'is_overdue' => 'Overdue',
+            'is_overdue' => [
+                'title' => 'Overdue',
+                'overdue' => 'Overdue',
+                'on_time' => 'On time',
+                'days' => 'days'
+            ],
             'created_at' => 'Created at',
             'actions' => 'Actions',
-            'returned_date' => 'Returned date'
+            'returned_date' => [
+                'title' => 'Date when it was returned',
+                'not_returned' => 'Not returned'
+                ]
         ],
         'placeholders' => [
             'book' => 'Book',
             'user' => 'User',
-            'borrowed' => 'Borrowed',
+            'borrowed' => [
+                'title' => 'Borrowed',
+                'borrowed' => 'Borrowed',
+                'returned' => 'Returned',
+            ],
             'return_date' => 'Return date',
-            'is_overdue' => 'Overdue',
+            'is_overdue' => [
+                'title' => 'Overdue',
+                'overdue' => 'Overdue',
+                'on_time' => 'On time',
+                'days' => 'days'
+            ],
             'created_at' => 'Created at',
             'actions' => 'Actions',
             'returned_date' => 'Returned date',
@@ -477,9 +519,18 @@ return [
             'search' => 'Search',
             'book' => 'Book',
             'user' => 'User',
-            'borrowed' => 'Borrowed',
+            'borrowed' => [
+                'title' => 'Borrowed',
+                'borrowed' => 'Borrowed',
+                'returned' => 'Returned',
+            ],
             'return_date' => 'Return date',
-            'is_overdue' => 'Overdue',
+            'is_overdue' => [
+                'title' => 'Overdue',
+                'overdue' => 'Overdue',
+                'on_time' => 'On time',
+                'days' => 'days'
+            ],
             'created_at' => 'Created at',
         ],
         'buttons' => [
@@ -505,6 +556,78 @@ return [
         'deleted_error' => 'Error deleting loan',
         'no_results' => 'No results.',
         'error_loading' => 'Error loading loans. Please try again.',
+        'showing_results' => 'Showing :from to :to of :total results',
+        'pagination' => [
+            'previous' => 'Previous',
+            'next' => 'Next',
+        ],
+    ],
+    'reservations'=>[
+        'title'=>'Reservations',
+        'create' => 'Create Reservation',
+        'description' => 'Manage the reservations of the system',
+        'edit' => 'Edit Reservation',
+        'fields' => [
+            'book' => 'Book',
+            'user' => 'User',
+            'actions' => 'Actions',
+        ],
+        'columns' => [
+            'book' => 'Book',
+            'user' => 'User',
+            'active' => [
+                'title' => 'Active',
+                'active' => 'Active',
+                'inactive' => 'Inactive'
+            ],
+            'actions' => 'Actions',
+            'returned_date' => 'Returned date'
+        ],
+        'placeholders' => [
+            'book' => 'Book',
+            'user' => 'User',
+            'active' => [
+                'title' => 'Active',
+                'active' => 'Active',
+                'inactive' => 'Inactive'
+            ],
+            'actions' => 'Actions',
+            'returned_date' => 'Returned date',
+            'search' => 'Search loans...',
+        ],
+        'filters' => [
+            'book' => 'Book',
+            'user' => 'User',
+            'active' => [
+                'title' => 'Active',
+                'active' => 'Active',
+                'inactive' => 'Inactive'
+            ],
+            'created_at' => 'Created at',
+        ],
+        'buttons' => [
+            'new' => 'New Reservation',
+            'edit' => 'Edit',
+            'save' => 'Save',
+            'update' => 'Update',
+            'cancel' => 'Cancel',
+            'delete' => 'Delete',
+            'deleting' => 'Deleting...',
+            'saving' => 'Saving...',
+            'retry' => 'Retry',
+        ],
+        'delete' => [
+            'title' => 'Are you sure?',
+            'description' => 'This action cannot be undone. The reservation will be permanently deleted from the system.',
+        ],
+        'delete_dialog' => [
+            'title' => 'Are you sure?',
+            'description' => 'This action cannot be undone. The reservation will be permanently deleted from the system.',
+            'success' => 'Successfully deleted ;)',
+        ],
+        'deleted_error' => 'Error deleting reservation',
+        'no_results' => 'No results.',
+        'error_loading' => 'Error loading reservations. Please try again.',
         'showing_results' => 'Showing :from to :to of :total results',
         'pagination' => [
             'previous' => 'Previous',

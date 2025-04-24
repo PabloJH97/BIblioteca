@@ -14,6 +14,7 @@ import { DeleteDialog } from "@/components/stack-table/DeleteDialog";
 import { FiltersTable, FilterConfig } from "@/components/stack-table/FiltersTable";
 import { toast } from "sonner";
 import { ColumnDef, Row } from "@tanstack/react-table";
+import { isEmpty } from "lodash";
 
 export default function UsersIndex() {
   const { t } = useTranslations();
@@ -40,6 +41,7 @@ export default function UsersIndex() {
     perPage: perPage,
   });
   const deleteUserMutation = useDeleteUser();
+  const [filterState, setFilterState]=useState(false);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -49,6 +51,15 @@ export default function UsersIndex() {
     setPerPage(newPerPage);
     setCurrentPage(1); // Reset to first page when changing items per page
   };
+  const handleFilterChange = (newFilters: Record<string, any>) => {
+    const filtersChanged = newFilters!==filters;
+
+    if (filtersChanged) {
+        setCurrentPage(1);
+    }
+    isEmpty(filters) ? setFilterState(false) : setFilterState(true)
+    setFilters(newFilters);
+    };
 
   const handleDeleteUser = async (id: string) => {
     try {
@@ -135,11 +146,11 @@ export default function UsersIndex() {
                                   },
                               ] as FilterConfig[]
                           }
-                          onFilterChange={setFilters}
+                          onFilterChange={handleFilterChange}
                           initialValues={filters}
                       />
                   </div>
-
+                  {filterState && users?.meta.total!=undefined && <h2>{t('ui.common.filters.results')+users?.meta.total}</h2>}
                   <div className="w-full overflow-hidden">
                       {isLoading ? (
                           <TableSkeleton columns={4} rows={10} />

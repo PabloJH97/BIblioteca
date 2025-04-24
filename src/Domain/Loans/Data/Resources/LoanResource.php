@@ -23,22 +23,22 @@ class LoanResource extends Data
 
     public static function fromModel(Loan $loan): self
     {
-        $returned='No devuelto';
-        $overdue='Sin retraso';
+        $returned='not_returned';
+        $overdue='on_time';
         if($loan->returned_date!=null){
             $returned=date_create($loan->returned_date)->format('d-m-Y');
         }
         if($loan->is_overdue&&$loan->borrowed&&date_create($loan->return_date)->diff(date_create(date('Y-m-d')))->d!=0){
             $overdue=date_create($loan->return_date)->diff(date_create(date('Y-m-d')))->format('%a días');
         }elseif($loan->is_overdue&&!$loan->borrowed){
-            $overdue=date_create($loan->returned_date)->diff(date_create($loan->return_date))->format('%a días');
+            $overdue=date_create($loan->returned_date)->diff(date_create($loan->return_date))->format('%a');
         }
 
         return new self(
             id: $loan->id,
             book: $loan->book->title,
             user: $loan->user->name,
-            borrowed: $loan->borrowed ? 'En préstamo' : 'Devuelto',
+            borrowed: $loan->borrowed ? 'borrowed' : 'returned',
             is_overdue: $overdue,
             created_at: $loan->created_at->format('d-m-Y H:i:s'),
             return_date: $loan->return_date->format('d-m-Y'),

@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { BookshelfLayout } from "@/layouts/bookshelves/BookshelfLayout";
 import { Bookshelf, useDeleteBookshelf, useBookshelves } from "@/hooks/bookshelves/useBookshelves";
+import { isEmpty } from "lodash";
 
 
 export default function bookshelfsIndex() {
@@ -44,6 +45,7 @@ export default function bookshelfsIndex() {
     perPage: perPage,
   });
   const deleteBookshelfMutation = useDeleteBookshelf();
+  const [filterState, setFilterState]=useState(false);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -63,6 +65,15 @@ export default function bookshelfsIndex() {
       console.error("Error deleting bookshelf:", error);
     }
   };
+  const handleFilterChange = (newFilters: Record<string, any>) => {
+    const filtersChanged = newFilters!==filters;
+
+    if (filtersChanged) {
+        setCurrentPage(1);
+    }
+    isEmpty(filters) ? setFilterState(false) : setFilterState(true)
+    setFilters(newFilters);
+    };
 
   const columns = useMemo(() => ([
     createTextColumn<Bookshelf>({
@@ -150,11 +161,11 @@ export default function bookshelfsIndex() {
                                 },
                               ] as FilterConfig[]
                           }
-                          onFilterChange={setFilters}
+                          onFilterChange={handleFilterChange}
                           initialValues={filters}
                       />
                   </div>
-
+                  {filterState && bookshelves?.meta.total!=undefined && <h2>{t('ui.common.filters.results')+bookshelves?.meta.total}</h2>}
                   <div className="w-full overflow-hidden">
                       {isLoading ? (
                           <TableSkeleton columns={4} rows={10} />

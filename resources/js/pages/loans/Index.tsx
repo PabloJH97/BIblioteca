@@ -17,6 +17,7 @@ import { router } from '@inertiajs/react';
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { LoanLayout } from "@/layouts/loans/LoanLayout";
 import { Loan, useDeleteLoan, useLoans } from "@/hooks/loans/useLoans";
+import { isEmpty } from "lodash";
 
 
 export default function LoansIndex() {
@@ -48,6 +49,7 @@ export default function LoansIndex() {
     perPage: perPage,
   });
   const deleteLoanMutation = useDeleteLoan();
+  const [filterState, setFilterState]=useState(false);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -58,6 +60,16 @@ export default function LoansIndex() {
     setCurrentPage(1); // Reset to first page when changing items per page
   };
 
+  const handleFilterChange = (newFilters: Record<string, any>) => {
+    const filtersChanged = newFilters!==filters;
+
+    if (filtersChanged) {
+        setCurrentPage(1);
+    }
+    isEmpty(filters) ? setFilterState(false) : setFilterState(true)
+    setFilters(newFilters);
+    };
+
   function handleReturnLoan(loan: string[]){
     const formData=new FormData();
     formData.append('returned_date', loan[1]);
@@ -65,6 +77,14 @@ export default function LoansIndex() {
     router.post(`/loans/${loan[0]}`, formData);
     refetch();
 
+  }
+
+  function ReturnLoanButton(id: string){
+    return(
+        <Button variant="outline" size="icon" title={t("ui.loans.buttons.return") || "Return loan"} onClick={()=>{handleReturnLoan([id.id, 'true'])}}>
+            <Check className="h-4 w-4" />
+        </Button>
+    )
   }
 
   const handleDeleteLoan = async (id: string) => {
@@ -92,13 +112,25 @@ export default function LoansIndex() {
       }),
       createTextColumn<Loan>({
         id: "borrowed",
-        header: t("ui.loans.columns.borrowed") || "Borrowed",
+        header: t("ui.loans.columns.borrowed.title") || "Borrowed",
         accessorKey: "borrowed",
+        format:(value)=>{
+            return t(`ui.loans.columns.borrowed.${value}`);
+        }
       }),
       createTextColumn<Loan>({
         id: "is_overdue",
-        header: t("ui.loans.columns.is_overdue") || "Is overdue",
+        header: t("ui.loans.columns.is_overdue.title") || "Is overdue",
         accessorKey: "is_overdue",
+        format: (value)=>{
+            let returnValue=value
+            if(returnValue=='on_time'){
+                returnValue=t(`ui.loans.columns.is_overdue.${value}`)
+            }else{
+                returnValue=value+' '+t(`ui.loans.columns.is_overdue.days`)
+            }
+            return returnValue;
+        }
       }),
     createDateColumn<Loan>({
       id: "created_at",
@@ -112,17 +144,22 @@ export default function LoansIndex() {
       }),
       createTextColumn<Loan>({
         id: "returned_date",
-        header: t("ui.loans.columns.returned_date") || "Returned date",
+        header: t("ui.loans.columns.returned_date.title") || "Returned date",
         accessorKey: "returned_date",
+        format:(value)=>{
+            let returnedValue=value
+            if(returnedValue=='not_returned'){
+                returnedValue=t(`ui.loans.columns.returned_date.not_returned`)
+            }
+            return returnedValue
+        }
       }),
     createActionsColumn<Loan>({
       id: "actions",
       header: t("ui.loans.columns.actions") || "Actions",
       renderActions: (loan) => (
         <>
-          <Button variant="outline" size="icon" title={t("ui.loans.buttons.return") || "Return loan"} onClick={()=>{handleReturnLoan([loan.id, 'true'])}}>
-            <Check className="h-4 w-4" />
-          </Button>
+        {loan.borrowed!=='returned' ? <ReturnLoanButton id={loan.id}></ReturnLoanButton> :''}
           <Link href={`/loans/${loan.id}/edit?page=${currentPage}&perPage=${perPage}`}>
             <Button variant="outline" size="icon" title={t("ui.loans.buttons.edit") || "Edit loan"}>
               <PencilIcon className="h-4 w-4" />
@@ -177,17 +214,17 @@ export default function LoansIndex() {
                                 },
                                 {
                                     id: 'borrowed',
-                                    label: t('ui.loans.filters.borrowed') || 'Prestado',
+                                    label: t('ui.loans.filters.borrowed.title') || 'Prestado',
                                     type: 'select',
-                                    options: [{value:'true', label:'En préstamo'}, {value:'false', label: 'Devuelto'}],
-                                    placeholder: t('ui.loans.placeholders.borrowed') || 'Prestado...',
+                                    options: [{value:'true', label:t('ui.loans.filters.borrowed.borrowed')}, {value:'false', label: t('ui.loans.filters.borrowed.returned')}],
+                                    placeholder: t('ui.loans.placeholders.borrowed.title') || 'Prestado...',
                                 },
                                 {
                                     id: 'is_overdue',
-                                    label: t('ui.loans.filters.is_overdue') || 'Retraso',
+                                    label: t('ui.loans.filters.is_overdue.title') || 'Retraso',
                                     type: 'select',
-                                    options: [{value:'true', label:'Retraso'}, {value:'false', label: 'A tiempo'}],
-                                    placeholder: t('ui.loans.placeholders.is_overdue') || 'Retraso...',
+                                    options: [{value:'true', label:t('ui.loans.filters.is_overdue.overdue')}, {value:'false', label: t('ui.loans.filters.is_overdue.on_time')}],
+                                    placeholder: t('ui.loans.placeholders.is_overdue.title') || 'Retraso...',
                                 },
                                 {
                                     id: 'created_at',
@@ -200,16 +237,17 @@ export default function LoansIndex() {
                                     label: t('ui.loans.filters.return_date') || 'Fecha de devolucióm',
                                     type: 'date',
                                     placeholder: t('ui.loans.placeholders.return_date') || 'Fecha de devolución...',
+
                                 },
 
 
                               ] as FilterConfig[]
                           }
-                          onFilterChange={setFilters}
+                          onFilterChange={handleFilterChange}
                           initialValues={filters}
                       />
                   </div>
-
+                  {filterState && loans?.meta.total!=undefined && <h2>{t('ui.common.filters.results')+loans?.meta.total}</h2>}
                   <div className="w-full overflow-hidden">
                       {isLoading ? (
                           <TableSkeleton columns={4} rows={10} />

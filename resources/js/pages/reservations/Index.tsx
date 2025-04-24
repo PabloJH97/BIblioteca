@@ -17,6 +17,7 @@ import { router } from '@inertiajs/react';
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { ReservationLayout } from "@/layouts/reservations/ReservationLayout";
 import { Reservation, useDeleteReservation, useReservations } from "@/hooks/reservations/useReservations";
+import { isEmpty } from "lodash";
 
 
 export default function ReservationsIndex() {
@@ -45,6 +46,7 @@ export default function ReservationsIndex() {
     perPage: perPage,
   });
   const deleteReservationMutation = useDeleteReservation();
+  const [filterState, setFilterState]=useState(false);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -54,6 +56,15 @@ export default function ReservationsIndex() {
     setPerPage(newPerPage);
     setCurrentPage(1); // Reset to first page when changing items per page
   };
+  const handleFilterChange = (newFilters: Record<string, any>) => {
+    const filtersChanged = newFilters!==filters;
+
+    if (filtersChanged) {
+        setCurrentPage(1);
+    }
+    isEmpty(filters) ? setFilterState(false) : setFilterState(true)
+    setFilters(newFilters);
+    };
 
   function handleReturnReservation(reservation: string[]){
     const formData=new FormData();
@@ -89,8 +100,11 @@ export default function ReservationsIndex() {
       }),
       createTextColumn<Reservation>({
         id: "active",
-        header: t("ui.reservations.columns.borrowed") || "Active",
+        header: t("ui.reservations.columns.active.title") || "Active",
         accessorKey: "active",
+        format:(value)=>{
+            return t(`ui.reservations.filters.active.${value}`)
+        }
       }),
     createActionsColumn<Reservation>({
       id: "actions",
@@ -154,20 +168,20 @@ export default function ReservationsIndex() {
                                 },
                                 {
                                     id: 'active',
-                                    label: t('ui.reservations.filters.is_overdue') || 'Activo',
+                                    label: t('ui.reservations.filters.active.title') || 'Activo',
                                     type: 'select',
-                                    options: [{value:'true', label:'Activo'}, {value:'false', label: 'Inactivo'}],
-                                    placeholder: t('ui.reservations.placeholders.active') || 'Activo...',
+                                    options: [{value:'true', label:t('ui.reservations.filters.active.active')}, {value:'false', label: t('ui.reservations.filters.active.inactive')}],
+                                    placeholder: t('ui.reservations.placeholders.active.title') || 'Activo...',
                                 },
 
 
                               ] as FilterConfig[]
                           }
-                          onFilterChange={setFilters}
+                          onFilterChange={handleFilterChange}
                           initialValues={filters}
                       />
                   </div>
-
+                  {filterState && reservations?.meta.total!=undefined && <h2>{t('ui.common.filters.results')+reservations?.meta.total}</h2>}
                   <div className="w-full overflow-hidden">
                       {isLoading ? (
                           <TableSkeleton columns={4} rows={10} />

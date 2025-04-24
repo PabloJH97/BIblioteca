@@ -58,6 +58,7 @@ export default function FloorsIndex2({data}:IndexFloorProps ){
     setCurrentPage(1); // Reset to first page when changing items per page
   };
 
+
   const handleDeleteUser = async (id: string) => {
     try {
       await deleteUserMutation.mutateAsync(id);

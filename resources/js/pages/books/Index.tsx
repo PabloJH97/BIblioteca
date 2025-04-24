@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { BookLayout } from "@/layouts/books/BookLayout";
 import { Book, useDeleteBook, useBooks } from "@/hooks/books/useBooks";
+import { isEmpty } from "lodash";
 
 
 export default function booksIndex() {
@@ -49,6 +50,7 @@ export default function booksIndex() {
     perPage: perPage,
   });
   const deleteBookMutation = useDeleteBook();
+  const [filterState, setFilterState]=useState(false);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -58,6 +60,16 @@ export default function booksIndex() {
     setPerPage(newPerPage);
     setCurrentPage(1); // Reset to first page when changing items per page
   };
+
+  const handleFilterChange = (newFilters: Record<string, any>) => {
+    const filtersChanged = newFilters!==filters;
+
+    if (filtersChanged) {
+        setCurrentPage(1);
+    }
+    isEmpty(filters) ? setFilterState(false) : setFilterState(true)
+    setFilters(newFilters);
+    };
 
   function handleCreateLoan(ISBN: string){
     router.get(`loans/create`, {ISBN})
@@ -79,14 +91,14 @@ export default function booksIndex() {
 
   function LoanButton(ISBN: string){
     return(
-        <Button variant="outline" size="icon" title={t("ui.loans.buttons.edit") || "Edit loan"} onClick={()=>handleCreateLoan(ISBN)}>
+        <Button variant="outline" size="icon" title={t("ui.loans.buttons.edit") || "Edit loan"} onClick={()=>handleCreateLoan(ISBN.ISBN)}>
             <Barcode className="h-4 w-4" />
           </Button>
     )
   }
   function ReservationButton(ISBN: string){
     return(
-        <Button variant="outline" size="icon" title={t("ui.loans.buttons.edit") || "Edit loan"} onClick={()=>handleCreateReservation(ISBN)}>
+        <Button variant="outline" size="icon" title={t("ui.loans.buttons.edit") || "Edit loan"} onClick={()=>handleCreateReservation(ISBN.ISBN)}>
             <Archive className="h-4 w-4" />
           </Button>
     )
@@ -122,6 +134,21 @@ export default function booksIndex() {
         id: "genre",
         header: t("ui.books.columns.genre") || "Genre",
         accessorKey: "genre",
+        format: (value) => {
+            let returnedValue=t(`ui.genres.names.${value}`);
+            let aux;
+            let res: string[] = [];
+            if (value.includes(',')) {
+                aux = value.split(', ');
+                aux.map((genre) => {
+                    genre = t(`ui.genres.names.${genre}`);
+                    res=[...res, genre];
+                });
+                aux = res.join(', ');
+                returnedValue=aux;
+            }
+            return returnedValue;
+        },
       }),
       createTextColumn<Book>({
         id: "bookshelf",
@@ -138,7 +165,6 @@ export default function booksIndex() {
       header: t("ui.books.columns.actions") || "Actions",
       renderActions: (book) => (
         <>
-        {console.log(book.hasActive)}
         {book.hasActive ? <ReservationButton ISBN={book.ISBN}></ReservationButton> : <LoanButton ISBN={book.ISBN}></LoanButton>}
 
           <Link href={`/books/${book.id}/edit?page=${currentPage}&perPage=${perPage}`}>
@@ -225,11 +251,11 @@ export default function booksIndex() {
                                 },
                               ] as FilterConfig[]
                           }
-                          onFilterChange={setFilters}
+                           onFilterChange={handleFilterChange}
                           initialValues={filters}
                       />
                   </div>
-
+                          {filterState && books?.meta.total!=undefined && <h2>{t('ui.common.filters.results')+books?.meta.total}</h2>}
                   <div className="w-full overflow-hidden">
                       {isLoading ? (
                           <TableSkeleton columns={4} rows={10} />

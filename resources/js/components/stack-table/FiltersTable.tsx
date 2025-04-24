@@ -201,18 +201,21 @@ export function FiltersTable({
 
   // Manejar cambios en los filtros
   const handleFilterChange = (id: string, value: any) => {
-    setFilterValues((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
+    if(value!=undefined){
+        setFilterValues((prev) => ({
+        ...prev,
+        [id]: value,
+        }));
+    }else{
+        setFilterValues((prev) => ({
+        ...prev
+        }));
+    }
   };
 
   // Limpiar todos los filtros
   const handleClearFilters = () => {
-    const emptyValues = filters.reduce((acc, filter) => {
-      acc[filter.id] = undefined;
-      return acc;
-    }, {} as Record<string, any>);
+    const emptyValues = {}
 
     setFilterValues(emptyValues);
     form.reset(emptyValues);
