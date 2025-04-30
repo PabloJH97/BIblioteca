@@ -28,9 +28,9 @@ class LoanResource extends Data
         if($loan->returned_date!=null){
             $returned=date_create($loan->returned_date)->format('d-m-Y');
         }
-        if($loan->is_overdue&&$loan->borrowed&&date_create($loan->return_date)->diff(date_create(date('Y-m-d')))->d!=0){
-            $overdue=date_create($loan->return_date)->diff(date_create(date('Y-m-d')))->format('%a días');
-        }elseif($loan->is_overdue&&!$loan->borrowed){
+        if($loan->is_overdue&&$loan->borrowed&&date_create($loan->return_date)->diff(date_create(date('Y-m-d')))->d!=0&&date_create($loan->return_date)<date_create(strtotime('now'))){
+            $overdue=date_create($loan->return_date)->diff(date_create(date('Y-m-d')))->format('%a');
+        }elseif($loan->is_overdue&&!$loan->borrowed&&date_create($loan->return_date)->diff(date_create(date('Y-m-d')))->d!=0){
             $overdue=date_create($loan->returned_date)->diff(date_create($loan->return_date))->format('%a');
         }
 

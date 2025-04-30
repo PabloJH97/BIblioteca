@@ -5,7 +5,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { useTranslations } from '@/hooks/use-translations';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Archive, Barcode, Book, BookOpen, Circle, Folder, LayoutGrid, LibraryBig, SquareMenu, Users } from 'lucide-react';
+import { Archive, Barcode, Book, BookOpen, Circle, Folder, History, LayoutGrid, LibraryBig, SquareMenu, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems = (t: (key: string) => string): NavItem[] => [
@@ -52,6 +52,11 @@ const mainNavItems = (t: (key: string) => string): NavItem[] => [
 ];
 
 const footerNavItems = (t: (key: string) => string): NavItem[] => [
+    {
+        title: t('ui.navigation.items.history'),
+        url: '/users/history',
+        icon: History,
+    },
     {
         title: t('ui.navigation.items.repository'),
         url: 'https://github.com/laravel/react-starter-kit',

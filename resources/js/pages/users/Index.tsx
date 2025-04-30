@@ -15,6 +15,7 @@ import { FiltersTable, FilterConfig } from "@/components/stack-table/FiltersTabl
 import { toast } from "sonner";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { isEmpty } from "lodash";
+import { router } from "@inertiajs/react";
 
 export default function UsersIndex() {
   const { t } = useTranslations();
@@ -46,6 +47,11 @@ export default function UsersIndex() {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+  function handleUserHistory(user_id:string){
+    console.log(user_id);
+    router.get(`users/history/${user_id}`)
+  }
 
   const handlePerPageChange = (newPerPage: number) => {
     setPerPage(newPerPage);
@@ -108,6 +114,9 @@ export default function UsersIndex() {
               </Button>
             }
           />
+          <Button variant="outline" size="icon" title={t("ui.users.buttons.history") || "User history"} onClick={()=>handleUserHistory(user.id)}>
+            <PencilIcon className="h-4 w-4" />
+           </Button>
         </>
       ),
     }),

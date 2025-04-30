@@ -10,6 +10,7 @@ use Domain\Users\Actions\UserStoreAction;
 use Domain\Users\Actions\UserUpdateAction;
 use Domain\Users\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -33,6 +34,33 @@ class UserController extends Controller
             }
         }
         return Inertia::render('users/Create', ['arrayPermissions'=>$arrayPermissions]);
+    }
+
+    public function history(?string $user_id=null)
+    {
+        $history=[];
+        $media=[];
+        $user=Auth::user();
+        if($user_id){
+            $user=User::find($user_id);
+        }
+        $loans=$user->loans->all();
+        foreach($loans as $loan){
+            array_push($media, $loan->book->getFirstMediaUrl('images'));
+            array_push($history, $loan);
+        }
+        $reservations=Auth::user()->reservations->all();
+        foreach($reservations as $reservation){
+            array_push($media, $reservation->book->getFirstMediaUrl('images'));
+            array_push($history, $reservation);
+        }
+        $history=collect($history)->sortBy('created_at')->toArray();
+        $keys=array_keys($history);
+        foreach($keys as $key){
+            $history[$key]=[$history[$key], $media[$key]];
+        }
+        $history=array_values($history);
+        return Inertia::render('users/History', ['history'=>$history]);
     }
 
     public function store(Request $request, UserStoreAction $action)

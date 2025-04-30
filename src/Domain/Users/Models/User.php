@@ -86,16 +86,16 @@ class User extends Authenticatable
 
     public function loans(): HasMany
     {
-        return $this->hasMany(Loan::class);
+        return $this->hasMany(Loan::class)->with('book');
     }
 
     public function activeLoans(): HasMany
     {
-        return $this->hasMany(Loan::class)->where('borrowed', true);
+        return $this->hasMany(Loan::class)->where('borrowed', true)->with('book');
     }
 
     public function reservations(): HasMany
     {
-        return $this->hasMany(Reservation::class);
+        return $this->hasMany(Reservation::class)->with('book');
     }
 }

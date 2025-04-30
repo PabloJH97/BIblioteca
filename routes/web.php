@@ -1,5 +1,6 @@
 <?php
 
+use App\Users\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -12,6 +13,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
+    Route::get('users/history/{user_id?}', [UserController::class, 'history']);
     Route::resource('users', \App\Users\Controllers\UserController::class);
     Route::resource('floors', \App\Floors\Controllers\FloorController::class);
     Route::resource('zones', \App\Zones\Controllers\ZoneController::class);

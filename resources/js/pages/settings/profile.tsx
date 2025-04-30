@@ -4,6 +4,7 @@ import { useTranslations } from '@/hooks/use-translations';
 import HeadingSmall from '@/components/heading-small';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
+import 'react-vertical-timeline-component/style.min.css';
 
 export default function Profile() {
     const { t } = useTranslations();
@@ -33,7 +34,6 @@ export default function Profile() {
 
 
                 </div>
-
 
             </SettingsLayout>
         </AppLayout>

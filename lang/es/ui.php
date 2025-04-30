@@ -203,6 +203,15 @@ return [
                 'access' => 'Acceso a configuración',
                 'modify' => 'Modificar configuración'
             ]
+        ],
+        'history'=>[
+            'title'=>'Historial',
+            'has_reserved'=>'El usuario ha reservado el libro ',
+            'has_loan'=>'El usuario tiene prestado el libro ',
+            'is_overdue'=>'El usuario todavía no ha devuelto el libro ',
+            'returned_overdue'=>'El usuario ha devuelto tarde el libro ',
+            'has_returned'=>'El usuario ha devuelto a tiempo el libro ',
+
         ]
     ],
     'genres'=>[
@@ -627,4 +636,5 @@ return [
             'next' => 'Siguiente',
         ],
     ],
+
 ];

@@ -25,6 +25,9 @@ class Reservation extends Model
         'user_id',
         'active',
     ];
+    protected $casts = [
+        'created_at' => 'datetime:m/d/Y',
+    ];
 
     public function user(): BelongsTo
     {

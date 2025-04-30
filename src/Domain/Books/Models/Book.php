@@ -17,8 +17,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Type\Integer;
+use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Book extends Model implements HasMedia
 {
@@ -48,6 +50,19 @@ class Book extends Model implements HasMedia
         'bookshelf_id',
         'bookshelf'
     ];
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this
+            ->addMediaConversion('preview')
+            ->fit(Fit::Contain, 300, 300)
+            ->nonQueued();
+    }
+
+    public function image(): string
+    {
+        return $this->getFirstMediaUrl();
+    }
 
     public function bookshelves(): BelongsTo
     {
