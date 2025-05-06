@@ -15,7 +15,7 @@ export default function HistoryUser({history}:HistoryUserProps) {
   return (
     <UserLayout title={t("ui.users.history.title")}>
       <div className="p-6">
-        <div className="max-w-xl">
+        <div className="max-w-xl items-center ">
           <UserHistory history={history}></UserHistory>
         </div>
       </div>

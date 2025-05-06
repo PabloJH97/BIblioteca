@@ -81,12 +81,12 @@ class User extends Authenticatable
 
     public function books(): BelongsToMany
     {
-        return $this->belongsToMany(Book::class, 'book_user', 'user_id', 'book_id');
+        return $this->belongsToMany(Book::class, 'book_user', 'user_id', 'book_id')->withTrashed();
     }
 
     public function loans(): HasMany
     {
-        return $this->hasMany(Loan::class)->with('book');
+        return $this->hasMany(Loan::class)->with('book')->withTrashed();
     }
 
     public function activeLoans(): HasMany
@@ -96,6 +96,6 @@ class User extends Authenticatable
 
     public function reservations(): HasMany
     {
-        return $this->hasMany(Reservation::class)->with('book');
+        return $this->hasMany(Reservation::class)->with('book')->withTrashed();
     }
 }

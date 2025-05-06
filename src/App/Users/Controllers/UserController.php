@@ -49,7 +49,7 @@ class UserController extends Controller
             array_push($media, $loan->book->getFirstMediaUrl('images'));
             array_push($history, $loan);
         }
-        $reservations=Auth::user()->reservations->all();
+        $reservations=$user->reservations->all();
         foreach($reservations as $reservation){
             array_push($media, $reservation->book->getFirstMediaUrl('images'));
             array_push($history, $reservation);
