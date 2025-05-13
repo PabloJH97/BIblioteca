@@ -70,6 +70,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public $totalActions;
+
+    protected $appends = array();
 
     /**
      * Get the settings associated with the user.
@@ -98,4 +101,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Reservation::class)->with('book')->withTrashed();
     }
+
+    public function setTotalActionsAttribute(int $totalActions){
+        $this->totalActions=$totalActions;
+    }
+
+    public function getTotalActionsAttribute(){
+        return $this->totalActions;
+    }
+
 }

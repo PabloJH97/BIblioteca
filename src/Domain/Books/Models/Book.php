@@ -59,6 +59,10 @@ class Book extends Model implements HasMedia
             ->nonQueued();
     }
 
+    public $totalActions;
+
+    protected $appends = array();
+
     public function image(): string
     {
         return $this->getFirstMediaUrl();
@@ -92,6 +96,14 @@ class Book extends Model implements HasMedia
     public function reservations(): HasMany
     {
         return $this->hasMany(Reservation::class)->where('active', true);
+    }
+
+    public function setTotalActionsAttribute(int $totalActions){
+        $this->totalActions=$totalActions;
+    }
+
+    public function getTotalActionsAttribute(){
+        return $this->totalActions;
     }
 
 }

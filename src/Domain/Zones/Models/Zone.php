@@ -37,10 +37,13 @@ class Zone extends Model
         'floor_id',
     ];
 
+    protected $appends = array();
+
     public function genre(): BelongsTo
     {
-        return $this->belongsTo(Genre::class);
+        return $this->belongsTo(Genre::class)->withCount('books');
     }
+
 
     public function bookshelves(): HasMany
     {
@@ -50,5 +53,9 @@ class Zone extends Model
     public function floor(): BelongsTo
     {
         return $this->belongsTo(Floor::class);
+    }
+
+    public function getTotalActionsAttribute(){
+        return $this->appends;
     }
 }

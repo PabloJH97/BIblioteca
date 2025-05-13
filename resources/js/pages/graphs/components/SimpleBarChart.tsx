@@ -6,6 +6,7 @@ interface SimpleBarChartProps{
 
 
 export default function SimpleBarChart({data}: SimpleBarChartProps){
+    console.log(data.hasOwnProperty('name'), data)
     return (
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
@@ -20,11 +21,12 @@ export default function SimpleBarChart({data}: SimpleBarChartProps){
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
+          <XAxis dataKey={data[0].hasOwnProperty('name')?"name":"title"} />
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="pv" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} />
+          <Bar dataKey="loans_count" fill="#82ca9d" activeBar={<Rectangle fill="pink" stroke="blue" />} />
+          <Bar dataKey="reservations_count" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} />
         </BarChart>
       </ResponsiveContainer>
     );
