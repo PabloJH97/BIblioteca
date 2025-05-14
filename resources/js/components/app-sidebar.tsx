@@ -5,7 +5,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { useTranslations } from '@/hooks/use-translations';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Archive, Barcode, Book, BookOpen, Circle, Folder, History, LayoutGrid, LibraryBig, SquareMenu, Users } from 'lucide-react';
+import { Archive, Barcode, Book, BookOpen, ChartColumnDecreasing, Circle, Folder, History, LayoutGrid, LibraryBig, SquareMenu, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems = (t: (key: string) => string): NavItem[] => [
@@ -48,6 +48,11 @@ const mainNavItems = (t: (key: string) => string): NavItem[] => [
         title: t('ui.navigation.items.reservations'),
         url: '/reservations',
         icon: Archive,
+    },
+    {
+        title: t('ui.navigation.items.graphs'),
+        url: '/graphs',
+        icon: ChartColumnDecreasing,
     },
 ];
 

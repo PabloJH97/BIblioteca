@@ -90,6 +90,9 @@ export default function bookshelfsIndex() {
         id: "zone",
         header: t("ui.bookshelves.columns.zone") || "Zone",
         accessorKey: "zone",
+        format:(value)=>{
+            return t(`ui.genres.names.${value}`)
+        }
       }),
     createDateColumn<Bookshelf>({
       id: "created_at",

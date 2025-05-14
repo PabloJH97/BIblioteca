@@ -12,6 +12,8 @@ return [
             'books' => 'Books',
             'loans' => 'Loans',
             'reservations' => 'Reservations',
+            'graphs' => 'Graphs',
+            'history' => 'History',
             'repository' => 'Repository',
             'documentation' => 'Documentation',
         ],
@@ -150,6 +152,7 @@ return [
             'deleting' => 'Deleting...',
             'saving' => 'Saving...',
             'retry' => 'Retry',
+            'history' => 'History',
         ],
         'delete' => [
             'title' => 'Are you sure?',
@@ -201,6 +204,15 @@ return [
                 'access' => 'Access configuration',
                 'modify' => 'Modify configuration'
             ]
+        ],
+        'history'=>[
+            'title'=>'History',
+            'has_reserved'=>'The user has reserved the book ',
+            'has_loan'=>'The user has loaned the book ',
+            'is_overdue'=>'The user has not returned the book ',
+            'returned_overdue'=>'The user has returned overdued the book ',
+            'has_returned'=>'The user has returned on time the book ',
+
         ]
     ],
     'genres'=>[
@@ -634,4 +646,17 @@ return [
             'next' => 'Next',
         ],
     ],
+    'graphs'=>[
+        'title'=>'Graphs',
+        'description'=>'App Graphs',
+        'options'=>[
+            'user'=>'Most active users',
+            'book'=>'Most active books',
+            'zone'=>'Most active zones',
+        ],
+        'totalActions'=>'Total actions',
+        'loansCount'=>'Loans count',
+        'reservationsCount'=>'Reservations count',
+
+    ]
 ];

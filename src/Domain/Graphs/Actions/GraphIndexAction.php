@@ -33,7 +33,7 @@ class GraphIndexAction
         $bookData=array_values($bookData);
         $bookData=array_slice($bookData, 0, 10);
         $zoneData=[];
-        $zones=Zone::with('bookshelves.books', 'genre')->get();
+        $zones=Zone::with('bookshelves.books', 'genre', 'floor')->get();
         foreach($zones as $zone){
             $totalLoans=0;
             $totalReservations=0;
@@ -43,9 +43,17 @@ class GraphIndexAction
                     $totalReservations+=$book->reservations->count();
                 }
             }
-            $zone->genre->totalActions=$totalLoans+$totalReservations;
-            array_push($zoneData, ['zone'=>$zone]);
+            if($totalLoans>0||$totalReservations>0){
+                $zone->totalActions=$totalLoans+$totalReservations;
+                $zone->totalActionsFront=$totalLoans+$totalReservations;
+                $zone->floorName=$zone->genre->name.' '.$zone->floor->name;
+                array_push($zoneData, $zone);
+            }
+
         }
+        $zoneData=collect($zoneData)->sortBy('totalActions', 0 , true)->toArray();
+        $zoneData=array_values($zoneData);
+        $zoneData=array_slice($zoneData, 0, 10);
 
         $data=['userData'=>$userData, 'bookData'=>$bookData, 'zoneData'=>$zoneData];
 

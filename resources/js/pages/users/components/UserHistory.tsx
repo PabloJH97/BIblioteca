@@ -85,7 +85,7 @@ export function UserHistory({history}: HistoryUserProps) {
     }
 
     return (
-        <div className='overflow-auto h-[50rem]'>
+        <div className='overflow-auto h-[50rem] '>
             {!(history?.length===0)?<UserHistoryTimeLine></UserHistoryTimeLine>:<EmptyHistory></EmptyHistory>}
         </div>
     );

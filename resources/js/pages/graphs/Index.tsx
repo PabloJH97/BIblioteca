@@ -48,7 +48,7 @@ export default function GraphsIndex({data}:GraphProps) {
 
   function ZoneRadarChart(){
     return(
-        <SimpleRadarChart data={data.zoneData}></SimpleRadarChart>
+        <SimpleBarChart data={data.zoneData}></SimpleBarChart>
     )
   }
 
@@ -67,7 +67,7 @@ export default function GraphsIndex({data}:GraphProps) {
   function Graph(){
     return(
     <>
-    <div>
+    <div className="place-self-center m-2 border-2 ounded-md">
         <Select
             value={graphState}
             onChange={(e)=>setGraphState(e.target.value)}
@@ -77,15 +77,18 @@ export default function GraphsIndex({data}:GraphProps) {
             <Option value={'zone'}>{t('ui.graphs.options.zone')}</Option>
         </Select>
     </div>
-    {graphState==='user'&&<UserBarChart></UserBarChart>}
-    {graphState==='book'&&<BookBarChart></BookBarChart>}
-    {graphState==='zone'&&<ZoneRadarChart></ZoneRadarChart>}
+    <br />
+
+        {graphState==='user'&&<UserBarChart></UserBarChart>}
+        {graphState==='book'&&<BookBarChart></BookBarChart>}
+        {graphState==='zone'&&<ZoneRadarChart></ZoneRadarChart>}
+
     </>
     )
   }
 
   return (
-      <GraphLayout title={t('ui.loans.title')}>
+      <GraphLayout title={t('ui.graphs.title')}>
         <Graph></Graph>
       </GraphLayout>
   );

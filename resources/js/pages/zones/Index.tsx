@@ -79,6 +79,9 @@ export default function ZonesIndex() {
       id: "name",
       header: t("ui.zones.columns.name") || "Name",
       accessorKey: "name",
+      format:(value)=>{
+            return t(`ui.genres.names.${value}`)
+        }
     }),
     createTextColumn<Zone>({
         id: "floor",

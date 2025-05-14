@@ -1,5 +1,5 @@
 import { DashboardCard } from '@/components/dashboard/DashboardCard';
-import { Users, User, SquareMenu, Circle, LibraryBig, Book, Barcode, Archive } from 'lucide-react';
+import { Users, User, SquareMenu, Circle, LibraryBig, Book, Barcode, Archive, ChartColumnDecreasing } from 'lucide-react';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
@@ -63,6 +63,12 @@ export default function Dashboard() {
                     description={t('ui.reservations.description')}
                     href="/reservations"
                     icon={Archive}
+                />
+                <DashboardCard
+                    title={t('ui.graphs.title')}
+                    description={t('ui.graphs.description')}
+                    href="/graphs"
+                    icon={ChartColumnDecreasing}
                 />
 
 

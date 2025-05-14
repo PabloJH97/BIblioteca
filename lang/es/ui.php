@@ -13,6 +13,8 @@ return [
             'books' => 'Libros',
             'loans' => 'Préstamos',
             'reservations' => 'Reservas',
+            'graphs' => 'Gráficas',
+            'history' => 'Historial',
             'repository' => 'Repositorio',
             'documentation' => 'Documentación',
 
@@ -152,6 +154,7 @@ return [
             'deleting' => 'Eliminando...',
             'saving' => 'Guardando...',
             'retry' => 'Reintentar',
+            'history' => 'Historial',
         ],
         'delete' => [
             'title' => '¿Estás seguro?',
@@ -636,5 +639,18 @@ return [
             'next' => 'Siguiente',
         ],
     ],
+    'graphs'=>[
+        'title'=>'Gráficas',
+        'description'=>'Gráficas de la aplicación',
+        'options'=>[
+            'user'=>'Usuarios más activos',
+            'book'=>'Libros con más movimientos',
+            'zone'=>'Zonas con más actividad',
+        ],
+        'totalActions'=>'Acciones totales',
+        'loansCount'=>'Cantidad de préstamos',
+        'reservationsCount'=>'Cantidad de reservas',
+
+    ]
 
 ];

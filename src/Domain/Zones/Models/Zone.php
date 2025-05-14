@@ -37,6 +37,8 @@ class Zone extends Model
         'floor_id',
     ];
 
+    public $totalActions;
+
     protected $appends = array();
 
     public function genre(): BelongsTo
@@ -55,7 +57,17 @@ class Zone extends Model
         return $this->belongsTo(Floor::class);
     }
 
-    public function getTotalActionsAttribute(){
+    public function getTotalActionsFrontAttribute(){
         return $this->appends;
     }
+
+
+    public function setTotalActionsAttribute(int $totalActions){
+        $this->totalActions=$totalActions;
+    }
+
+    public function getTotalActionsAttribute(){
+        return $this->totalActions;
+    }
+
 }

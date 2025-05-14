@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { TableSkeleton } from "@/components/stack-table/TableSkeleton";
 import { UserLayout } from "@/layouts/users/UserLayout";
 import { User, useDeleteUser, useUsers } from "@/hooks/users/useUsers";
-import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
+import { History, PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useState, useMemo } from "react";
 import { Link, usePage } from "@inertiajs/react";
@@ -49,7 +49,6 @@ export default function UsersIndex() {
   };
 
   function handleUserHistory(user_id:string){
-    console.log(user_id);
     router.get(`users/history/${user_id}`)
   }
 
@@ -115,7 +114,7 @@ export default function UsersIndex() {
             }
           />
           <Button variant="outline" size="icon" title={t("ui.users.buttons.history") || "User history"} onClick={()=>handleUserHistory(user.id)}>
-            <PencilIcon className="h-4 w-4" />
+            <History className="h-4 w-4" />
            </Button>
         </>
       ),
