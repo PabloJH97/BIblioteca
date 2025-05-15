@@ -32,10 +32,10 @@ class BookFactory extends Factory
         $genresArray=fake()->randomElements($array=$genres, $count=fake()->numberBetween(1, 2));
 
         return [
-            'title'=>'',
-            'author'=>'',
+            'title'=>fake()->words(2, true),
+            'author'=>fake()->word(),
             'pages'=>fake()->numberBetween($min=10, $max=250),
-            'editorial'=>'',
+            'editorial'=>fake()->words(2, true),
             'ISBN'=>fake()->isbn13(),
             'genre'=>implode(', ', $genresArray),
             'bookshelf_id'=>$bookshelf->id,

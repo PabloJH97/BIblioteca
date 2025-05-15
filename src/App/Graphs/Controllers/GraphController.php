@@ -5,6 +5,7 @@ namespace App\Graphs\Controllers;
 use Illuminate\Http\Request;
 use App\Core\Controllers\Controller;
 use Domain\Graphs\Actions\GraphIndexAction;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class GraphController extends Controller
@@ -14,6 +15,7 @@ class GraphController extends Controller
      */
     public function index(GraphIndexAction $action)
     {
+        Gate::authorize('reports.view');
         $data=$action();
 
         return Inertia::render('graphs/Index', ['data'=>$data]);

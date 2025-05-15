@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Domain\Genres\Models\Genre;
 use Domain\Zones\Models\Zone;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -13,6 +14,6 @@ class ZoneSeeder extends Seeder
      */
     public function run(): void
     {
-        Zone::factory(10)->create();
+        Zone::factory(Genre::all()->count())->create();
     }
 }

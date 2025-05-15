@@ -10,6 +10,7 @@ use Domain\Bookshelves\Actions\BookshelfUpdateAction;
 use Domain\Bookshelves\Models\Bookshelf;
 use Domain\Floors\Models\Floor;
 use Domain\Zones\Models\Zone;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
@@ -20,6 +21,7 @@ class BookshelfController extends Controller
      */
     public function index()
     {
+        Gate::authorize('products.view');
         return Inertia::render('bookshelves/Index');
     }
 
@@ -28,6 +30,7 @@ class BookshelfController extends Controller
      */
     public function create()
     {
+        Gate::authorize('products.create');
         $zones=Zone::with('genre')->get();
         $floors=Floor::all();
         return Inertia::render('bookshelves/Create', ['arrayZones' => $zones, 'arrayFloors' => $floors]);
@@ -38,6 +41,7 @@ class BookshelfController extends Controller
      */
     public function store(Request $request, BookshelfStoreAction $action)
     {
+        Gate::authorize('products.create');
         $validator = Validator::make($request->all(), [
             'number' => ['required', 'numeric', 'max:255'],
             'capacity' => ['required', 'numeric', 'max:255'],
@@ -67,6 +71,7 @@ class BookshelfController extends Controller
      */
     public function edit(Request $request, Bookshelf $bookshelf)
     {
+        Gate::authorize('products.edit');
         $zones=Zone::with('genre')->get();
         $floors=Floor::all();
         $selectedFloor=Floor::where('id', Zone::where('id', $bookshelf->zone_id)->first()->floor_id)->first()->id;
@@ -85,6 +90,7 @@ class BookshelfController extends Controller
      */
     public function update(Request $request, Bookshelf $bookshelf, BookshelfUpdateAction $action)
     {
+        Gate::authorize('products.edit');
         $validator = Validator::make($request->all(), [
             'number' => ['required', 'numeric'],
             'capacity' => ['required', 'numeric'],
@@ -117,6 +123,7 @@ class BookshelfController extends Controller
      */
     public function destroy(Bookshelf $bookshelf, BookshelfDestroyAction $action)
     {
+        Gate::authorize('products.delete');
         $action($bookshelf);
 
         return redirect()->route('bookshelves.index')

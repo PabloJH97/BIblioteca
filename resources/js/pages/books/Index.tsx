@@ -18,11 +18,18 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { BookLayout } from "@/layouts/books/BookLayout";
 import { Book, useDeleteBook, useBooks } from "@/hooks/books/useBooks";
 import { isEmpty } from "lodash";
-
+interface PageProps {
+    auth: {
+        user: any;
+        permissions: string[];
+    };
+}
 
 export default function booksIndex() {
   const { t } = useTranslations();
   const { url } = usePage();
+  const page = usePage<{ props: PageProps }>();
+  const auth = page.props.auth;
 
   // Obtener los parámetros de la URL actual
   const urlParams = new URLSearchParams(url.split('?')[1] || '');
@@ -91,14 +98,14 @@ export default function booksIndex() {
 
   function LoanButton(ISBN: string){
     return(
-        <Button variant="outline" size="icon" title={t("ui.loans.buttons.edit") || "Edit loan"} onClick={()=>handleCreateLoan(ISBN.ISBN)}>
+        <Button variant="outline" size="icon" title={t("ui.books.buttons.loan") || "Loan"} onClick={()=>handleCreateLoan(ISBN.ISBN)}>
             <Barcode className="h-4 w-4" />
           </Button>
     )
   }
   function ReservationButton(ISBN: string){
     return(
-        <Button variant="outline" size="icon" title={t("ui.loans.buttons.edit") || "Edit loan"} onClick={()=>handleCreateReservation(ISBN.ISBN)}>
+        <Button variant="outline" size="icon" title={t("ui.books.buttons.reservation") || "Reservation"} onClick={()=>handleCreateReservation(ISBN.ISBN)}>
             <Archive className="h-4 w-4" />
           </Button>
     )
@@ -165,13 +172,15 @@ export default function booksIndex() {
       header: t("ui.books.columns.actions") || "Actions",
       renderActions: (book) => (
         <>
-        {book.hasActive ? <ReservationButton ISBN={book.ISBN}></ReservationButton> : <LoanButton ISBN={book.ISBN}></LoanButton>}
-
+        {auth.permissions.includes('products.create')&&(book.hasActive ? <ReservationButton ISBN={book.ISBN}></ReservationButton> : <LoanButton ISBN={book.ISBN}></LoanButton>)}
+        {auth.permissions.includes('products.edit')&&
           <Link href={`/books/${book.id}/edit?page=${currentPage}&perPage=${perPage}`}>
             <Button variant="outline" size="icon" title={t("ui.books.buttons.edit") || "Edit book"}>
               <PencilIcon className="h-4 w-4" />
             </Button>
           </Link>
+        }
+        {auth.permissions.includes('products.delete')&&
           <DeleteDialog
             id={book.id}
             onDelete={handleDeleteBook}
@@ -183,6 +192,7 @@ export default function booksIndex() {
               </Button>
             }
           />
+        }
         </>
       ),
     }),

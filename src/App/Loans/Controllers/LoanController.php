@@ -8,6 +8,7 @@ use Domain\Loans\Actions\LoanStoreAction;
 use Domain\Loans\Actions\LoanUpdateAction;
 use Domain\Loans\Models\Loan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
@@ -18,7 +19,7 @@ class LoanController extends Controller
      */
     public function index()
     {
-
+        Gate::authorize('products.view');
         return Inertia::render('loans/Index');
     }
 
@@ -27,6 +28,7 @@ class LoanController extends Controller
      */
     public function create()
     {
+        Gate::authorize('products.create');
         return Inertia::render('loans/Create');
     }
 
@@ -35,7 +37,7 @@ class LoanController extends Controller
      */
     public function store(Request $request, LoanStoreAction $action)
     {
-
+        Gate::authorize('products.create');
         $validator = Validator::make($request->all(), [
             'ISBN' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'max:255'],
@@ -66,6 +68,7 @@ class LoanController extends Controller
      */
     public function edit(Request $request, Loan $loan)
     {
+        Gate::authorize('products.edit');
         return Inertia::render('loans/Edit', [
             'loan' => $loan,
             'page' => $request->query('page'),
@@ -78,6 +81,7 @@ class LoanController extends Controller
      */
     public function update(Request $request, Loan $loan, LoanUpdateAction $action)
     {
+        Gate::authorize('products.edit');
         $validator = Validator::make($request->all(), [
             'ISBN' => ['string', 'max:255'],
             'email' => ['string', 'max:255'],
@@ -109,6 +113,7 @@ class LoanController extends Controller
      */
     public function destroy(Loan $loan, LoanDestroyAction $action)
     {
+        Gate::authorize('products.delete');
         $action($loan);
 
         return redirect()->route('loans.index')

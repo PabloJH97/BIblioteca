@@ -453,6 +453,8 @@ return [
             'deleting' => 'Eliminando...',
             'saving' => 'Guardando...',
             'retry' => 'Reintentar',
+            'loan' => 'Préstamo',
+            'reservation' => 'Reserva',
         ],
         'delete' => [
             'title' => '¿Estás seguro?',

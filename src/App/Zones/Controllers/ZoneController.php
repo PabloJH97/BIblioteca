@@ -10,6 +10,7 @@ use Domain\Zones\Actions\ZoneDestroyAction;
 use Domain\Zones\Actions\ZoneStoreAction;
 use Domain\Zones\Actions\ZoneUpdateAction;
 use Domain\Zones\Models\Zone;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
@@ -20,6 +21,7 @@ class ZoneController extends Controller
      */
     public function index()
     {
+        Gate::authorize('products.view');
         return Inertia::render('zones/Index');
     }
 
@@ -28,6 +30,7 @@ class ZoneController extends Controller
      */
     public function create()
     {
+        Gate::authorize('products.create');
         $genres=Genre::all();
         $floors=Floor::all();
 
@@ -39,6 +42,7 @@ class ZoneController extends Controller
      */
     public function store(Request $request, ZoneStoreAction $action)
     {
+        Gate::authorize('products.create');
         $validator = Validator::make($request->all(), [
             'genre_id' => ['required', 'string', 'max:255'],
             'floor_id' => ['required', 'string', 'max:255'],
@@ -68,6 +72,7 @@ class ZoneController extends Controller
      */
     public function edit(Request $request, Zone $zone)
     {
+        Gate::authorize('products.edit');
         $genres=Genre::all();
         $floors=Floor::all();
         return Inertia::render('zones/Edit', [
@@ -84,6 +89,7 @@ class ZoneController extends Controller
      */
     public function update(Request $request, Zone $zone, ZoneUpdateAction $action)
     {
+        Gate::authorize('products.edit');
         $validator = Validator::make($request->all(), [
             'genre_id' => ['required', 'string', 'max:255'],
             'floor_id' => ['required', 'string', 'max:255'],

@@ -8,6 +8,7 @@ use Domain\Floors\Actions\FloorDestroyAction;
 use Domain\Floors\Models\Floor;
 use Domain\Floors\Actions\FloorStoreAction;
 use Domain\Floors\Actions\FloorUpdateAction;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
@@ -18,6 +19,7 @@ class FloorController extends Controller
      */
     public function index()
     {
+        Gate::authorize('products.view');
         $floors=Floor::all();
         return Inertia::render('floors/Index', ['data'=>$floors]);
     }
@@ -27,6 +29,7 @@ class FloorController extends Controller
      */
     public function create()
     {
+        Gate::authorize('products.create');
         return Inertia::render('floors/Create');
     }
 
@@ -35,6 +38,7 @@ class FloorController extends Controller
      */
     public function store(Request $request, FloorStoreAction $action)
     {
+        Gate::authorize('products.create');
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
         ]);
@@ -62,6 +66,7 @@ class FloorController extends Controller
      */
     public function edit(Request $request, Floor $floor)
     {
+        Gate::authorize('products.edit');
         return Inertia::render('floors/Edit', [
             'floor' => $floor,
             'page' => $request->query('page'),
@@ -74,6 +79,7 @@ class FloorController extends Controller
      */
     public function update(Request $request, Floor $floor, FloorUpdateAction $action)
     {
+        Gate::authorize('products.edit');
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
         ]);
@@ -102,6 +108,7 @@ class FloorController extends Controller
      */
     public function destroy(Floor $floor, FloorDestroyAction $action)
     {
+        Gate::authorize('products.delete');
         $action($floor);
 
         return redirect()->route('floors.index')

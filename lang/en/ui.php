@@ -456,6 +456,8 @@ return [
             'deleting' => 'Deleting...',
             'saving' => 'Saving...',
             'retry' => 'Retry',
+            'loan' => 'Loan',
+            'reservation' => 'Reservation',
         ],
         'delete' => [
             'title' => 'Are you sure?',

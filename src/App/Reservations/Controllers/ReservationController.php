@@ -7,6 +7,7 @@ use Domain\Reservations\Actions\ReservationDestroyAction;
 use Domain\Reservations\Actions\ReservationStoreAction;
 use Domain\Reservations\Models\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
@@ -17,6 +18,7 @@ class ReservationController extends Controller
      */
     public function index()
     {
+        Gate::authorize('products.view');
         return Inertia::render('reservations/Index');
     }
 
@@ -25,6 +27,7 @@ class ReservationController extends Controller
      */
     public function create()
     {
+        Gate::authorize('products.create');
         return Inertia::render('reservations/Create');
     }
 
@@ -33,7 +36,7 @@ class ReservationController extends Controller
      */
     public function store(Request $request, ReservationStoreAction $action)
     {
-
+        Gate::authorize('products.create');
         $validator = Validator::make($request->all(), [
             'ISBN' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'max:255'],
@@ -100,6 +103,7 @@ class ReservationController extends Controller
      */
     public function destroy(Reservation $reservation, ReservationDestroyAction $action)
     {
+        Gate::authorize('products.delete');
         $action($reservation);
 
         return redirect()->route('reservations.index')

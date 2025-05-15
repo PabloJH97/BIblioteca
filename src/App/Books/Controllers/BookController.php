@@ -11,6 +11,7 @@ use Domain\Books\Models\Book;
 use Domain\Bookshelves\Models\Bookshelf;
 use Domain\Floors\Models\Floor;
 use Domain\Genres\Models\Genre;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
@@ -29,6 +30,7 @@ class BookController extends Controller
      */
     public function create()
     {
+        Gate::authorize('products.create');
         $arrayGenres=Genre::all();
         $arrayBookshelves=Bookshelf::all();
         $arrayFloors=Floor::with(['zones', 'zones.bookshelves', 'zones.genre'])->get();
@@ -40,6 +42,7 @@ class BookController extends Controller
      */
     public function store(Request $request, BookStoreAction $action)
     {
+        Gate::authorize('products.create');
         $validator = Validator::make($request->all(), [
             'title' => ['required', 'string', 'max:255'],
             'author' => ['required', 'string', 'max:255'],
@@ -73,6 +76,7 @@ class BookController extends Controller
      */
     public function edit(Request $request, Book $book)
     {
+        Gate::authorize('products.edit');
         $media=$book->getFirstMediaUrl('images');
         $arrayGenres=Genre::all();
         $arrayBookshelves=Bookshelf::all();
@@ -93,6 +97,7 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book, BookUpdateAction $action)
     {
+        Gate::authorize('products.edit');
         $validator = Validator::make($request->all(), [
             'title' => ['required', 'string', 'max:255'],
             'author' => ['required', 'string', 'max:255'],
@@ -128,6 +133,7 @@ class BookController extends Controller
      */
     public function destroy(Book $book, BookDestroyAction $action)
     {
+        Gate::authorize('products.delete');
         $action($book);
 
         return redirect()->route('books.index')
