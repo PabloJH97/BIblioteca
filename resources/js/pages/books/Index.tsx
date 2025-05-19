@@ -91,7 +91,7 @@ export default function booksIndex() {
       await deleteBookMutation.mutateAsync(id);
       refetch();
     } catch (error) {
-      toast.error(t("ui.bookss.deleted_error") || "Error deleting book");
+      toast.error(t("ui.books.deleted_error") || "Error deleting book");
       console.error("Error deleting book:", error);
     }
   };
