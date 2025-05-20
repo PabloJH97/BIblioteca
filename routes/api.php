@@ -10,7 +10,7 @@ use App\Zones\Controllers\Api\ZoneApiController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['web', 'auth'])->group(function () {
-    Route::get('/users', [UserApiController::class, 'index']);
+
     Route::get('/users/{user}', [UserApiController::class, 'show']);
     Route::post('/users', [UserApiController::class, 'store']);
     Route::put('/users/{user}', [UserApiController::class, 'update']);
@@ -59,3 +59,4 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::put('/reservations/{reservation}', [ReservationApiController::class, 'update']);
     Route::delete('/reservations/{reservation}', [ReservationApiController::class, 'destroy']);
 });
+Route::get('/users', [UserApiController::class, 'getUsers']);

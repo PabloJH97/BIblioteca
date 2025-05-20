@@ -82,4 +82,25 @@ class UserApiController extends Controller
             'message' => __('messages.users.deleted')
         ]);
     }
+
+    public function getUsers(Request $request)
+    {
+        $response=User::all();
+        $name=$request['name'];
+        $email=$request['email'];
+        if($request->all()!=null){
+            $users = User::query()
+            ->when($name!=null, function ($query) use ($name) {
+                $query->where('name', 'ILIKE', "%".$name."%");
+            })
+            ->when($email!=null, function ($query) use ($email){
+                $query->where('email', 'ILIKE', "%".$email."%");
+            });
+            $response=$users->get();
+        }
+
+        return response()->json([
+            'users' => $response
+        ]);
+    }
 }
